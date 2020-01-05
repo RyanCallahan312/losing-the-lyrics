@@ -1,6 +1,5 @@
 import Link from 'next/link';
-import { useRouter, Router } from 'next/router';
-import PropTypes from 'prop-types';
+import { useRouter } from 'next/router';
 import Headline from '../../components/headline';
 
 const styles = {
@@ -14,17 +13,26 @@ export default function Lobby() {
 
 	return (
 		<div style={styles.container}>
-			<Headline>Lose the Lyrics</Headline>
 			<p>
-				are you a host?{' '}
-				<span>
-					{router.query.host && router.query.host == 'true'
-						? 'YES!'
-						: 'no....'}
-				</span>
+				are you a host?
+				{router.query.host && router.query.host == 'true'
+					? 'YES!'
+					: 'no....'}
 			</p>
+			<Link
+				href={{
+					pathname: '/game/playing',
+					query: {
+						host: router.query.host ? router.query.host : false
+					}
+				}}
+				as='/game/playing'
+			>
+				<a style={{ display: 'block' }}>Play</a>
+			</Link>
+
 			<Link href='/index'>
-				<a>Take me back!</a>
+				<a style={{ display: 'block' }}>Take me back!</a>
 			</Link>
 		</div>
 	);
