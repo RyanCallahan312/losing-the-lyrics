@@ -1,9 +1,14 @@
 import Link from 'next/link';
-import Headline from '../components/headline';
+import Button from '../components/button';
 
 const styles = {
 	container: {
-		textAlign: 'center'
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center'
+	},
+	button: {
+		width: '100%'
 	}
 };
 
@@ -11,7 +16,7 @@ export default function Index() {
 	return (
 		<div style={styles.container}>
 			<Link href='/how-to-play'>
-				<a style={{ display: 'block' }}>How to play</a>
+				<Button style={styles.button}>How to play</Button>
 			</Link>
 			<Link
 				href={{
@@ -20,7 +25,7 @@ export default function Index() {
 				}}
 				as='/game/lobby'
 			>
-				<a style={{ display: 'block' }}>Host a game</a>
+				<Button style={styles.button}>Host a game</Button>
 			</Link>
 			<Link
 				href={{
@@ -29,7 +34,7 @@ export default function Index() {
 				}}
 				as='/game/lobby'
 			>
-				<a style={{ display: 'block' }}>join a game</a>
+				<Button style={styles.button}>join a game</Button>
 			</Link>
 		</div>
 	);
