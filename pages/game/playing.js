@@ -1,35 +1,23 @@
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import Headline from '../../components/headline';
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 const styles = {
-	container: {
-		textAlign: 'center'
-	}
+    container: {
+        textAlign: "center"
+    }
 };
 
 export default function Lobby() {
-	let router = useRouter();
+    let router = useRouter();
 
-	return (
-		<div style={styles.container}>
-			<p>
-				playing as{' '}
-				{router.query.host && router.query.host == 'true'
-					? 'host'
-					: 'player'}
-			</p>
-			<Link
-				href={{
-					pathname: '/game/lobby',
-					query: {
-						host: router.query.host ? router.query.host : false
-					}
-				}}
-				as='/game/lobby'
-			>
-				<a style={{ display: 'block' }}>Back to lobby</a>
-			</Link>
-		</div>
-	);
+    return (
+        <div style={styles.container}>
+            <p>
+                playing as{" "}
+                {router.query.host && router.query.host == "true"
+                    ? "host"
+                    : "player"}
+            </p>
+        </div>
+    );
 }
