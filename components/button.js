@@ -2,7 +2,7 @@ const styles = {
     extras: {
         display: "block",
         border: "none",
-        borderRadius: "22px",
+        borderRadius: "16px",
         outline: "none",
         cursor: "pointer"
     },
@@ -44,7 +44,7 @@ const Button = React.forwardRef((props, ref) => (
                     : styles.colorTwo
                 : styles.colorOne)
         }}
-        className='button'
+        className="button"
     >
         {props.children}
         <style jsx global>{`
@@ -56,7 +56,7 @@ const Button = React.forwardRef((props, ref) => (
             }
 
             .button:hover {
-                box-shadow: 0px 0px 18px rgba(0, 113, 255, .5);
+                box-shadow: 0px 0px 18px rgba(0, 113, 255, 0.5);
                 transform: scale(1.02);
                 transition: 150ms transform ease-out, 150ms boxshadow ease-out;
             }

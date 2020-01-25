@@ -3,12 +3,12 @@ import Button from "../components/button";
 
 const styles = {
     container: {
-        height: "55%",
+        height: "50vh",
         flex: "0 1 auto",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        flexWrap: 'wrap'
+        flexWrap: "wrap"
     },
     button: {
         width: "100%",

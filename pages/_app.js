@@ -6,11 +6,13 @@ const styles = {
     flexContainer: {
         display: "flex",
         flexFlow: "column",
-        height: "100vh"
+        height: "100%"
     },
     header: {
         flex: "0 1 auto",
         textAlign: "center",
+        alignItems: "center",
+        justifyContent: "center"
     }
 };
 

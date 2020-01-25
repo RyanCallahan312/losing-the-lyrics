@@ -18,6 +18,7 @@ const styles = {
         border: "none",
         cursor: "pointer",
         outline: "none",
+        overflow: "hidden"
     }
 };
 const Headline = React.forwardRef((props, ref) => (
@@ -26,7 +27,6 @@ const Headline = React.forwardRef((props, ref) => (
         href={props.href}
         ref={ref}
         style={styles.button}
-        className="headline-button"
     >
         <h1
             style={{
@@ -42,12 +42,9 @@ const Headline = React.forwardRef((props, ref) => (
             <style jsx global>{`
                 @import url("https://fonts.googleapis.com/css?family=Cute+Font&display=swap");
 
-                .headline-button {
-                    animation: rotate-and-scale 1.15s ease-in-out 0s infinite
-                        alternate;
-                }
                 .headline {
-                    animation: glow 1.15s ease-in-out 0s infinite alternate;
+                    animation: glow 1.15s ease-in-out 0s infinite alternate,
+                        rotate-and-scale 1.15s ease-in-out 0s infinite alternate;
                 }
 
                 @keyframes rotate-and-scale {
@@ -60,10 +57,12 @@ const Headline = React.forwardRef((props, ref) => (
                 }
                 @keyframes glow {
                     0% {
-                        text-shadow: 3px 3px rgba(255, 0, 0, 1), 0 0 2px rgba(0, 113, 255, 0);
+                        text-shadow: 3px 3px rgba(255, 0, 0, 1),
+                            0 0 0 rgba(0, 113, 255, 0);
                     }
                     100% {
-                        text-shadow: 3px 3px rgba(255, 0, 0, 1), 0 0 120px rgb(0, 113, 255, 0.95);
+                        text-shadow: 3px 3px rgba(255, 0, 0, 1),
+                            0 0 5vh rgb(0, 113, 255, 0.95);
                     }
                 }
             `}</style>
