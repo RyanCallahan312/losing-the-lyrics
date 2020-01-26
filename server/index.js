@@ -10,8 +10,9 @@ const socketApp = express();
 const socketServer = require("http").Server(socketApp);
 const io = require("socket.io")(socketServer);
 
-socketServer.listen(80);
+socketServer.listen(43020);
 
+//room class
 class Room {
     constructor(roomCode, host) {
         this.roomCode = roomCode;
@@ -27,6 +28,13 @@ class Room {
 
     removeClient(socket) {
         this.clients.filter(client => client !== socket);
+    }
+
+    removeAllClients() {
+        this.clients.forEach(client => {
+            io.sockets.socket(client.id).leave(this.roomCode);
+        });
+        this.clients = null;
     }
 
     startGame() {
@@ -47,42 +55,114 @@ var existingRooms = [];
 
 //socket
 io.on("connection", socket => {
-    socket.on("join room", data => {
-        if (data.isHost) {
-            room = getNewRoom(existingRooms);
-            socket.join(room.roomCode);
-            socket.emit(room);
-        } else {
-            socket.join(data.roomCode);
-            socket.emit(roomInfo);
+    //create room
+    socket.on("create room", isHost => {
+        if (isHost) {
+            roomCode = getNewRoom(existingRooms, socket); //create new room object
+
+            socket.join(roomCode); //join socket room
+
+            let room = getRoomByCode(existingRooms, roomCode);
+            socket.emit("room info", {
+                roomCode: room.roomCode,
+                clients: []
+            }); //send back the room info
         }
     });
 
-    socket.on("button press", data => {
-        console.log(data);
+    //join room
+    socket.on("join room", ({ alias, roomCode, isHost }) => {
+        if (!isHost) {
+            socket.join(roomCode); //join the socket room
+
+            socket.alias = alias;
+            getRoomByCode(existingRooms, roomCode).addClient(socket); //join the object room
+
+            let room = getRoomByCode(existingRooms, roomCode);
+            socket.emit("room info", {
+                roomCode: room.roomCode,
+                clients: room.clients.map(item => item.alias)
+            });
+
+            socket.to(roomCode).emit("client change", `${alias} has joined`); //announce to room that client has joined
+        }
     });
 
-    socket.on("close room", roomCode => {
-        removeExistingRoom(roomCode);
+    //leave room
+    socket.on("leave room", ({ roomCode, isHost }) => {
+        if (!isHost) {
+            socket.leave(roomCode); //leave socket room
+            getRoomByCode(existingRooms, roomCode).removeClient(socket); //leave object room
+            socket
+                .to(roomCode)
+                .emit("client change", `${socket.alias} has left the room`); //announce client leaving
+        }
+    });
+
+    //close room
+    socket.on("close room", ({ roomCode, isHost }) => {
+        if (isHost) {
+            removeExistingRoom(roomCode); //remove room
+
+            socket.to(roomCode).emit("room closed");
+        }
+    });
+
+    //end turn
+    socket.on("end turn", ({ roomCode, isHost, turnData }) => {
+        if (!isHost) {
+            let room = getRoomByCode(existingRooms, roomCode);
+
+            io.sockets.socket(room.host.id).emit("next turn", turnData); //tell host its time for the next turn
+
+            room.nextTurn();
+            io.sockets.socket(currentTurn.id).emit("take turn", {}); //tell next client in the queue its their turn
+        }
+    });
+
+    //start singing
+    socket.on("sing", ({ roomCode, isHost }) => {
+        if (isHost) {
+            let room = getRoomByCode(existingRooms, roomCode);
+
+            io.sockets.socket(room.currentTurn.id).emit("sing", {}); //tell the current turn client to start singing
+        }
     });
 });
 
-function getNewRoom(existingRooms) {
+//helper methods
+const getRoomByCode = (rooms, roomCode) => {
+    var room = rooms.forEach(element => {
+        if (element.roomCode === roomCode) {
+            return element;
+        }
+    });
+    return room ? room : null;
+};
+
+function getNewRoom(existingRooms, socket) {
     do {
-        newRoomId = Math.random()
+        newRoomCode = Math.random()
             .toString(36)
             .substr(2, 4);
-    } while (existingRooms.filter(item => item.roomCode === newRoomId) > 0);
+    } while (
+        existingRooms.length > 0 &&
+        existingRooms.reduce((accumulator, item) =>
+            item.roomCode === newRoomCode ? accumulator + 1 : accumulator
+        ) !== 0
+    );
 
-    existingRooms.push(existingRooms);
+    existingRooms.push(new Room(newRoomCode, socket));
 
-    return newRoomId
+    return newRoomCode;
 }
 
 function removeExistingRoom(existingRooms, roomCode) {
-    existingRooms = existingRooms.filter(item => item.roomCode !== roomCode);
+    getRoomByCode(roomCode).removeAllClients();
+    existingRooms.filter(item => item.roomCode !== roomCode);
 }
 
+//endpoints
 nextApp
     .prepare()
     .then(() => {
