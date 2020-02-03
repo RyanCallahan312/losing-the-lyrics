@@ -10,7 +10,9 @@ const socketApp = express();
 const socketServer = require("http").Server(socketApp);
 const io = require("socket.io")(socketServer);
 
-socketServer.listen(43020);
+socketServer.listen(43020, () => {
+    console.log("listening on 43020");
+});
 
 //room class
 class Room {
@@ -34,7 +36,7 @@ class Room {
         this.clients.forEach(client => {
             io.sockets.socket(client.id).leave(this.roomCode);
         });
-        this.clients = null;
+        this.clients = [];
     }
 
     startGame() {
@@ -57,14 +59,14 @@ var existingRooms = [];
 io.on("connection", socket => {
     //create room
     socket.on("create room", isHost => {
+        console.log(`CALLED ${isHost}`);
         if (isHost) {
             roomCode = getNewRoom(existingRooms, socket); //create new room object
 
             socket.join(roomCode); //join socket room
 
-            let room = getRoomByCode(existingRooms, roomCode);
             socket.emit("room info", {
-                roomCode: room.roomCode,
+                roomCode: roomCode,
                 clients: []
             }); //send back the room info
         }
@@ -90,22 +92,30 @@ io.on("connection", socket => {
 
     //leave room
     socket.on("leave room", ({ roomCode, isHost }) => {
+        console.log("leave room");
         if (!isHost) {
             socket.leave(roomCode); //leave socket room
             getRoomByCode(existingRooms, roomCode).removeClient(socket); //leave object room
             socket
                 .to(roomCode)
                 .emit("client change", `${socket.alias} has left the room`); //announce client leaving
+
+            socket.disconnect();
         }
     });
 
     //close room
     socket.on("close room", ({ roomCode, isHost }) => {
+        console.log("close room");
         if (isHost) {
-            removeExistingRoom(roomCode); //remove room
+            existingRooms = removeExistingRoom(existingRooms, roomCode); //remove room
 
             socket.to(roomCode).emit("room closed");
+
+            socket.disconnect();
         }
+
+        console.log(existingRooms);
     });
 
     //end turn
@@ -128,15 +138,15 @@ io.on("connection", socket => {
             io.sockets.socket(room.currentTurn.id).emit("sing", {}); //tell the current turn client to start singing
         }
     });
+
+    socket.on("disconnect", reason => {
+        console.log(`${socket.id} ${reason}`);
+    });
 });
 
 //helper methods
 const getRoomByCode = (rooms, roomCode) => {
-    var room = rooms.forEach(element => {
-        if (element.roomCode === roomCode) {
-            return element;
-        }
-    });
+    var room = rooms.find(element => element.roomCode === roomCode);
     return room ? room : null;
 };
 
@@ -145,12 +155,7 @@ function getNewRoom(existingRooms, socket) {
         newRoomCode = Math.random()
             .toString(36)
             .substr(2, 4);
-    } while (
-        existingRooms.length > 0 &&
-        existingRooms.reduce((accumulator, item) =>
-            item.roomCode === newRoomCode ? accumulator + 1 : accumulator
-        ) !== 0
-    );
+    } while (getRoomByCode(existingRooms, newRoomCode));
 
     existingRooms.push(new Room(newRoomCode, socket));
 
@@ -158,8 +163,8 @@ function getNewRoom(existingRooms, socket) {
 }
 
 function removeExistingRoom(existingRooms, roomCode) {
-    getRoomByCode(roomCode).removeAllClients();
-    existingRooms.filter(item => item.roomCode !== roomCode);
+    getRoomByCode(existingRooms, roomCode).removeAllClients();
+    return existingRooms.filter(element => element.roomCode !== roomCode);
 }
 
 //endpoints

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Button from "../../components/button";
 import io from "socket.io-client";
-import * as socketActions from "../../socket/socketActions";
 
 const styles = {
     container: {
@@ -22,97 +21,119 @@ const styles = {
     }
 };
 
-//transfer these to state
-const endpoint = "https://localhost:43020";
+// function createRoom(socket, isHost) {
+//     socket.emit("create room", isHost);
+// }
 
-//connect to server and set up socket communication
-const connectToServer = async (endpoint, setSocket) => {
-    setSocket(io.connect(endpoint));
-};
+// function createListeners(isHost, socket, setRoom) {
+//     if (socket) {
+//         socket.on("room info", data => {
+//             setRoom(data);
+//         });
 
-const createListeners = async (socket, setRoom, setTurn, setSing, isHost) => {
-    if (socket) {
-        socket.on("room info", roomData => {
-            setRoom(roomData);
-        });
+//         socket.on("client change", data => console.log(data));
 
-        socket.on("client change", message => {
-            console.log(message);
-        });
+//         socket.on("room closed", () => console.log("room closed"));
 
-        socket.on("room closed", () => {
-            setRoom(null);
-        });
+//         if (isHost) {
+//             socket.on("next turn", data => {
+//                 //change turns for host
+//                 console.log("next turn");
+//             });
 
-        if (!isHost) {
-            socket.on("take turn", () => {
-                setTurn(true);
+//             createRoom(socket, isHost);
+//         } else {
+//             socket.on("take turn", data => {
+//                 //end turn
+//                 console.log("take turn");
+//             });
+
+//             socket.on("sing", data => {
+//                 //sing
+//                 console.log("sing");
+//             });
+//         }
+//     }
+// }
+
+export default function Lobby(props) {
+    const createListeners = (isHost, socket, setRoom) => {
+        if (socket) {
+            socket.on("room info", data => {
+                setRoom(data);
             });
 
-            socket.on("sing", () => {
-                setSing(true);
-            });
+            socket.on("client change", data => console.log(data));
+
+            socket.on("room closed", () => console.log("room closed"));
+            if (isHost) {
+                socket.on("next turn", data => {
+                    //change turns for host
+                    console.log("next turn");
+                });
+            } else {
+                socket.on("take turn", data => {
+                    //end turn
+                    console.log("take turn");
+                });
+
+                socket.on("sing", data => {
+                    //sing
+                    console.log("sing");
+                });
+            }
         }
-    }
-};
+    };
 
-export default function Lobby() {
-    let router = useRouter();
+    const connectSocket = () => {
+        const endpoint = "http://localhost:43020";
+        return io.connect(endpoint);
+    };
 
-    const [socket, setSocket] = React.useState(null);
+    const disconnectSocket = (socket, isHost, roomCode) => {
+        console.log({ socket, roomCode, isHost });
+        if (roomCode) {
+            if (isHost) {
+                socket.emit("close room", { isHost, roomCode });
+            } else {
+                socket.emit("leave room", { isHost, roomCode });
+            }
+        }
+        socket.disconnect(true);
+    };
+
+    const createRoom = isHost => {
+        socket.emit("create room", isHost);
+    };
+
+    const joinRoom = roomCode => {
+        console.log("joined");
+    };
+
+    const router = useRouter();
+
+    const [isHost, setIsHost] = React.useState(
+        router.query.host && router.query.host == "true" ? true : false
+    );
+    const [socket, setSocket] = React.useState(connectSocket());
     const [room, setRoom] = React.useState(null);
-    const [turn, setTurn] = React.useState(false);
-    const [sing, setSing] = React.useState(false);
-    const [alias, setAlias] = React.useState("default");
-    const [isHost, setHost] = React.useState(
-        router.query.host && router.query.host === "true"
+    const roomCode = React.useMemo(
+        () => (room && room.roomCode ? room.roomCode : null),
+        [room]
     );
 
-    React.useEffect(connectToServer(endpoint, setSocket), []);
-    React.useEffect(
-        createListeners(socket, setRoom, setTurn, setSing, isHost),
-        [socket]
-    );
-    if (isHost) {
-        React.useEffect(socketActions.emitCreateRoom(socket), [socket]);
-    }
+    React.useEffect(() => () => disconnectSocket(socket, isHost, roomCode), [roomCode]);
+    React.useEffect(() => createListeners(isHost, socket, setRoom), [socket]);
+
     return (
         <div style={styles.container}>
-            <h1 style={styles.text}>
-                {isHost ? "You are a host!" : "You are a player!"}
-            </h1>
-            <h2 style={styles.text}>
-                {isHost && room ? `your host code is ${room.roomCode}` : null}
-            </h2>
-
+            {roomCode ? <p>room code {roomCode}</p> : null}
             {isHost ? (
-                <Link
-                    href={{
-                        pathname: "/game/playing",
-                        query: {
-                            host: router.query.host ? router.query.host : false
-                        }
-                    }}
-                    as="/game/playing"
-                >
-                    <Button style={styles.button}>Play</Button>
-                </Link>
+                <button onClick={() => createRoom(isHost)}>
+                    create a room
+                </button>
             ) : (
-                <Button
-                    style={styles.button}
-                    onClick={
-                        room && socket && alias && isHost
-                            ? socketActions.emitJoinRoom(
-                                  socket,
-                                  alias,
-                                  room.roomCode,
-                                  isHost
-                              )
-                            : () => {}
-                    }
-                >
-                    join room
-                </Button>
+                <button onClick={() => joinRoom(roomCode)}>join a room</button>
             )}
         </div>
     );
