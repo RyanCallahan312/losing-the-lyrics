@@ -24,19 +24,19 @@ export default function Index() {
             </Link>
             <Link
                 href={{
-                    pathname: "/game/lobby",
+                    pathname: "/game",
                     query: { host: true }
                 }}
-                as="/game/lobby"
+                as="/game"
             >
                 <Button style={styles.button}>Host a game</Button>
             </Link>
             <Link
                 href={{
-                    pathname: "/game/lobby",
+                    pathname: "/game",
                     query: { host: false }
                 }}
-                as="/game/lobby"
+                as="/game"
             >
                 <Button style={styles.button}>join a game</Button>
             </Link>

@@ -29,14 +29,7 @@ class Room {
     }
 
     removeClient(socket) {
-        this.clients.filter(client => client !== socket);
-    }
-
-    removeAllClients() {
-        this.clients.forEach(client => {
-            io.sockets.socket(client.id).leave(this.roomCode);
-        });
-        this.clients = [];
+        this.clients = this.clients.filter(client => client !== socket);
     }
 
     startGame() {
@@ -65,28 +58,36 @@ io.on("connection", socket => {
 
             socket.join(roomCode); //join socket room
 
-            socket.emit("room info", {
+            io.to(roomCode).emit("room info", {
                 roomCode: roomCode,
                 clients: []
-            }); //send back the room info
+            });
+            //send back the room info
         }
     });
 
     //join room
     socket.on("join room", ({ alias, roomCode, isHost }) => {
         if (!isHost) {
-            socket.join(roomCode); //join the socket room
+            let room = getRoomByCode(existingRooms, roomCode); //join the object room
+            if (room) {
+                socket.join(roomCode); //join the socket room
 
-            socket.alias = alias;
-            getRoomByCode(existingRooms, roomCode).addClient(socket); //join the object room
+                socket.alias = alias;
+                socket.score = 0;
+                room.addClient(socket);
 
-            let room = getRoomByCode(existingRooms, roomCode);
-            socket.emit("room info", {
-                roomCode: room.roomCode,
-                clients: room.clients.map(item => item.alias)
-            });
+                io.to(room.roomCode).emit("room info", {
+                    roomCode: room.roomCode,
+                    clients: room.clients.map(item => {
+                        return { alias: item.alias, score: item.score };
+                    })
+                });
 
-            socket.to(roomCode).emit("client change", `${alias} has joined`); //announce to room that client has joined
+                socket
+                    .to(roomCode)
+                    .emit("client change", `${alias} has joined`); //announce to room that client has joined
+            }
         }
     });
 
@@ -94,13 +95,23 @@ io.on("connection", socket => {
     socket.on("leave room", ({ roomCode, isHost }) => {
         console.log("leave room");
         if (!isHost) {
-            socket.leave(roomCode); //leave socket room
-            getRoomByCode(existingRooms, roomCode).removeClient(socket); //leave object room
-            socket
-                .to(roomCode)
-                .emit("client change", `${socket.alias} has left the room`); //announce client leaving
+            let room = getRoomByCode(existingRooms, roomCode); //leave object room
+            if (room) {
+                socket.leave(roomCode); //leave socket room
+                room.removeClient(socket);
+                socket
+                    .to(roomCode)
+                    .emit("client change", `${socket.alias} has left the room`); //announce client leaving
 
-            socket.disconnect();
+                io.to(room.roomCode).emit("room info", {
+                    roomCode: room.roomCode,
+                    clients: room.clients.map(item => {
+                        return { alias: item.alias, score: item.score };
+                    })
+                });
+            }
+
+            socket.disconnect(true);
         }
     });
 
@@ -108,14 +119,22 @@ io.on("connection", socket => {
     socket.on("close room", ({ roomCode, isHost }) => {
         console.log("close room");
         if (isHost) {
-            existingRooms = removeExistingRoom(existingRooms, roomCode); //remove room
+            let room = getRoomByCode(existingRooms, roomCode);
+            if (room) {
+                socket.leave(roomCode);
 
-            socket.to(roomCode).emit("room closed");
+                existingRooms = removeExistingRoom(existingRooms, roomCode, io); //remove room
 
-            socket.disconnect();
+                io.in(roomCode).clients((err, socketIds) => {
+                    if (err) throw err;
+                    socketIds.forEach(socketId => console.log(socketId));
+                });
+
+                socket.to(roomCode).emit("room closed");
+
+                socket.disconnect(true);
+            }
         }
-
-        console.log(existingRooms);
     });
 
     //end turn
@@ -163,8 +182,12 @@ function getNewRoom(existingRooms, socket) {
 }
 
 function removeExistingRoom(existingRooms, roomCode) {
-    getRoomByCode(existingRooms, roomCode).removeAllClients();
-    return existingRooms.filter(element => element.roomCode !== roomCode);
+    let room = getRoomByCode(existingRooms, roomCode);
+    if (room) {
+        return existingRooms.filter(element => element.roomCode !== roomCode);
+    } else {
+        return existingRooms;
+    }
 }
 
 //endpoints
