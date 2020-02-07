@@ -11,7 +11,7 @@ const socketServer = require("http").Server(socketApp);
 const io = require("socket.io")(socketServer);
 
 socketServer.listen(43020, () => {
-    console.log("listening on 443");
+    console.log("listening on 43020");
 });
 
 //room class
