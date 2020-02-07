@@ -78,7 +78,7 @@ const createListeners = (
 };
 
 const connectSocket = () => {
-    const endpoint = "https://losing-the-lyrics.herokuapp.com/:443";
+    const endpoint = "https://losing-the-lyrics.herokuapp.com:43020";
     return io.connect(endpoint, { secure: true });
 };
 
