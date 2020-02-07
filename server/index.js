@@ -50,6 +50,7 @@ var existingRooms = [];
 
 //socket
 io.on("connection", socket => {
+    console.log(`${socket.socketId} Connected`)
     //create room
     socket.on("create room", isHost => {
         console.log(`CALLED ${isHost}`);
