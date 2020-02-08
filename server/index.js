@@ -6,13 +6,10 @@ const dev = process.env.NODE_ENV !== "production";
 const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
 
-const socketApp = express();
-const socketServer = require("http").Server(socketApp);
+const socketServer = express()
+    .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
+    .listen(43020, () => console.log(`Listening on ${43020}`));
 const io = require("socket.io")(socketServer);
-
-socketServer.listen(443, () => {
-    console.log("listening on 443");
-});
 
 //room class
 class Room {
@@ -50,7 +47,7 @@ var existingRooms = [];
 
 //socket
 io.on("connection", socket => {
-    console.log(`${socket.socketId} Connected`)
+    console.log(`${socket.socketId} Connected`);
     //create room
     socket.on("create room", isHost => {
         console.log(`CALLED ${isHost}`);
