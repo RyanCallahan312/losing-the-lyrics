@@ -11,6 +11,11 @@ const socketServer = express()
     .listen(43020, () => console.log(`Listening on ${43020}`));
 const io = require("socket.io")(socketServer);
 
+io.configure(function() {
+    io.set("transports", ["xhr-polling"]);
+    io.set("polling duration", 10);
+});
+
 //room class
 class Room {
     constructor(roomCode, host) {
