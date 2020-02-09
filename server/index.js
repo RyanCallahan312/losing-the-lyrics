@@ -1,56 +1,17 @@
-const express = require("express");
+const app = require("express")();
 const next = require("next");
+const server = require("http").Server(app);
+const io = require("socket.io")(server);
 
 const port = process.env.PORT || 3000;
 const dev = process.env.NODE_ENV !== "production";
 const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
 
-const socketApp = express();
-const socketServer = require("http").Server(socketApp);
-const io = require("socket.io")(socketServer);
+// socketServer.listen(43020, () => {
+//     console.log("listening on 43020");
+// });
 
-socketApp.use(express.static("/"));
-
-socketServer.listen(43020, () => {
-    console.log("listening on 43020");
-});
-
-//room class
-class Room {
-    constructor(roomCode, host) {
-        this.roomCode = roomCode;
-        this.clients = [];
-        this.host = host;
-        this.currentTurn = null;
-        this.playing = false;
-    }
-
-    addClient(socket) {
-        this.clients.push(socket);
-    }
-
-    removeClient(socket) {
-        this.clients = this.clients.filter(client => client !== socket);
-    }
-
-    startGame() {
-        this.playing = true;
-    }
-
-    nextTurn() {
-        let index = this.clients.indexOf(this.currentTurn);
-        if (index !== this.clients.length - 1) {
-            this.currentTurn = this.clients[index + 1];
-        } else {
-            this.currentTurn = this.clients[0];
-        }
-    }
-}
-
-var existingRooms = [];
-
-//socket
 io.on("connection", socket => {
     console.log(`${socket.id} Connected`);
     //create room
@@ -166,6 +127,40 @@ io.on("connection", socket => {
     });
 });
 
+//room class
+class Room {
+    constructor(roomCode, host) {
+        this.roomCode = roomCode;
+        this.clients = [];
+        this.host = host;
+        this.currentTurn = null;
+        this.playing = false;
+    }
+
+    addClient(socket) {
+        this.clients.push(socket);
+    }
+
+    removeClient(socket) {
+        this.clients = this.clients.filter(client => client !== socket);
+    }
+
+    startGame() {
+        this.playing = true;
+    }
+
+    nextTurn() {
+        let index = this.clients.indexOf(this.currentTurn);
+        if (index !== this.clients.length - 1) {
+            this.currentTurn = this.clients[index + 1];
+        } else {
+            this.currentTurn = this.clients[0];
+        }
+    }
+}
+
+var existingRooms = [];
+
 //helper methods
 const getRoomByCode = (rooms, roomCode) => {
     var room = rooms.find(element => element.roomCode === roomCode);
@@ -197,10 +192,10 @@ function removeExistingRoom(existingRooms, roomCode) {
 nextApp
     .prepare()
     .then(() => {
-        const server = express();
+        //socket
 
         //all nextjs pages
-        server.get("*", (req, res) => {
+        app.get("*", (req, res) => {
             return handle(req, res);
         });
 

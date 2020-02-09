@@ -78,9 +78,8 @@ const createListeners = (
 };
 
 const connectSocket = () => {
-    const endpoint = "http://losing-the-lyrics.herokuapp.com:43020";
-
-    return io(endpoint);
+    const endpoint = "http://localhost:43020";
+    return io();
 };
 
 const disconnectSocket = (socket, isHost, roomCode) => {
