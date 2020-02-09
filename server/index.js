@@ -6,14 +6,12 @@ const dev = process.env.NODE_ENV !== "production";
 const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
 
-const socketServer = express()
-    .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
-    .listen(43020, () => console.log(`Listening on ${43020}`));
+const socketApp = express();
+const socketServer = require("http").Server(socketApp);
 const io = require("socket.io")(socketServer);
 
-io.configure(function() {
-    io.set("transports", ["xhr-polling"]);
-    io.set("polling duration", 10);
+socketServer.listen(43020, () => {
+    console.log("listening on 43020");
 });
 
 //room class
