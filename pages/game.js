@@ -78,7 +78,6 @@ const createListeners = (
 };
 
 const connectSocket = () => {
-    const endpoint = "http://localhost:43020";
     return io();
 };
 
