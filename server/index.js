@@ -10,6 +10,8 @@ const socketApp = express();
 const socketServer = require("http").Server(socketApp);
 const io = require("socket.io")(socketServer);
 
+socketApp.use(express.static("/"));
+
 socketServer.listen(43020, () => {
     console.log("listening on 43020");
 });
@@ -50,7 +52,7 @@ var existingRooms = [];
 
 //socket
 io.on("connection", socket => {
-    console.log(`${socket.socketId} Connected`);
+    console.log(`${socket.id} Connected`);
     //create room
     socket.on("create room", isHost => {
         console.log(`CALLED ${isHost}`);
