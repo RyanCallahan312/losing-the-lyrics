@@ -78,7 +78,7 @@ const createListeners = (
 };
 
 const connectSocket = () => {
-    const endpoint = "http://losing-the-lyrics.herokuapp.com:43020";
+    const endpoint = "http://losing-the-lyrics.herokuapp.com/";
 
     return io(endpoint);
 };
