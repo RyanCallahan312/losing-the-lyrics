@@ -78,7 +78,11 @@ const createListeners = (
 };
 
 const connectSocket = () => {
-    const endpoint = window.location.hostname + ":43020";
+    const endpoint = '';
+    if (window) {
+        endpoint = window.location.hostname + ":43020";
+    }
+
     return io(endpoint);
 };
 
