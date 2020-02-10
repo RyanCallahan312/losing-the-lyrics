@@ -12,7 +12,7 @@ const styles = {
     },
     size: {
         fontSize: "calc(2.4vw + 12px)",
-        minWidth: "5vw",
+        minWidth: "150px",
         maxWidth: "12vw"
     },
     space: {

@@ -8,10 +8,6 @@ const dev = process.env.NODE_ENV !== "production";
 const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
 
-// socketServer.listen(43020, () => {
-//     console.log("listening on 43020");
-// });
-
 io.on("connection", socket => {
     console.log(`${socket.id} Connected`);
     //create room
@@ -34,7 +30,7 @@ io.on("connection", socket => {
     socket.on("join room", ({ alias, roomCode, isHost }) => {
         if (!isHost) {
             let room = getRoomByCode(existingRooms, roomCode); //join the object room
-            if (room) {
+            if (room && room.playing == false) {
                 socket.join(roomCode); //join the socket room
 
                 socket.alias = alias;
@@ -89,11 +85,6 @@ io.on("connection", socket => {
 
                 existingRooms = removeExistingRoom(existingRooms, roomCode, io); //remove room
 
-                io.in(roomCode).clients((err, socketIds) => {
-                    if (err) throw err;
-                    socketIds.forEach(socketId => console.log(socketId));
-                });
-
                 socket.to(roomCode).emit("room closed");
 
                 socket.disconnect(true);
@@ -106,10 +97,10 @@ io.on("connection", socket => {
         if (!isHost) {
             let room = getRoomByCode(existingRooms, roomCode);
 
-            io.sockets.socket(room.host.id).emit("next turn", turnData); //tell host its time for the next turn
+            room.host.emit("next turn", turnData); //tell host its time for the next turn
 
             room.nextTurn();
-            io.sockets.socket(currentTurn.id).emit("take turn", {}); //tell next client in the queue its their turn
+            room.currentTurn.emit("take turn", "placeholder transcript"); //tell next client in the queue its their turn
         }
     });
 
@@ -118,7 +109,28 @@ io.on("connection", socket => {
         if (isHost) {
             let room = getRoomByCode(existingRooms, roomCode);
 
-            io.sockets.socket(room.currentTurn.id).emit("sing", {}); //tell the current turn client to start singing
+            room.currentTurn.emit("sing"); //tell the current turn client to start singing
+        }
+    });
+
+    socket.on("game start", ({ roomCode, isHost }) => {
+        console.log("game start", { roomCode, isHost });
+        if (isHost) {
+            let room = getRoomByCode(existingRooms, roomCode);
+            if (room) {
+                socket.to(roomCode).emit("game start");
+                room.startGame();
+                room.currentTurn.emit("take turn");
+            }
+        }
+    });
+
+    socket.on("game end", ({ roomCode, isHost }) => {
+        if (isHost) {
+            let room = getRoomByCode(existingRooms, roomCode);
+            if (room) {
+                socket.to(roomCode).emit("game start");
+            }
         }
     });
 
@@ -147,6 +159,9 @@ class Room {
 
     startGame() {
         this.playing = true;
+        if (this.clients.length > 0) {
+            this.currentTurn = this.clients[0];
+        }
     }
 
     nextTurn() {
@@ -192,8 +207,6 @@ function removeExistingRoom(existingRooms, roomCode) {
 nextApp
     .prepare()
     .then(() => {
-        //socket
-
         //all nextjs pages
         app.get("*", (req, res) => {
             return handle(req, res);

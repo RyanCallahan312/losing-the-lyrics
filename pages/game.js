@@ -1,11 +1,11 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
 import Button from "../components/button";
 import io from "socket.io-client";
+import Game from "../components/game";
 
 const styles = {
     container: {
-        height: "50vh",
+        height: "35vh",
         display: "flex",
         textAlign: "center",
         alignItems: "center",
@@ -14,8 +14,8 @@ const styles = {
     },
     button: {
         maxWidth: "100%",
-        width: "90%",
-        margin: "5%"
+        width: "-webkit-fill-available",
+        margin: "5px"
     },
     text: {
         flexBasis: "100%"
@@ -32,27 +32,29 @@ const styles = {
         fontSize: "20px"
     },
     roomCodeLabel: {
-        border: "rgba(50,138,250, 1)",
-        background: "rgba(50,138,250, 1)",
+        margin: "0px",
+        background: "rgb(255, 255, 255)",
         fontFamily: "Teko",
-        fontSize: "30px",
-        color: "rgba(255,255,255, 1)",
-        width: "100%",
-        margin: "0",
-        padding: "8px 0px 8px 0px",
-        borderRadius: "10px"
+        fontSize: "calc(2.2vw + 16px)",
+        color: "rgb(161, 210, 255)",
+        padding: "8px 0px",
+        textShadow: "2px 2px black"
     },
     roomCode: {
-        fontSize: "40px",
-        color: "rgba(255,255,255, 1)"
+        letterSpacing: "5px"
+    },
+    client: {
+        fontFamily: "Teko",
+        color: "rgba(102, 85, 255, 0.84)",
+        fontSize: "28px"
     }
 };
 const createListeners = (
     isHost,
     socket,
     setRoom,
-    setSing,
-    setTurn,
+    setIsSinging,
+    setIsTurn,
     setIsPlaying
 ) => {
     if (socket) {
@@ -63,16 +65,25 @@ const createListeners = (
 
         socket.on("client change", data => console.log(data));
 
-        socket.on("room closed", () => setRoom(null));
+        socket.on("room closed", () => {
+            setRoom(null);
+            socket.disconnect();
+            socket = io();
+        });
+
+        socket.on("game start", () => setIsPlaying(true));
+
+        socket.on("game end", () => setIsPlaying(false));
+
         if (isHost) {
             socket.on("next turn", data => {
                 //change turns for host
-                console.log("next turn");
+                console.log("next turn", data);
             });
         } else {
-            socket.on("take turn", () => setTurn(true));
+            socket.on("take turn", () => setIsTurn(true));
 
-            socket.on("sing", () => setSing(true));
+            socket.on("sing", () => setIsSinging(true));
         }
     }
 };
@@ -103,6 +114,29 @@ const joinRoom = (inputCode, socket, isHost, alias) => {
     });
 };
 
+const startGame = (socket, roomCode, isHost, setIsPlaying) => {
+    socket.emit("game start", {
+        roomCode: roomCode,
+        isHost: isHost
+    });
+    setIsPlaying(true);
+};
+
+const endGame = (socket, roomCode, isHost) => {
+    socket.emit("game end", {
+        roomCode,
+        isHost
+    });
+};
+
+const endTurn = (socket, roomCode, isHost, turnData) => {
+    socket.emit("end turn", { roomCode, isHost, turnData });
+};
+
+const startSing = (socket, roomCode, isHost) => {
+    socket.emit("sing", { roomCode, isHost });
+};
+
 export default function game(props) {
     const router = useRouter();
 
@@ -118,12 +152,13 @@ export default function game(props) {
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [isSinging, setIsSinging] = React.useState(false);
     const [isTurn, setIsTurn] = React.useState(false);
+    const [transcript, setTranscript] = React.useState("");
     const clientsDom = React.useMemo(() => {
         if (room) {
             return (
-                <ul>
+                <ul style={{ listStyle: "none", padding: "0px" }}>
                     {room.clients.map((item, i) => (
-                        <li key={i}>
+                        <li style={styles.client} key={i}>
                             {item.alias} : {item.score}
                         </li>
                     ))}
@@ -139,26 +174,45 @@ export default function game(props) {
     React.useEffect(() => () => disconnectSocket(socket, isHost, roomCode), [
         roomCode
     ]);
-    React.useEffect(() => createListeners(isHost, socket, setRoom), [socket]);
+    React.useEffect(
+        () =>
+            createListeners(
+                isHost,
+                socket,
+                setRoom,
+                setIsSinging,
+                setIsTurn,
+                setIsPlaying
+            ),
+        [socket]
+    );
 
     return (
-        <div style={{ textAlign: "center", margin: "0px 40% 0px 40%" }}>
+        <div style={{ textAlign: "center" }}>
             {roomCode ? (
                 <h1 style={styles.roomCodeLabel}>
                     Room Code: <span style={styles.roomCode}>{roomCode}</span>
                 </h1>
             ) : null}
+
             <div style={styles.container}>
                 {roomCode ? (
-                    clientsDom
+                    <Game
+                        clients={clientsDom}
+                        isTurn={isTurn}
+                        isPlaying={isPlaying}
+                        isHost={isHost}
+                        isSinging={isSinging}
+                        handleDidSing={e =>
+                            endTurn(socket, roomCode, isHost, e)
+                        }
+                    />
                 ) : isHost ? (
                     <div>
                         <Button
                             onClick={() => createRoom(isHost, socket)}
                             style={{
-                                ...styles.button,
-                                minWidth: "15vw",
-                                margin: "0px"
+                                ...styles.button
                             }}
                         >
                             create a room
@@ -190,7 +244,35 @@ export default function game(props) {
                         </Button>
                     </div>
                 )}
+
+                {isHost && room ? (
+                    !isPlaying ? (
+                        <Button
+                            onClick={() =>
+                                startGame(
+                                    socket,
+                                    roomCode,
+                                    isHost,
+                                    setIsPlaying
+                                )
+                            }
+                            style={{ ...styles.button, width: "15%" }}
+                        >
+                            start game
+                        </Button>
+                    ) : (
+                        <Button
+                            onClick={() => startSing(socket, roomCode, isHost)}
+                            style={{ ...styles.button, width: "15%" }}
+                        >
+                            sing
+                        </Button>
+                    )
+                ) : null}
             </div>
+            <style jsx global>{`
+                @import url("https://fonts.googleapis.com/css?family=Teko&display=swap");
+            `}</style>
         </div>
     );
 }
