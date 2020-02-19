@@ -1,7 +1,12 @@
 import { useRouter } from "next/router";
 import Button from "../components/button";
 import io from "socket.io-client";
-import Game from "../components/game";
+import Game from "../components/gamePanel";
+
+const spotifyAuthEndpoint = "https://accounts.spotify.com/authorize";
+const spotifyClientId = "aeb75c365a594462a967bcb106a55be9";
+const spotifyResponseType = "token";
+const redirectUri = "https:%2F%2Flocalhost:3000%2Fgame?host=true";
 
 const styles = {
     container: {
@@ -67,6 +72,9 @@ const createListeners = (
 
         socket.on("room closed", () => {
             setRoom(null);
+            setIsSinging(false);
+            setIsPlaying(false);
+            setIsTurn(false);
             socket.disconnect();
             socket = io();
         });
@@ -129,7 +137,16 @@ const endGame = (socket, roomCode, isHost) => {
     });
 };
 
-const endTurn = (socket, roomCode, isHost, turnData) => {
+const endTurn = (
+    socket,
+    roomCode,
+    isHost,
+    turnData,
+    setIsSinging,
+    setIsTurn
+) => {
+    setIsTurn(false);
+    setIsSinging(false);
     socket.emit("end turn", { roomCode, isHost, turnData });
 };
 
@@ -139,7 +156,6 @@ const startSing = (socket, roomCode, isHost) => {
 
 export default function game(props) {
     const router = useRouter();
-
     const [isHost, setIsHost] = React.useState(
         router.query.host && router.query.host == "true" ? true : false
     );
@@ -170,7 +186,26 @@ export default function game(props) {
     }, [room]);
     const [inputCode, setInputCode] = React.useState("");
     const [alias, setAlias] = React.useState("");
+    const [accessToken, setAccessToken] = React.useState(null);
 
+    React.useEffect(() => {
+        const spotifyHash =
+            window.location.hash
+                .substring(1)
+                .split("&")
+                .map(v => v.split("="))
+                .reduce(
+                    (pre, [key, value]) => ({ ...pre, [key]: value }),
+                    {}
+                ) || "no fragment";
+
+        if (!(spotifyHash && spotifyHash.access_token)) {
+            window.location.href = `${spotifyAuthEndpoint}?client_id=${spotifyClientId}&redirect_uri=${redirectUri}&response_type=${spotifyResponseType}`;
+        } else {
+            setAccessToken(spotifyHash.accessToken);
+        }
+        setIsHost(new URLSearchParams(window.location.search).get("host"));
+    }, []);
     React.useEffect(() => () => disconnectSocket(socket, isHost, roomCode), [
         roomCode
     ]);
@@ -204,7 +239,14 @@ export default function game(props) {
                         isHost={isHost}
                         isSinging={isSinging}
                         handleDidSing={e =>
-                            endTurn(socket, roomCode, isHost, e)
+                            endTurn(
+                                socket,
+                                roomCode,
+                                isHost,
+                                e,
+                                setIsSinging,
+                                setIsTurn
+                            )
                         }
                     />
                 ) : isHost ? (

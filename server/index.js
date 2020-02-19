@@ -9,10 +9,9 @@ const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
 
 io.on("connection", socket => {
-    console.log(`${socket.id} Connected`);
     //create room
     socket.on("create room", isHost => {
-        console.log(`CALLED ${isHost}`);
+        console.log("create room");
         if (isHost) {
             roomCode = getNewRoom(existingRooms, socket); //create new room object
 
@@ -94,6 +93,7 @@ io.on("connection", socket => {
 
     //end turn
     socket.on("end turn", ({ roomCode, isHost, turnData }) => {
+        console.log("end turn", { roomCode, isHost, turnData });
         if (!isHost) {
             let room = getRoomByCode(existingRooms, roomCode);
 

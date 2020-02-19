@@ -27,7 +27,6 @@ export default function Index() {
                     pathname: "/game",
                     query: { host: true }
                 }}
-                as="/game"
             >
                 <Button style={styles.button}>Host a game</Button>
             </Link>
