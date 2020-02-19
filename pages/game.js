@@ -6,7 +6,8 @@ import Game from "../components/gamePanel";
 const spotifyAuthEndpoint = "https://accounts.spotify.com/authorize";
 const spotifyClientId = "aeb75c365a594462a967bcb106a55be9";
 const spotifyResponseType = "token";
-const redirectUri = "https:%2F%2Flocalhost:3000%2Fgame?host=true";
+const redirectUri =
+    "https:%2F%2Flosing-the-lyrics.herokuapp.com%2Fgame?host=true";
 
 const styles = {
     container: {
