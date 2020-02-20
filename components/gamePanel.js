@@ -1,4 +1,5 @@
 import React from "react";
+import Head from "next/Head";
 
 const styles = {
     container: {
@@ -18,41 +19,45 @@ const styles = {
     }
 };
 
+const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+const recognition = new SpeechRecognition();
+
 export default function GamePanel(props) {
     const [transcript, setTranscript] = React.useState("");
-    const [recognition, setRecognition] = React.useState(
-        (transcript, setTranscript) => {
-            var SpeechRecognition =
-                window.SpeechRecognition || window.webkitSpeechRecognition;
-            var recognition = new SpeechRecognition();
+    const [gotInput, setGotInput] = React.useState(false);
 
-            recognition.maxAlternatives = 10;
-            recognition.continuous = false;
+    const voiceCommands = () => {
+        // On start
+        recognition.onstart = () => {
+            console.log("Voice is actived");
+        };
 
-            recognition.onresult = event => {
-                console.log("result", e);
-                let interimTranscript = "";
-                for (
-                    let i = event.resultIndex, len = event.results.length;
-                    i < len;
-                    i++
-                ) {
-                    let current_transcript = event.results[i][0].transcript;
-                    if (event.results[i].isFinal) {
-                        setTranscript(transcript + current_transcript);
-                    } else {
-                        setTranscript(transcript + current_transcript);
-                    }
-                }
-            };
+        // Do something when we get a result
+        recognition.onresult = e => {
+            let current = e.resultIndex;
+            console.log("result! ", e.results[0][0].transcript);
+            setTranscript(e.results[0][0].transcript);
+        };
 
-            recognition.onspeechend = () => {
-                props.handleDidSing(transcript);
-            };
+        recognition.onspeechend = () => {
+            recognition.stop();
+            setGotInput(true);
+            console.log("voice end");
+        };
+    };
 
-            return recognition;
+    React.useEffect(() => {
+        if (transcript !== "" || gotInput) {
+            props.handleDidSing(transcript);
+            setGotInput(false);
         }
-    );
+    }, [transcript, gotInput]);
+
+    React.useEffect(() => {
+        voiceCommands();
+    }, []);
 
     React.useEffect(() => {
         if (props.isSinging) {
@@ -75,6 +80,7 @@ export default function GamePanel(props) {
             )}
         </div>
     ) : null;
+
     return (
         <div style={styles.container}>
             {!props.isHost ? gamePlay : null}

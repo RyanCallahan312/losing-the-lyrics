@@ -2,12 +2,13 @@ import { useRouter } from "next/router";
 import Button from "../components/button";
 import io from "socket.io-client";
 import Game from "../components/gamePanel";
+import HiddenPlayer from "../components/hiddenPlayer";
+import Head from "next/Head";
 
 const spotifyAuthEndpoint = "https://accounts.spotify.com/authorize";
 const spotifyClientId = "aeb75c365a594462a967bcb106a55be9";
 const spotifyResponseType = "token";
-const redirectUri =
-    "https:%2F%2Flosing-the-lyrics.herokuapp.com%2Fgame?host=true";
+const redirectUri = "https:%2F%2Flocalhost:3000%2Fgame?host=true";
 
 const styles = {
     container: {
@@ -155,6 +156,24 @@ const startSing = (socket, roomCode, isHost) => {
     socket.emit("sing", { roomCode, isHost });
 };
 
+const play = ({
+    spotify_uri,
+    playerInstance: {
+        _options: { getOAuthToken, id }
+    }
+}) => {
+    getOAuthToken(access_token => {
+        fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
+            method: "PUT",
+            body: JSON.stringify({ uris: [spotify_uri] }),
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${access_token}`
+            }
+        });
+    });
+};
+
 export default function game(props) {
     const router = useRouter();
     const [isHost, setIsHost] = React.useState(
@@ -200,11 +219,14 @@ export default function game(props) {
                     {}
                 ) || "no fragment";
 
-        if (!(spotifyHash && spotifyHash.access_token)) {
-            window.location.href = `${spotifyAuthEndpoint}?client_id=${spotifyClientId}&redirect_uri=${redirectUri}&response_type=${spotifyResponseType}`;
-        } else {
-            setAccessToken(spotifyHash.accessToken);
-        }
+        // if (!(spotifyHash && spotifyHash.access_token)) {
+        //     window.location.href = `${spotifyAuthEndpoint}?client_id=${spotifyClientId}&redirect_uri=${redirectUri}&response_type=${spotifyResponseType}`;
+        // } else {
+        //     setAccessToken(spotifyHash.accessToken);
+        // }
+        setAccessToken(
+            "BQBAH3uGZceMIbeHS29zszyAivqeFQShH0-JFe6dgUk_pgS0k3ca205lzyOzGZUx_4YquRw9GcHyvlUtMVk_Mdo8N0T4JShY_jfIsn5V4ebU-sE_WSAcVNxNO45i6wlf2bh6KIRGeq0bUCL9"
+        );
         setIsHost(new URLSearchParams(window.location.search).get("host"));
     }, []);
     React.useEffect(() => () => disconnectSocket(socket, isHost, roomCode), [
@@ -225,6 +247,22 @@ export default function game(props) {
 
     return (
         <div style={{ textAlign: "center" }}>
+            <Head>
+                <script src="https://sdk.scdn.co/spotify-player.js"></script>
+                <script>
+                    dangerouslySetInnerHTML=
+                    {{
+                        __html: `
+      window.onSpotifyWebPlaybackSDKReady = () => {
+        window.Spotify = Spotify;
+      }
+          `
+                    }}
+                </script>
+            </Head>
+            {isPlaying && isHost ? (
+                <HiddenPlayer accessToken={accessToken} />
+            ) : null}
             {roomCode ? (
                 <h1 style={styles.roomCodeLabel}>
                     Room Code: <span style={styles.roomCode}>{roomCode}</span>
