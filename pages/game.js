@@ -8,7 +8,10 @@ import Head from "next/head";
 const spotifyAuthEndpoint = "https://accounts.spotify.com/authorize";
 const spotifyClientId = "aeb75c365a594462a967bcb106a55be9";
 const spotifyResponseType = "token";
-const redirectUri = "https:%2F%2Flocalhost:3000%2Fgame?host=true";
+const redirectUri = encodeURIComponent(
+    "https://losing-the-lyrics.herokuapp.com/game?host=true"
+);
+//const redirectUri = "https:%2F%2Flocalhost:3000%2Fgame?host=true";
 const scopes = encodeURIComponent(
     "streaming user-read-birthdate user-read-email user-read-private user-modify-playback-state"
 );
@@ -212,25 +215,27 @@ export default function game(props) {
     const [accessToken, setAccessToken] = React.useState(null);
 
     React.useEffect(() => {
-        const spotifyHash =
-            window.location.hash
-                .substring(1)
-                .split("&")
-                .map(v => v.split("="))
-                .reduce(
-                    (pre, [key, value]) => ({ ...pre, [key]: value }),
-                    {}
-                ) || "no fragment";
+        if (isHost) {
+            const spotifyHash =
+                window.location.hash
+                    .substring(1)
+                    .split("&")
+                    .map(v => v.split("="))
+                    .reduce(
+                        (pre, [key, value]) => ({ ...pre, [key]: value }),
+                        {}
+                    ) || "no fragment";
 
-        if (!(spotifyHash && spotifyHash.access_token)) {
-            window.location.href = `${spotifyAuthEndpoint}?client_id=${spotifyClientId}&redirect_uri=${redirectUri}&response_type=${spotifyResponseType}&scope=`;
-        } else {
-            setAccessToken(spotifyHash.accessToken);
+            if (!(spotifyHash && spotifyHash.access_token)) {
+                window.location.href = `${spotifyAuthEndpoint}?client_id=${spotifyClientId}&redirect_uri=${redirectUri}&response_type=${spotifyResponseType}&scope=`;
+            } else {
+                setAccessToken(spotifyHash.accessToken);
+            }
+            // setAccessToken(
+            //     "BQA_MO_dpcQ7Ylc0Oc-xXqoql73J2IaQcMkwybtkk7xhP031xgPkumjNk70vXUyOFjKONPixqQ9kp7GgruMGVxZv4ITU-dTjwNra1sZN93cBPpkTRSa7By77e6_jb11KS7ZLH3Nxhig2GYj4uz5WoxU1x2VEud0HQlDkLcIwb6evJ6bw52W-S4X5HsMc"
+            // );
+            setIsHost(new URLSearchParams(window.location.search).get("host"));
         }
-        // setAccessToken(
-        //     "BQA_MO_dpcQ7Ylc0Oc-xXqoql73J2IaQcMkwybtkk7xhP031xgPkumjNk70vXUyOFjKONPixqQ9kp7GgruMGVxZv4ITU-dTjwNra1sZN93cBPpkTRSa7By77e6_jb11KS7ZLH3Nxhig2GYj4uz5WoxU1x2VEud0HQlDkLcIwb6evJ6bw52W-S4X5HsMc"
-        // );
-        setIsHost(new URLSearchParams(window.location.search).get("host"));
     }, []);
     React.useEffect(() => () => disconnectSocket(socket, isHost, roomCode), [
         roomCode
