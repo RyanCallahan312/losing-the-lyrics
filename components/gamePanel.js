@@ -19,14 +19,10 @@ const styles = {
     }
 };
 
-const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition;
-
-const recognition = new SpeechRecognition();
-
 export default function GamePanel(props) {
     const [transcript, setTranscript] = React.useState("");
     const [gotInput, setGotInput] = React.useState(false);
+    const [recognition, setRecognition] = React.useState(null);
 
     const voiceCommands = () => {
         // On start
@@ -49,6 +45,10 @@ export default function GamePanel(props) {
     };
 
     React.useEffect(() => {
+        const SpeechRecognition =
+            window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        setRecognition(new SpeechRecognition());
         if (transcript !== "" || gotInput) {
             props.handleDidSing(transcript);
             setGotInput(false);
