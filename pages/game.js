@@ -9,6 +9,9 @@ const spotifyAuthEndpoint = "https://accounts.spotify.com/authorize";
 const spotifyClientId = "aeb75c365a594462a967bcb106a55be9";
 const spotifyResponseType = "token";
 const redirectUri = "https:%2F%2Flocalhost:3000%2Fgame?host=true";
+const scopes = encodeURIComponent(
+    "streaming user-read-birthdate user-read-email user-read-private user-modify-playback-state"
+);
 
 const styles = {
     container: {
@@ -220,12 +223,12 @@ export default function game(props) {
                 ) || "no fragment";
 
         // if (!(spotifyHash && spotifyHash.access_token)) {
-        //     window.location.href = `${spotifyAuthEndpoint}?client_id=${spotifyClientId}&redirect_uri=${redirectUri}&response_type=${spotifyResponseType}`;
+        //     window.location.href = `${spotifyAuthEndpoint}?client_id=${spotifyClientId}&redirect_uri=${redirectUri}&response_type=${spotifyResponseType}&scope=`;
         // } else {
         //     setAccessToken(spotifyHash.accessToken);
         // }
         setAccessToken(
-            "BQBAH3uGZceMIbeHS29zszyAivqeFQShH0-JFe6dgUk_pgS0k3ca205lzyOzGZUx_4YquRw9GcHyvlUtMVk_Mdo8N0T4JShY_jfIsn5V4ebU-sE_WSAcVNxNO45i6wlf2bh6KIRGeq0bUCL9"
+            "BQA_MO_dpcQ7Ylc0Oc-xXqoql73J2IaQcMkwybtkk7xhP031xgPkumjNk70vXUyOFjKONPixqQ9kp7GgruMGVxZv4ITU-dTjwNra1sZN93cBPpkTRSa7By77e6_jb11KS7ZLH3Nxhig2GYj4uz5WoxU1x2VEud0HQlDkLcIwb6evJ6bw52W-S4X5HsMc"
         );
         setIsHost(new URLSearchParams(window.location.search).get("host"));
     }, []);
@@ -245,21 +248,50 @@ export default function game(props) {
         [socket]
     );
 
+    const headInjection = accessToken ? (
+        <Head>
+            <script src="https://sdk.scdn.co/spotify-player.js"></script>
+            <script>
+                {`window.onSpotifyWebPlaybackSDKReady = () => {
+                    const token = '${accessToken}';
+                    const player = new Spotify.Player({
+                      name: 'Web Playback SDK Quick Start Player',
+                      getOAuthToken: cb => { cb(token); }
+                    });
+                  
+                    // Error handling
+                    player.addListener('initialization_error', ({ message }) => { console.error(message); });
+                    player.addListener('authentication_error', ({ message }) => { console.error(message); });
+                    player.addListener('account_error', ({ message }) => { console.error(message); });
+                    player.addListener('playback_error', ({ message }) => { console.error(message); });
+                  
+                    // Playback status updates
+                    player.addListener('player_state_changed', state => { console.log(state); });
+                  
+                    // Ready
+                    player.addListener('ready', ({ device_id }) => {
+                      console.log('Ready with Device ID', device_id);
+                    });
+                  
+                    // Not Ready
+                    player.addListener('not_ready', ({ device_id }) => {
+                      console.log('Device ID has gone offline', device_id);
+                    });
+                  
+                    // Connect to the player!
+                    player.connect();
+
+                    window.SpotifyPlayerProvider = player;
+                  };
+  `}
+            </script>
+        </Head>
+    ) : null;
+
     return (
         <div style={{ textAlign: "center" }}>
-            <Head>
-                <script src="https://sdk.scdn.co/spotify-player.js"></script>
-                <script>
-                    dangerouslySetInnerHTML=
-                    {{
-                        __html: `
-      window.onSpotifyWebPlaybackSDKReady = () => {
-        window.Spotify = Spotify;
-      }
-          `
-                    }}
-                </script>
-            </Head>
+            {headInjection}
+            {console.log(isHost)}
             {isPlaying && isHost ? (
                 <HiddenPlayer accessToken={accessToken} />
             ) : null}
