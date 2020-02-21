@@ -3,7 +3,7 @@ import Button from "../components/button";
 import io from "socket.io-client";
 import Game from "../components/gamePanel";
 import HiddenPlayer from "../components/hiddenPlayer";
-import Head from "next/Head";
+import Head from "next/head";
 
 const spotifyAuthEndpoint = "https://accounts.spotify.com/authorize";
 const spotifyClientId = "aeb75c365a594462a967bcb106a55be9";
