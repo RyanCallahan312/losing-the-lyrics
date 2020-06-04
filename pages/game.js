@@ -1,263 +1,264 @@
-import { useRouter } from "next/router";
-import Button from "../components/button";
-import io from "socket.io-client";
-import Game from "../components/gamePanel";
-import HiddenPlayer from "../components/hiddenPlayer";
-import Head from "next/head";
+import { useRouter } from 'next/router';
+import Button from '../components/button';
+import io from 'socket.io-client';
+import Game from '../components/gamePanel';
+import HiddenPlayer from '../components/hiddenPlayer';
+import Head from 'next/head';
 
-const spotifyAuthEndpoint = "https://accounts.spotify.com/authorize";
-const spotifyClientId = "aeb75c365a594462a967bcb106a55be9";
-const spotifyResponseType = "token";
-const redirectUri = encodeURIComponent(
-    "https://losing-the-lyrics.herokuapp.com/game?host=true"
-);
-//const redirectUri = "https:%2F%2Flocalhost:3000%2Fgame?host=true";
+const spotifyAuthEndpoint = 'https://accounts.spotify.com/authorize';
+const spotifyClientId = 'aeb75c365a594462a967bcb106a55be9';
+const spotifyResponseType = 'token';
+// const redirectUri = encodeURIComponent(
+// 	'https://losing-the-lyrics.herokuapp.com/game?host=true'
+// );
+const redirectUri = encodeURIComponent('https://localhost:3000/game?host=true');
 const scopes = encodeURIComponent(
-    "streaming user-read-birthdate user-read-email user-read-private user-modify-playback-state"
+	'streaming user-read-birthdate user-read-email user-read-private user-modify-playback-state'
 );
 
 const styles = {
-    container: {
-        height: "35vh",
-        display: "flex",
-        textAlign: "center",
-        alignItems: "center",
-        justifyContent: "center",
-        flexWrap: "wrap"
-    },
-    button: {
-        maxWidth: "100%",
-        width: "-webkit-fill-available",
-        margin: "5px"
-    },
-    text: {
-        flexBasis: "100%"
-    },
-    input: {
-        fontFamily: "Teko",
-        outline: "none",
-        padding: "10px",
-        textAlign: "center",
-        border: "2px solid rgba(39,134,255, 1)",
-        borderRadius: "20px",
-        margin: "10px",
-        color: "rgba(50,138,250, 1)",
-        fontSize: "20px"
-    },
-    roomCodeLabel: {
-        margin: "0px",
-        background: "rgb(255, 255, 255)",
-        fontFamily: "Teko",
-        fontSize: "calc(2.2vw + 16px)",
-        color: "rgb(161, 210, 255)",
-        padding: "8px 0px",
-        textShadow: "2px 2px black"
-    },
-    roomCode: {
-        letterSpacing: "5px"
-    },
-    client: {
-        fontFamily: "Teko",
-        color: "rgba(102, 85, 255, 0.84)",
-        fontSize: "28px"
-    }
+	container: {
+		height: '35vh',
+		display: 'flex',
+		textAlign: 'center',
+		alignItems: 'center',
+		justifyContent: 'center',
+		flexWrap: 'wrap',
+	},
+	button: {
+		maxWidth: '100%',
+		width: '-webkit-fill-available',
+		margin: '5px',
+	},
+	text: {
+		flexBasis: '100%',
+	},
+	input: {
+		fontFamily: 'Teko',
+		outline: 'none',
+		padding: '10px',
+		textAlign: 'center',
+		border: '2px solid rgba(39,134,255, 1)',
+		borderRadius: '20px',
+		margin: '10px',
+		color: 'rgba(50,138,250, 1)',
+		fontSize: '20px',
+	},
+	roomCodeLabel: {
+		margin: '0px',
+		background: 'rgb(255, 255, 255)',
+		fontFamily: 'Teko',
+		fontSize: 'calc(2.2vw + 16px)',
+		color: 'rgb(161, 210, 255)',
+		padding: '8px 0px',
+		textShadow: '2px 2px black',
+	},
+	roomCode: {
+		letterSpacing: '5px',
+	},
+	client: {
+		fontFamily: 'Teko',
+		color: 'rgba(102, 85, 255, 0.84)',
+		fontSize: '28px',
+	},
 };
 const createListeners = (
-    isHost,
-    socket,
-    setRoom,
-    setIsSinging,
-    setIsTurn,
-    setIsPlaying
+	isHost,
+	socket,
+	setRoom,
+	setIsSinging,
+	setIsTurn,
+	setIsPlaying
 ) => {
-    if (socket) {
-        socket.on("room info", data => {
-            console.log("room info", data);
-            setRoom(data);
-        });
+	if (socket) {
+		socket.on('room info', (data) => {
+			console.log('room info', data);
+			setRoom(data);
+		});
 
-        socket.on("client change", data => console.log(data));
+		socket.on('client change', (data) => console.log(data));
 
-        socket.on("room closed", () => {
-            setRoom(null);
-            setIsSinging(false);
-            setIsPlaying(false);
-            setIsTurn(false);
-            socket.disconnect();
-            socket = io();
-        });
+		socket.on('room closed', () => {
+			setRoom(null);
+			setIsSinging(false);
+			setIsPlaying(false);
+			setIsTurn(false);
+			socket.disconnect();
+			socket = io();
+		});
 
-        socket.on("game start", () => setIsPlaying(true));
+		socket.on('game start', () => setIsPlaying(true));
 
-        socket.on("game end", () => setIsPlaying(false));
+		socket.on('game end', () => setIsPlaying(false));
 
-        if (isHost) {
-            socket.on("next turn", data => {
-                //change turns for host
-                console.log("next turn", data);
-            });
-        } else {
-            socket.on("take turn", () => setIsTurn(true));
+		if (isHost) {
+			socket.on('next turn', (data) => {
+				//change turns for host
+				console.log('next turn', data);
+			});
+		} else {
+			socket.on('take turn', () => setIsTurn(true));
 
-            socket.on("sing", () => setIsSinging(true));
-        }
-    }
+			socket.on('sing', () => setIsSinging(true));
+		}
+	}
 };
 
 const connectSocket = () => {
-    return io();
+	return io();
 };
 
 const disconnectSocket = (socket, isHost, roomCode) => {
-    if (roomCode) {
-        if (isHost) {
-            socket.emit("close room", { isHost, roomCode });
-        } else {
-            socket.emit("leave room", { isHost, roomCode });
-        }
-    }
+	if (roomCode) {
+		if (isHost) {
+			socket.emit('close room', { isHost, roomCode });
+		} else {
+			socket.emit('leave room', { isHost, roomCode });
+		}
+	}
 };
 
 const createRoom = (isHost, socket) => {
-    socket.emit("create room", isHost);
+	socket.emit('create room', isHost);
 };
 
 const joinRoom = (inputCode, socket, isHost, alias) => {
-    socket.emit("join room", {
-        alias,
-        roomCode: inputCode,
-        isHost
-    });
+	socket.emit('join room', {
+		alias,
+		roomCode: inputCode,
+		isHost,
+	});
 };
 
 const startGame = (socket, roomCode, isHost, setIsPlaying) => {
-    socket.emit("game start", {
-        roomCode: roomCode,
-        isHost: isHost
-    });
-    setIsPlaying(true);
+	socket.emit('game start', {
+		roomCode: roomCode,
+		isHost: isHost,
+	});
+	setIsPlaying(true);
 };
 
 const endGame = (socket, roomCode, isHost) => {
-    socket.emit("game end", {
-        roomCode,
-        isHost
-    });
+	socket.emit('game end', {
+		roomCode,
+		isHost,
+	});
 };
 
 const endTurn = (
-    socket,
-    roomCode,
-    isHost,
-    turnData,
-    setIsSinging,
-    setIsTurn
+	socket,
+	roomCode,
+	isHost,
+	turnData,
+	setIsSinging,
+	setIsTurn
 ) => {
-    setIsTurn(false);
-    setIsSinging(false);
-    socket.emit("end turn", { roomCode, isHost, turnData });
+	setIsTurn(false);
+	setIsSinging(false);
+	socket.emit('end turn', { roomCode, isHost, turnData });
 };
 
 const startSing = (socket, roomCode, isHost) => {
-    socket.emit("sing", { roomCode, isHost });
+	socket.emit('sing', { roomCode, isHost });
 };
 
 const play = ({
-    spotify_uri,
-    playerInstance: {
-        _options: { getOAuthToken, id }
-    }
+	spotify_uri,
+	playerInstance: {
+		_options: { getOAuthToken, id },
+	},
 }) => {
-    getOAuthToken(access_token => {
-        fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
-            method: "PUT",
-            body: JSON.stringify({ uris: [spotify_uri] }),
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${access_token}`
-            }
-        });
-    });
+	getOAuthToken((access_token) => {
+		fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
+			method: 'PUT',
+			body: JSON.stringify({ uris: [spotify_uri] }),
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${access_token}`,
+			},
+		});
+	});
 };
 
 export default function game(props) {
-    const router = useRouter();
-    const [isHost, setIsHost] = React.useState(
-        router.query.host && router.query.host == "true" ? true : false
-    );
-    const [socket, setSocket] = React.useState(connectSocket());
-    const [room, setRoom] = React.useState(null);
-    const roomCode = React.useMemo(
-        () => (room && room.roomCode ? room.roomCode : null),
-        [room]
-    );
-    const [isPlaying, setIsPlaying] = React.useState(false);
-    const [isSinging, setIsSinging] = React.useState(false);
-    const [isTurn, setIsTurn] = React.useState(false);
-    const [transcript, setTranscript] = React.useState("");
-    const clientsDom = React.useMemo(() => {
-        if (room) {
-            return (
-                <ul style={{ listStyle: "none", padding: "0px" }}>
-                    {room.clients.map((item, i) => (
-                        <li style={styles.client} key={i}>
-                            {item.alias} : {item.score}
-                        </li>
-                    ))}
-                </ul>
-            );
-        } else {
-            null;
-        }
-    }, [room]);
-    const [inputCode, setInputCode] = React.useState("");
-    const [alias, setAlias] = React.useState("");
-    const [accessToken, setAccessToken] = React.useState(null);
+	const router = useRouter();
+	const isHost = React.useMemo(
+		() => (router.query.host && router.query.host == 'true' ? true : false),
+		[router.query]
+	);
+	console.log('|' + router.query.host + '|');
+	const [socket, setSocket] = React.useState(connectSocket());
+	const [room, setRoom] = React.useState(null);
+	const roomCode = React.useMemo(
+		() => (room && room.roomCode ? room.roomCode : null),
+		[room]
+	);
+	const [isPlaying, setIsPlaying] = React.useState(false);
+	const [isSinging, setIsSinging] = React.useState(false);
+	const [isTurn, setIsTurn] = React.useState(false);
+	const [transcript, setTranscript] = React.useState('');
+	const clientsDom = React.useMemo(() => {
+		if (room) {
+			return (
+				<ul style={{ listStyle: 'none', padding: '0px' }}>
+					{room.clients.map((item, i) => (
+						<li style={styles.client} key={i}>
+							{item.alias} : {item.score}
+						</li>
+					))}
+				</ul>
+			);
+		} else {
+			null;
+		}
+	}, [room]);
+	const [inputCode, setInputCode] = React.useState('');
+	const [alias, setAlias] = React.useState('');
+	const [accessToken, setAccessToken] = React.useState(null);
 
-    React.useEffect(() => {
-        if (isHost) {
-            const spotifyHash =
-                window.location.hash
-                    .substring(1)
-                    .split("&")
-                    .map(v => v.split("="))
-                    .reduce(
-                        (pre, [key, value]) => ({ ...pre, [key]: value }),
-                        {}
-                    ) || "no fragment";
+	React.useEffect(() => {
+		if (isHost) {
+			const spotifyHash =
+				window.location.hash
+					.substring(1)
+					.split('&')
+					.map((v) => v.split('='))
+					.reduce(
+						(pre, [key, value]) => ({ ...pre, [key]: value }),
+						{}
+					) || 'no fragment';
 
-            if (!(spotifyHash && spotifyHash.access_token)) {
-                window.location.href = `${spotifyAuthEndpoint}?client_id=${spotifyClientId}&redirect_uri=${redirectUri}&response_type=${spotifyResponseType}&scope=`;
-            } else {
-                setAccessToken(spotifyHash.accessToken);
-            }
-            // setAccessToken(
-            //     "BQA_MO_dpcQ7Ylc0Oc-xXqoql73J2IaQcMkwybtkk7xhP031xgPkumjNk70vXUyOFjKONPixqQ9kp7GgruMGVxZv4ITU-dTjwNra1sZN93cBPpkTRSa7By77e6_jb11KS7ZLH3Nxhig2GYj4uz5WoxU1x2VEud0HQlDkLcIwb6evJ6bw52W-S4X5HsMc"
-            // );
-            setIsHost(new URLSearchParams(window.location.search).get("host"));
-        }
-    }, []);
-    React.useEffect(() => () => disconnectSocket(socket, isHost, roomCode), [
-        roomCode
-    ]);
-    React.useEffect(
-        () =>
-            createListeners(
-                isHost,
-                socket,
-                setRoom,
-                setIsSinging,
-                setIsTurn,
-                setIsPlaying
-            ),
-        [socket]
-    );
+			if (!(spotifyHash && spotifyHash.access_token)) {
+				window.location.href = `${spotifyAuthEndpoint}?client_id=${spotifyClientId}&redirect_uri=${redirectUri}&response_type=${spotifyResponseType}&scope=`;
+			} else {
+				setAccessToken(spotifyHash.accessToken);
+			}
+			// setAccessToken(
+			// 	'BQBzpWjNzRYZU4cnREBssNKCTdsCDoIM3x23OzH4jdX_r5dZGP6d4vLIzhoBcphXq1e_5gUESDEvCOXZvK3uDBWgr9i2LK8CSLDHT7Ys8zRJcW3w0Ra1p7EA7ko4whmUTIBcc5OGHvaRW7Da'
+			// );
+		}
+	}, []);
+	React.useEffect(() => () => disconnectSocket(socket, isHost, roomCode), [
+		roomCode,
+	]);
+	React.useEffect(
+		() =>
+			createListeners(
+				isHost,
+				socket,
+				setRoom,
+				setIsSinging,
+				setIsTurn,
+				setIsPlaying
+			),
+		[socket]
+	);
 
-    const headInjection = accessToken ? (
-        <Head>
-            <script src="https://sdk.scdn.co/spotify-player.js"></script>
-            <script>
-                {`window.onSpotifyWebPlaybackSDKReady = () => {
+	const headInjection = accessToken ? (
+		<Head>
+			<script src='https://sdk.scdn.co/spotify-player.js'></script>
+			<script>
+				{`window.onSpotifyWebPlaybackSDKReady = () => {
                     const token = '${accessToken}';
                     const player = new Spotify.Player({
                       name: 'Web Playback SDK Quick Start Player',
@@ -289,108 +290,110 @@ export default function game(props) {
                     window.SpotifyPlayerProvider = player;
                   };
   `}
-            </script>
-        </Head>
-    ) : null;
+			</script>
+		</Head>
+	) : null;
 
-    return (
-        <div style={{ textAlign: "center" }}>
-            {headInjection}
-            {console.log(isHost)}
-            {isPlaying && isHost ? (
-                <HiddenPlayer accessToken={accessToken} />
-            ) : null}
-            {roomCode ? (
-                <h1 style={styles.roomCodeLabel}>
-                    Room Code: <span style={styles.roomCode}>{roomCode}</span>
-                </h1>
-            ) : null}
+	return (
+		<div style={{ textAlign: 'center' }}>
+			{headInjection}
+			{console.log(isHost)}
 
-            <div style={styles.container}>
-                {roomCode ? (
-                    <Game
-                        clients={clientsDom}
-                        isTurn={isTurn}
-                        isPlaying={isPlaying}
-                        isHost={isHost}
-                        isSinging={isSinging}
-                        handleDidSing={e =>
-                            endTurn(
-                                socket,
-                                roomCode,
-                                isHost,
-                                e,
-                                setIsSinging,
-                                setIsTurn
-                            )
-                        }
-                    />
-                ) : isHost ? (
-                    <div>
-                        <Button
-                            onClick={() => createRoom(isHost, socket)}
-                            style={{
-                                ...styles.button
-                            }}
-                        >
-                            create a room
-                        </Button>
-                    </div>
-                ) : (
-                    <div>
-                        <input
-                            onChange={e => setInputCode(e.target.value)}
-                            value={inputCode}
-                            placeholder={"Room Code"}
-                            style={styles.input}
-                        />
-                        <br />
-                        <input
-                            onChange={e => setAlias(e.target.value)}
-                            value={alias}
-                            placeholder={"Alias"}
-                            style={styles.input}
-                        />
-                        <br />
-                        <Button
-                            onClick={() =>
-                                joinRoom(inputCode, socket, isHost, alias)
-                            }
-                            style={styles.button}
-                        >
-                            join room
-                        </Button>
-                    </div>
-                )}
+			{console.log(router)}
+			{isPlaying && isHost ? (
+				<HiddenPlayer accessToken={accessToken} />
+			) : null}
+			{roomCode ? (
+				<h1 style={styles.roomCodeLabel}>
+					Room Code: <span style={styles.roomCode}>{roomCode}</span>
+				</h1>
+			) : null}
 
-                {isHost && room ? (
-                    !isPlaying ? (
-                        <Button
-                            onClick={() =>
-                                startGame(
-                                    socket,
-                                    roomCode,
-                                    isHost,
-                                    setIsPlaying
-                                )
-                            }
-                            style={{ ...styles.button, width: "15%" }}
-                        >
-                            start game
-                        </Button>
-                    ) : (
-                        <Button
-                            onClick={() => startSing(socket, roomCode, isHost)}
-                            style={{ ...styles.button, width: "15%" }}
-                        >
-                            sing
-                        </Button>
-                    )
-                ) : null}
-            </div>
-            <style jsx global>{`
-                @import url("https://fonts.googleapis.com/css?family=Teko&display=swap");
-            `}</style>
-        </div>
-    );
+			<div style={styles.container}>
+				{roomCode ? (
+					<Game
+						clients={clientsDom}
+						isTurn={isTurn}
+						isPlaying={isPlaying}
+						isHost={isHost}
+						isSinging={isSinging}
+						handleDidSing={(e) =>
+							endTurn(
+								socket,
+								roomCode,
+								isHost,
+								e,
+								setIsSinging,
+								setIsTurn
+							)
+						}
+					/>
+				) : isHost ? (
+					<div>
+						<Button
+							onClick={() => createRoom(isHost, socket)}
+							style={{
+								...styles.button,
+							}}
+						>
+							create a room
+						</Button>
+					</div>
+				) : (
+					<div>
+						<input
+							onChange={(e) => setInputCode(e.target.value)}
+							value={inputCode}
+							placeholder={'Room Code'}
+							style={styles.input}
+						/>
+						<br />
+						<input
+							onChange={(e) => setAlias(e.target.value)}
+							value={alias}
+							placeholder={'Alias'}
+							style={styles.input}
+						/>
+						<br />
+						<Button
+							onClick={() =>
+								joinRoom(inputCode, socket, isHost, alias)
+							}
+							style={styles.button}
+						>
+							join room
+						</Button>
+					</div>
+				)}
+
+				{isHost && room ? (
+					!isPlaying ? (
+						<Button
+							onClick={() =>
+								startGame(
+									socket,
+									roomCode,
+									isHost,
+									setIsPlaying
+								)
+							}
+							style={{ ...styles.button, width: '15%' }}
+						>
+							start game
+						</Button>
+					) : (
+						<Button
+							onClick={() => startSing(socket, roomCode, isHost)}
+							style={{ ...styles.button, width: '15%' }}
+						>
+							sing
+						</Button>
+					)
+				) : null}
+			</div>
+			<style jsx global>{`
+				@import url('https://fonts.googleapis.com/css?family=Teko&display=swap');
+			`}</style>
+		</div>
+	);
 }
