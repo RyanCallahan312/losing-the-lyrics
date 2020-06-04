@@ -19,13 +19,7 @@ const play = ({
 };
 
 export default function HiddenPlayer(props) {
-	console.log(props);
 	React.useEffect(() => {
-		console.log('hidden player window log norm', window);
-		console.log(
-			'hidden player window log spec',
-			window.SpotifyPlayerProvider
-		);
 
 		play({
 			playerInstance: window.SpotifyPlayerProvider,

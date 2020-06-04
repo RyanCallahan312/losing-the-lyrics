@@ -13,7 +13,7 @@ const redirectUri = encodeURIComponent(
 );
 // const redirectUri = encodeURIComponent('https://localhost:3000/game?host=true');
 const scopes = encodeURIComponent(
-	'streaming user-read-birthdate user-read-email user-read-private user-modify-playback-state'
+	'streaming'
 );
 
 const styles = {
@@ -186,7 +186,6 @@ export default function game(props) {
 		() => (router.query.host && router.query.host == 'true' ? true : false),
 		[router.query]
 	);
-	console.log('|' + router.query.host + '|');
 	const [socket, setSocket] = React.useState(connectSocket());
 	const [room, setRoom] = React.useState(null);
 	const roomCode = React.useMemo(
@@ -229,12 +228,12 @@ export default function game(props) {
 					) || 'no fragment';
 
 			if (!(spotifyHash && spotifyHash.access_token)) {
-				window.location.href = `${spotifyAuthEndpoint}?client_id=${spotifyClientId}&redirect_uri=${redirectUri}&response_type=${spotifyResponseType}&scope=`;
+				window.location.href = `${spotifyAuthEndpoint}?client_id=${spotifyClientId}&redirect_uri=${redirectUri}&response_type=${spotifyResponseType}&scope=${scopes}`;
 			} else {
 				setAccessToken(spotifyHash.accessToken);
 			}
 			// setAccessToken(
-			// 	'BQBzpWjNzRYZU4cnREBssNKCTdsCDoIM3x23OzH4jdX_r5dZGP6d4vLIzhoBcphXq1e_5gUESDEvCOXZvK3uDBWgr9i2LK8CSLDHT7Ys8zRJcW3w0Ra1p7EA7ko4whmUTIBcc5OGHvaRW7Da'
+			// 	'BQCm3bR9gzY43SaQXSTBimPJG7ytSEgsXTTwSxizDkluYZeQ8LCqXD4UN5XPo65s99WsD8ebwqHs-k0TCJoUV7MtQaJxrPcrvXeESTQcVGXyzKDDRDR0-vx7Xk3tH5uE8zQX4IVnJMeQufNl'
 			// );
 		}
 	}, []);
@@ -297,9 +296,6 @@ export default function game(props) {
 	return (
 		<div style={{ textAlign: 'center' }}>
 			{headInjection}
-			{console.log(isHost)}
-
-			{console.log(router)}
 			{isPlaying && isHost ? (
 				<HiddenPlayer accessToken={accessToken} />
 			) : null}
