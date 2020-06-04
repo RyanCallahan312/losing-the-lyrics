@@ -123,6 +123,7 @@ io.on('connection', (socket) => {
 				room.currentTurn.emit('take turn');
 			}
 		}
+		
 	});
 
 	socket.on('game end', ({ roomCode, isHost }) => {
