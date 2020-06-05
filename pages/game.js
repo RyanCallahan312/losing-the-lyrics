@@ -227,14 +227,14 @@ export default function game(props) {
 						{}
 					) || 'no fragment';
 
-			// if (!(spotifyHash && spotifyHash.access_token)) {
-			// 	window.location.href = `${spotifyAuthEndpoint}?client_id=${spotifyClientId}&redirect_uri=${redirectUri}&response_type=${spotifyResponseType}&scope=${scopes}`;
-			// } else {
-			// 	setAccessToken(spotifyHash.accessToken);
-			// }
-			setAccessToken(
-				'BQDWeA50U1V4jcUM3kU-DB21wJFBd_ACS90lvrocrhdxYFKMxkmI2VQiAeuaUVXUvG2TlZkXnIsOMlPPK4ZsrDQJel6N00b4H9jZsSZu52wlTMzPcuHyvGR7qSSL0VldQJAWfeWpaHBu7qfdRn8AMjM'
-			);
+			if (!(spotifyHash && spotifyHash.access_token)) {
+				window.location.href = `${spotifyAuthEndpoint}?client_id=${spotifyClientId}&redirect_uri=${redirectUri}&response_type=${spotifyResponseType}&scope=${scopes}`;
+			} else {
+				setAccessToken(spotifyHash.accessToken);
+			}
+			// setAccessToken(
+			// 	'BQDWeA50U1V4jcUM3kU-DB21wJFBd_ACS90lvrocrhdxYFKMxkmI2VQiAeuaUVXUvG2TlZkXnIsOMlPPK4ZsrDQJel6N00b4H9jZsSZu52wlTMzPcuHyvGR7qSSL0VldQJAWfeWpaHBu7qfdRn8AMjM'
+			// );
 		}
 	}, []);
 	React.useEffect(() => () => disconnectSocket(socket, isHost, roomCode), [
