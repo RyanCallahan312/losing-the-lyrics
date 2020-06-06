@@ -8,13 +8,11 @@ import Head from 'next/head';
 const spotifyAuthEndpoint = 'https://accounts.spotify.com/authorize';
 const spotifyClientId = 'aeb75c365a594462a967bcb106a55be9';
 const spotifyResponseType = 'token';
-const redirectUri = encodeURIComponent(
-	'https://losing-the-lyrics.herokuapp.com/game?host=true'
-);
-// const redirectUri = encodeURIComponent('https://localhost:3000/game?host=true');
-const scopes = encodeURIComponent(
-	'streaming'
-);
+// const redirectUri = encodeURIComponent(
+// 	'https://losing-the-lyrics.herokuapp.com/game?host=true'
+// );
+const redirectUri = encodeURIComponent('https://localhost:3000/game?host=true');
+const scopes = encodeURIComponent('streaming');
 
 const styles = {
 	container: {
@@ -229,14 +227,22 @@ export default function game(props) {
 
 			if (!(spotifyHash && spotifyHash.access_token)) {
 				window.location.href = `${spotifyAuthEndpoint}?client_id=${spotifyClientId}&redirect_uri=${redirectUri}&response_type=${spotifyResponseType}&scope=${scopes}`;
+
+				console.log('accessToken no set');
 			} else {
-				setAccessToken(spotifyHash.accessToken);
+				setAccessToken(spotifyHash.access_token);
+				console.log(
+					'accessToken set to |' + spotifyHash.access_token + '| from '
+				);
+				console.log(spotifyHash)
 			}
 			// setAccessToken(
 			// 	'BQDWeA50U1V4jcUM3kU-DB21wJFBd_ACS90lvrocrhdxYFKMxkmI2VQiAeuaUVXUvG2TlZkXnIsOMlPPK4ZsrDQJel6N00b4H9jZsSZu52wlTMzPcuHyvGR7qSSL0VldQJAWfeWpaHBu7qfdRn8AMjM'
 			// );
+		} else {
+			console.log('no host');
 		}
-	}, []);
+	}, [isHost]);
 	React.useEffect(() => () => disconnectSocket(socket, isHost, roomCode), [
 		roomCode,
 	]);

@@ -19,12 +19,14 @@ const play = ({
 };
 
 export default function HiddenPlayer(props) {
+	console.log(props)
 	React.useEffect(() => {
-
+		console.log(window.SpotifyPlayerProvider)
 		play({
 			playerInstance: window.SpotifyPlayerProvider,
-			spotify_uri: 'spotify:track:7xGfFoTpQ2E7fRF5lN10tr',
+			spotify_uri: 'spotify:track:5u3l2TONYacJgmRPQVaF9y',
 		});
+		window.SpotifyPlayerProvider.setVolume(.2)
 	}, []);
 	return null;
 }
