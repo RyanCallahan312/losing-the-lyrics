@@ -1,12 +1,11 @@
 import React from 'react';
-import SongData from '../constants/songData.json';
 
 const play = (
 	{
-		spotify_uri,
 		playerInstance: {
 			_options: { getOAuthToken, id },
 		},
+		spotify_uri,
 	},
 	pos
 ) => {
@@ -30,22 +29,22 @@ export default function HiddenPlayer(props) {
 		play(
 			{
 				playerInstance: window.SpotifyPlayerProvider,
-				spotify_uri: SongData[0].spotify_uri,
+				spotify_uri: props.songData[0].spotify_uri,
 			},
-			SongData[0].startTime
+			props.songData[0].startTime
 		);
 
 		window.SpotifyPlayerProvider.setVolume(0.2);
 
 		console.log(
-			`playing ${SongData[0].songTitle} by ${SongData[0].artist} from uri ${SongData[0].spotifyUri} starting at ${SongData[0].startTime}`
+			`playing ${props.songData[0].songTitle} by ${props.songData[0].artist} from uri ${props.songData[0].spotifyUri} starting at ${props.songData[0].startTime}`
 		);
 
 		setTimeout(() => {
 			window.SpotifyPlayerProvider.pause().then(() => {
 				console.log('paused');
 			});
-		}, SongData[0].cutOffTime - SongData[0].startTime);
+		}, props.songData[0].cutOffTime - props.songData[0].startTime);
 	}, []);
 	return null;
 }

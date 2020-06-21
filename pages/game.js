@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import Game from '../components/gamePanel';
 import HiddenPlayer from '../components/hiddenPlayer';
 import Head from 'next/head';
+import SongData from '../constants/songData.json';
 
 const spotifyAuthEndpoint = 'https://accounts.spotify.com/authorize';
 const spotifyClientId = 'aeb75c365a594462a967bcb106a55be9';
@@ -12,7 +13,7 @@ const spotifyResponseType = 'token';
 // 	'https://losing-the-lyrics.herokuapp.com/game?host=true'
 // );
 const redirectUri = encodeURIComponent('https://localhost:3000/game?host=true');
-const scopes = encodeURIComponent('streaming');
+const scopes = encodeURIComponent('streaming user-read-email user-read-private');
 
 const styles = {
 	container: {
@@ -303,7 +304,7 @@ export default function game(props) {
 		<div style={{ textAlign: 'center' }}>
 			{headInjection}
 			{isPlaying && isHost ? (
-				<HiddenPlayer accessToken={accessToken} />
+				<HiddenPlayer accessToken={accessToken} songData={SongData} />
 			) : null}
 			{roomCode ? (
 				<h1 style={styles.roomCodeLabel}>
