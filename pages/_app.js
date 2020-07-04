@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import Headline from '../components/headline';
-import io from 'socket.io-client';
+import Headline from '../components/shared/headline';
+import { wrapper } from '../store/store';
 
 const styles = {
 	flexContainer: {
@@ -17,13 +17,19 @@ const styles = {
 	},
 };
 
-export default function _app({ Component, pageProps }) {
+const _app = ({ Component, pageProps }) => {
+	const header = (
+		<Link href='/index'>
+			<Headline style={styles.header}>LOSING THE LYRICS!</Headline>
+		</Link>
+	);
+
 	return (
 		<div style={styles.flexContainer}>
-			<Link href='/index'>
-				<Headline style={styles.header}>LOSING THE LYRICS!</Headline>
-			</Link>
+			{header}
 			<Component {...pageProps} />
 		</div>
 	);
-}
+};
+
+export default wrapper.withRedux(_app);

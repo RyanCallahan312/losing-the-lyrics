@@ -1,0 +1,4 @@
+// export const CHANGE_WHACKY_STATE_BOX = 'CHANGE_WHACKY_STATE_BOX';
+
+export const SET_IS_HOST = 'SET_IS_HOST';
+export const SET_IS_IN_LOBBY = 'SET_IS_IN_LOBBY';
