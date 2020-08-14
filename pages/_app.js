@@ -19,7 +19,7 @@ const styles = {
 
 const _app = ({ Component, pageProps }) => {
 	const header = (
-		<Link href='/index'>
+		<Link href='/'>
 			<Headline style={styles.header}>LOSING THE LYRICS!</Headline>
 		</Link>
 	);

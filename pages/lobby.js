@@ -4,7 +4,8 @@ import { useDispatch, connect, useSelector } from 'react-redux';
 import * as gameActions from '../store/game/actions';
 import { useCallback, useEffect } from 'react';
 import LobbyPannel from '../components/lobby/lobbyPanel';
-import initialGameState from '../store/game/initialState'
+import io from 'socket.io-client';
+import { wrapper } from '../store/store';
 
 const styles = {
 	container: {
@@ -21,23 +22,32 @@ const styles = {
 	},
 };
 
-export default function Lobby(props) {
+const Lobby = (props) => {
+	//--state hooks--
 	const gameState = useSelector((state) => state.game);
 
 	const dispatch = useDispatch();
 
-	const handleEnterLobby = (isHost) =>
-		dispatch(gameActions.enterLobby(isHost));
+	//--handlers--
 
+	//--effect hooks--
 	useEffect(() => {
+		dispatch(gameActions.connectToServer(io));
+		return () => dispatch(gameActions.disconnectFromServer());
+	}, []);
 
-	})
-
+	//--JSX--
 	const hostJoinButtons = [
-		<Button key='host-game' onClick={() => handleEnterLobby(true)}>
+		<Button
+			style={styles.button}
+			key='host-game'
+			onClick={() => dispatch(gameActions.enterLobby(true))}>
 			Host Game
 		</Button>,
-		<Button key='join-game' onClick={() => handleEnterLobby(false)}>
+		<Button
+			style={styles.button}
+			key='join-game'
+			onClick={() => dispatch(gameActions.enterLobby(false))}>
 			Join Game
 		</Button>,
 	];
@@ -51,4 +61,6 @@ export default function Lobby(props) {
 			)}
 		</div>
 	);
-}
+};
+
+export default wrapper.withRedux(Lobby);

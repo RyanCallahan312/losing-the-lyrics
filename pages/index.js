@@ -23,8 +23,8 @@ const styles = {
 // const getRandomHexColor = () =>
 // 	'#' + (((1 << 24) * Math.random()) | 0).toString(16);
 
-export default function Index(props) {
-	const dispatch = useDispatch();
+const Index = (props) => {
+	// const dispatch = useDispatch();
 	// const handlewhackyStateBox = useCallback(() => {
 	// 	dispatch(userActions.changeWhackyStateBox(getRandomHexColor));
 	// }, [dispatch]);
@@ -45,4 +45,6 @@ export default function Index(props) {
 			</Link>
 		</div>
 	);
-}
+};
+
+export default wrapper.withRedux(Index);
