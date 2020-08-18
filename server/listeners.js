@@ -11,7 +11,6 @@ function createListeners(socket, io) {
 
 			//create new room
 			roomCode = getNewRoom(io.existingRoomCodes);
-
 			//join socket room
 			socket.join(roomCode);
 
@@ -30,6 +29,15 @@ function createListeners(socket, io) {
 				turnOrder: [],
 				currentTurn: null,
 				roundNumber: 0,
+				del: () => delete io.sockets.adapter.rooms[roomCode],
+				add: (id) => {
+					if (
+						!io.sockets.adapter.rooms[roomCode].sockets.hasOwnProperty(id)
+					) {
+						io.sockets.adapter.rooms[roomCode].sockets[id] = true;
+						io.sockets.adapter.rooms[roomCode].length++;
+					}
+				},
 			};
 
 			let room = io.sockets.adapter.rooms[roomCode];
@@ -83,54 +91,39 @@ function createListeners(socket, io) {
 	});
 
 	socket.on(EMISSIONS.JOIN_ROOM, ({ roomCode, alias }) => {
-		socket.join(roomCode);
+		console.log(`${socket.id} ${EMISSIONS.JOIN_ROOM}`);
 
-		socket.isHost = false;
-		socket.alias = alias;
-		socket.score = roomCode;
+		if (io.sockets.adapter.rooms[roomCode]) {
+			socket.join(roomCode);
 
-		let room = io.sockets.adapter.rooms[roomCode];
+			socket.isHost = false;
+			socket.alias = alias;
+			socket.score = roomCode;
 
-		room.clients.push({
-			socketId: socket.id,
-			isHost: socket.isHost,
-			alias: socket.alias,
-			score: socket.score,
-		});
+			let room = io.sockets.adapter.rooms[roomCode];
 
-		room.turnOrder.push(socketId)
-		
-		io.to(roomCode).emit(EMISSIONS.ROOM_INFO, {
-			roomCode: roomCode,
-			clients: room.clients,
-			turnOrder: room.turnOrder,
-			currentTurn: room.currentTurn,
-			roundNumber: room.roundNumber,
-		});
+			room.clients.push({
+				socketId: socket.id,
+				isHost: socket.isHost,
+				alias: socket.alias,
+				score: socket.score,
+			});
+
+			room.turnOrder.push(socket.id);
+
+			io.to(roomCode).emit(EMISSIONS.ROOM_INFO, {
+				roomCode: roomCode,
+				clients: room.clients,
+				turnOrder: room.turnOrder,
+				currentTurn: room.currentTurn,
+				roundNumber: room.roundNumber,
+			});
+		}
 	});
 
 	socket.on(EMISSIONS.DISCONNECT, (reason) => {
 		console.log(`${socket.id} ${reason}`);
 	});
-}
-
-//helper methods
-
-/*
-clients =
-[
-    {
-        socketId
-        isHost,
-        alias,
-        score,
-    },
-    ...
-]
-*/
-
-function updateRoomClient(room, socket) {
-	client = room.clients.find((client) => client.socketId === socket.id);
 }
 
 function getRoomByCode(rooms, newRoomCode) {
@@ -148,15 +141,6 @@ function getNewRoom(existingRoomCodes) {
 	existingRoomCodes.push(newRoomCode);
 
 	return newRoomCode;
-}
-
-function removeExistingRoom(existingRooms, roomCode) {
-	let room = getRoomByCode(existingRooms, roomCode);
-	if (room) {
-		return existingRooms.filter((element) => element.roomCode !== roomCode);
-	} else {
-		return existingRooms;
-	}
 }
 
 module.exports = createListeners;

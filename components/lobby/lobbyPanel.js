@@ -83,7 +83,9 @@ export default function LobbyPannel({ gameState }) {
 			/>
 			<Button
 				style={styles.button}
-				onClick={() => handleJoinRoom(roomCodeBuffer, aliasBuffer)}>
+				onClick={() =>
+					dispatch(gameActions.joinRoomAction(roomCodeBuffer, aliasBuffer))
+				}>
 				Submit
 			</Button>
 		</div>

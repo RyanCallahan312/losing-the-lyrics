@@ -15,7 +15,6 @@ const bindMiddleware = (production, development) => {
 
 const reducer = (state, action) => {
 	if (action.type === HYDRATE) {
-		console.log(state, action)
 		return {
 			...state,
 			...action.payload,
