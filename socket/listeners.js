@@ -11,4 +11,8 @@ export default function bindListeners(socket, dispatch, getState) {
 	socket.on(EMISSIONS.ERROR_RESPONSE, (error) => {
 		console.error(error);
 	});
+
+	socket.on(EMISSIONS.CLOSE_ROOM, () => {
+		dispatch(gameActions.leaveLobby(getState().game.isHost))
+	});
 }

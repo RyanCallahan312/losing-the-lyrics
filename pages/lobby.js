@@ -4,6 +4,7 @@ import { useDispatch, connect, useSelector } from 'react-redux';
 import * as gameActions from '../store/game/actions';
 import { useCallback, useEffect } from 'react';
 import LobbyPannel from '../components/lobby/lobbyPanel';
+import RoomInfoPanel from '../components/lobby/roomInfoPanel';
 import io from 'socket.io-client';
 import { wrapper } from '../store/store';
 
@@ -52,13 +53,24 @@ const Lobby = (props) => {
 		</Button>,
 	];
 
+	const lobbyPanel = (
+		<div>
+			<LobbyPannel gameState={gameState} />
+			<Button
+				style={{ ...styles.button, margin: 'auto' }}
+				onClick={() =>
+					dispatch(gameActions.leaveLobby(gameState.isHost))
+				}>
+				Leave Lobby
+			</Button>
+		</div>
+	);
+
+	const roomInfoPanel = <RoomInfoPanel gameState={gameState} />;
+
 	return (
 		<div style={styles.container}>
-			{gameState.isInLobby ? (
-				<LobbyPannel gameState={gameState} />
-			) : (
-				hostJoinButtons
-			)}
+			{gameState.isInLobby ? lobbyPanel : hostJoinButtons}
 		</div>
 	);
 };

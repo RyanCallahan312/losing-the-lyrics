@@ -68,7 +68,7 @@ function createListeners(socket, io) {
 					(client) => client.socketId === socket.id,
 				);
 				if (hostClient && hostClient.isHost) {
-					io.to(room.roomCode).emit(EMISSIONS.CLOSE_ROOM);
+					io.to(roomCode).emit(EMISSIONS.CLOSE_ROOM);
 
 					Object.keys(room.sockets).forEach((socketId) => {
 						io.sockets.connected[socketId].leave(room.roomCode);
@@ -98,7 +98,7 @@ function createListeners(socket, io) {
 
 			socket.isHost = false;
 			socket.alias = alias;
-			socket.score = roomCode;
+			socket.score = 0;
 
 			let room = io.sockets.adapter.rooms[roomCode];
 

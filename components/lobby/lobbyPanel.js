@@ -5,9 +5,11 @@ import Button from '../shared/button';
 import TextInput from '../shared/textInput';
 import * as gameActions from '../../store/game/actions';
 import { createRoom } from '../../socket/emissions';
+import RoomInfoPanel from './roomInfoPanel';
 
 const styles = {
 	container: {
+		minWidth: '20vw',
 		height: '50vh',
 		flex: '0 1 auto',
 		display: 'flex',
@@ -69,7 +71,11 @@ export default function LobbyPannel({ gameState }) {
 		<p>pretend there is a spinner here</p>
 	);
 
-	const roomJoinFields = (
+	const startGameButton = (
+		<Button style={{ ...styles.button, margin: 'auto' }}>Start Game</Button>
+	);
+
+	const roomJoinFields = !gameState.roomCode && (
 		<div style={styles.subContainer}>
 			<TextInput
 				onChange={(e) => onRoomCodeBufferChange(e.target.value)}
@@ -84,25 +90,38 @@ export default function LobbyPannel({ gameState }) {
 			<Button
 				style={styles.button}
 				onClick={() =>
-					dispatch(gameActions.joinRoomAction(roomCodeBuffer, aliasBuffer))
+					dispatch(
+						gameActions.joinRoomAction(roomCodeBuffer, aliasBuffer),
+					)
 				}>
 				Submit
 			</Button>
 		</div>
 	);
 
-	const leaveLobbyButton = (
-		<Button
-			style={styles.button}
-			onClick={() => dispatch(gameActions.leaveLobby(gameState.isHost))}>
-			Leave Lobby
-		</Button>
-	);
-
 	return (
 		<div style={styles.container}>
 			{gameState.isHost ? roomCodeDisplay : roomJoinFields}
-			{leaveLobbyButton}
+			{gameState.roomCode && <RoomInfoPanel gameState={gameState} />}
+			{gameState.isHost &&
+				gameState.turnOrder.length > 1 &&
+				startGameButton}
+			<style jsx global>{`
+				@import url('https://fonts.googleapis.com/css?family=Teko&display=swap');
+				.button {
+					box-shadow: 0px 0px 0px rgba(0, 113, 255, 0);
+					transform: scale(1);
+					transition: 150ms transform ease-out,
+						150ms boxshadow ease-out;
+				}
+
+				.button:hover {
+					box-shadow: 0px 0px 18px rgba(0, 113, 255, 0.5);
+					transform: scale(1.02);
+					transition: 150ms transform ease-out,
+						150ms boxshadow ease-out;
+				}
+			`}</style>
 		</div>
 	);
 }
