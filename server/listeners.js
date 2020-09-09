@@ -13,34 +13,23 @@ function createListeners(socket, io) {
 			roomCode = getNewRoom(io.existingRoomCodes);
 			//join socket room
 			socket.join(roomCode);
-
+			console.log(io.sockets.adapter.rooms);
+			console.log(io.sockets.adapter.rooms[roomCode]);
+			console.log(console.log(io.sockets.adapter.rooms[roomCode].add));
 			//init room fields
-			io.sockets.adapter.rooms[roomCode] = {
-				...io.sockets.adapter.rooms[roomCode],
-				host: socket,
-				clients: [
-					{
-						socketId: socket.id,
-						isHost: socket.isHost,
-						alias: socket.alias,
-						score: socket.score,
-					},
-				],
-				turnOrder: [],
-				currentTurn: null,
-				roundNumber: 0,
-				del: () => delete io.sockets.adapter.rooms[roomCode],
-				add: (id) => {
-					if (
-						!io.sockets.adapter.rooms[roomCode].sockets.hasOwnProperty(id)
-					) {
-						io.sockets.adapter.rooms[roomCode].sockets[id] = true;
-						io.sockets.adapter.rooms[roomCode].length++;
-					}
-				},
-			};
-
 			let room = io.sockets.adapter.rooms[roomCode];
+			room.host = socket;
+			room.clients = [
+				{
+					socketId: socket.id,
+					isHost: socket.isHost,
+					alias: socket.alias,
+					score: socket.score,
+				},
+			];
+			room.turnOrder = [];
+			room.currentTurn = null;
+			room.roundNumber = 0;
 
 			//room info
 			io.to(roomCode).emit(EMISSIONS.ROOM_INFO, {
@@ -118,6 +107,13 @@ function createListeners(socket, io) {
 				currentTurn: room.currentTurn,
 				roundNumber: room.roundNumber,
 			});
+		}
+	});
+
+	socket.on(EMISSIONS.GAME_START, ({ roomCode, isHost }) => {
+		console.log(`${socket.id} ${EMISSIONS.GAME_START}`);
+		if (isHost && io.sockets.adapter.rooms[roomCode]) {
+			io.to(roomCode).emit(EMISSIONS.GAME_START);
 		}
 	});
 

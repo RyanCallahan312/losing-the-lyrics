@@ -20,22 +20,10 @@ const styles = {
 	},
 };
 
-// const getRandomHexColor = () =>
-// 	'#' + (((1 << 24) * Math.random()) | 0).toString(16);
-
 const Index = (props) => {
-	// const dispatch = useDispatch();
-	// const handlewhackyStateBox = useCallback(() => {
-	// 	dispatch(userActions.changeWhackyStateBox(getRandomHexColor));
-	// }, [dispatch]);
-
-	// const whackyStateBox = useSelector((state) => state.user.whackyStateBox);
 
 	return (
 		<div style={styles.container}>
-			{/* <Button style={styles.button} onClick={handlewhackyStateBox}>
-				Whacky fun time button
-			</Button> */}
 
 			<Link href='/how-to-play'>
 				<Button style={styles.button}>How to play</Button>

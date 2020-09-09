@@ -31,6 +31,17 @@ const styles = {
 		width: '100%',
 		minWidth: '200px',
 	},
+	roomCodeText: {
+		fontFamily: 'Teko',
+		fontSize: 'calc(.8vw + 16px)',
+	},
+	roomCode: {
+		fontFamily: 'Teko',
+		fontSize: 'calc(2vw + 30px)',
+		color: 'rgba(50,138,250, 1)',
+		textShadow:
+			'2px 2px rgba(255, 0, 0, 1), 0 0 6px rgba(0, 113, 255, 0.85)',
+	},
 };
 
 export default function LobbyPannel({ gameState }) {
@@ -62,17 +73,29 @@ export default function LobbyPannel({ gameState }) {
 		}
 	};
 
+	const onGameStart = () => {
+		gameActions.hostStartGame(
+			gameState.socket,
+			gameState.isHost,
+			gameState.roomCode,
+		);
+	};
+
 	//--JSX--
 	const roomCodeDisplay = gameState.roomCode ? (
-		<p>
-			the room code is <span>{gameState.roomCode}</span>
+		<p style={styles.roomCodeText}>
+			Room Code: <span style={styles.roomCode}>{gameState.roomCode}</span>
 		</p>
 	) : (
 		<p>pretend there is a spinner here</p>
 	);
 
 	const startGameButton = (
-		<Button style={{ ...styles.button, margin: 'auto' }}>Start Game</Button>
+		<Button
+			style={{ ...styles.button, margin: 'auto' }}
+			onClick={onGameStart}>
+			Start Game
+		</Button>
 	);
 
 	const roomJoinFields = !gameState.roomCode && (

@@ -1,6 +1,11 @@
 import * as ACTIONS from '../../constants/actions';
 import bindListeners from '../../socket/listeners';
-import { createRoom, closeRoom, joinRoom } from '../../socket/emissions';
+import {
+	createRoom,
+	closeRoom,
+	joinRoom,
+	startGame,
+} from '../../socket/emissions';
 
 export const createSocket = (socket) => ({
 	type: ACTIONS.CREATE_SOCKET,
@@ -19,6 +24,11 @@ export const setIsHost = (isHost) => ({
 export const setIsInLobby = (isInLobby) => ({
 	type: ACTIONS.SET_IS_IN_LOBBY,
 	payload: isInLobby,
+});
+
+export const setIsGameStarted = (isGameStarted) => ({
+	type: ACTIONS.SET_IS_GAME_STARTED,
+	payload: isGameStarted,
 });
 
 export const leaveLobby = (isHost) => {
@@ -76,4 +86,10 @@ export const joinRoomAction = (roomCode, alias) => {
 		joinRoom(socket, { roomCode, alias });
 		dispatch(setIsInLobby(true));
 	};
+};
+
+export const hostStartGame = (socket, isHost, roomCode) => {
+	if (isHost) {
+		startGame(socket, { roomCode: roomCode, isHost: isHost });
+	}
 };

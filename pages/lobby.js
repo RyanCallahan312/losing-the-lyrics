@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 import Button from '../components/shared/button';
 import { useDispatch, connect, useSelector } from 'react-redux';
 import * as gameActions from '../store/game/actions';
@@ -29,6 +29,8 @@ const Lobby = (props) => {
 
 	const dispatch = useDispatch();
 
+	const router = useRouter();
+
 	//--handlers--
 
 	//--effect hooks--
@@ -36,6 +38,12 @@ const Lobby = (props) => {
 		dispatch(gameActions.connectToServer(io));
 		return () => dispatch(gameActions.disconnectFromServer());
 	}, []);
+
+	useEffect(() => {
+		if(gameState.isGameStarted){
+			router.push('/game')
+		}
+	}, [gameState.isGameStarted])
 
 	//--JSX--
 	const hostJoinButtons = [
@@ -65,8 +73,6 @@ const Lobby = (props) => {
 			</Button>
 		</div>
 	);
-
-	const roomInfoPanel = <RoomInfoPanel gameState={gameState} />;
 
 	return (
 		<div style={styles.container}>

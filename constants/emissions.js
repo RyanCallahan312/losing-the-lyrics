@@ -4,4 +4,4 @@ export const ERROR_RESPONSE = 'ERROR_RESPONSE';
 export const DISCONNECT = 'disconnect'; //needs to be lowercase because it is a built-in socket-io function
 export const CLOSE_ROOM = 'CLOSE_ROOM';
 export const JOIN_ROOM = 'JOIN_ROOM';
-
+export const GAME_START = 'GAME_START';
