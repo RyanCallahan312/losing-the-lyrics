@@ -36,14 +36,14 @@ const Lobby = (props) => {
 	//--effect hooks--
 	useEffect(() => {
 		dispatch(gameActions.connectToServer(io));
-		return () => dispatch(gameActions.disconnectFromServer());
+		return () => dispatch(gameActions.lobbyDisconnectFromServer());
 	}, []);
 
 	useEffect(() => {
-		if(gameState.isGameStarted){
-			router.push('/game')
+		if (gameState.isGameStarted) {
+			router.push('/game');
 		}
-	}, [gameState.isGameStarted])
+	}, [gameState.isGameStarted]);
 
 	//--JSX--
 	const hostJoinButtons = [

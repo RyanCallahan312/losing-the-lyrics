@@ -3,7 +3,6 @@ import * as ACTIONS from '../../constants/actions';
 
 export default function gameReducer(state = initialState, { type, payload }) {
 	switch (type) {
-
 		case ACTIONS.SET_IS_HOST:
 			return {
 				...state,
@@ -40,12 +39,18 @@ export default function gameReducer(state = initialState, { type, payload }) {
 				...state,
 				socket: null,
 			};
-		
+
 		case ACTIONS.UPDATE_ROOM_INFO:
 			return {
 				...state,
-				...payload
-			}
+				...payload,
+			};
+
+		case ACTIONS.SET_IS_GAME_STARTED:
+			return {
+				...state,
+				isGameStarted: payload,
+			};
 
 		default:
 			return state;

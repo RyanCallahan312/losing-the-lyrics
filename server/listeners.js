@@ -11,11 +11,10 @@ function createListeners(socket, io) {
 
 			//create new room
 			roomCode = getNewRoom(io.existingRoomCodes);
+
 			//join socket room
 			socket.join(roomCode);
-			console.log(io.sockets.adapter.rooms);
-			console.log(io.sockets.adapter.rooms[roomCode]);
-			console.log(console.log(io.sockets.adapter.rooms[roomCode].add));
+
 			//init room fields
 			let room = io.sockets.adapter.rooms[roomCode];
 			room.host = socket;

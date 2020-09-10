@@ -69,10 +69,10 @@ export const connectToServer = (io) => {
 	};
 };
 
-export const disconnectFromServer = () => {
+export const lobbyDisconnectFromServer = () => {
 	return async (dispatch, getState) => {
-		let { isInLobby, isHost, socket } = getState().game;
-		if (isInLobby) {
+		let { isInLobby, isHost, socket, isGameStarted } = getState().game;
+		if (isInLobby && !isGameStarted) {
 			await dispatch(leaveLobby(isHost));
 		}
 		socket.disconnect();
