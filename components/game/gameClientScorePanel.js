@@ -38,7 +38,7 @@ const styles = {
 	list: { margin: 0, padding: 0 },
 };
 
-export default function LobbyPannel({ gameState }) {
+export default function GameClientScorePanel({ gameState }) {
 	//--redux hooks--
 
 	//--state hooks--
@@ -96,7 +96,7 @@ export default function LobbyPannel({ gameState }) {
 	};
 
 	return (
-		<div style={{ ...styles.subContainer, width: '30%' }}>
+		<div style={{ ...styles.subContainer, width: '30%', padding: 0 }}>
 			<style jsx global>{`
 				@import url('https://fonts.googleapis.com/css?family=Teko&display=swap');
 			`}</style>

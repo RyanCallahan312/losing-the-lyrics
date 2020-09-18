@@ -6,6 +6,8 @@ import * as userActions from '../store/game/actions';
 import { useCallback, useEffect } from 'react';
 import GameClientScorePanel from '../components/game/gameClientScorePanel';
 import GameTurnPanel from '../components/game/gameTurnPanel';
+import GameHostPanel from '../components/game/gameHostPanel';
+import GamePlayerPanel from '../components/game/gamePlayerPanel';
 
 const styles = {
 	container: {
@@ -13,7 +15,7 @@ const styles = {
 		flex: '0 1 auto',
 		display: 'flex',
 		alignItems: 'center',
-		justifyContent: 'center',
+		justifyContent: 'space-around',
 		flexWrap: 'wrap',
 		flexDirection: 'row',
 	},
@@ -41,7 +43,7 @@ const Index = (props) => {
 			router.push('/lobby');
 		}
 	}, [gameState.isInLobby]);
-	
+
 	const handleCloseGame = () => {
 		dispatch(userActions.closeGame());
 	};
@@ -50,9 +52,11 @@ const Index = (props) => {
 		return (
 			<div style={styles.container}>
 				<GameClientScorePanel gameState={gameState} />
-				<h1 style={{ width: '30%', textAlign: 'center' }}>
-					Game start!
-				</h1>
+				{gameState.isHost ? (
+					<GameHostPanel gameState={gameState} />
+				) : (
+					<GamePlayerPanel isSinging={gameState.isSining} />
+				)}
 				<GameTurnPanel gameState={gameState} />
 			</div>
 		);

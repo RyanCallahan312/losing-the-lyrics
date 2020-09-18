@@ -33,12 +33,12 @@ const styles = {
 	listItem: {
 		listStyleType: 'none',
 		fontFamily: 'Teko',
-		fontSize: 'calc(20px + 1vh)',
+		fontSize: 'calc(20px + 1.4vh)',
 	},
 	list: { margin: 0, padding: 0 },
 };
 
-export default function RoomInfoPanel({ gameState }) {
+export default function GamePlayerPanel({ isSinging }) {
 	//--redux hooks--
 
 	//--state hooks--
@@ -49,34 +49,13 @@ export default function RoomInfoPanel({ gameState }) {
 
 	//--JSX--
 
-	const clientsAlias = gameState.clients.map(
-		(client) =>
-			gameState.turnOrder.includes(client.socketId) && (
-				<li
-					style={{
-						...styles.listItem,
-						color: 'hsl(' + 360 * Math.random() + ',100%, 65%)',
-					}}
-					key={client.socketId}>
-					{client.alias}
-				</li>
-			),
-	);
-
-	const clientsScore = gameState.clients.map(
-		(client) =>
-			gameState.turnOrder.includes(client.socketId) && (
-				<li style={styles.listItem} key={client.socketId}>
-					{client.score}
-				</li>
-			),
+	const indicator = isSinging ? (
+		<h1 style={styles.listItem}>active microphone svg goes here</h1>
+	) : (
+		<h3 style={styles.listItem}>disabled microphone svg goes here</h3>
 	);
 
 	return (
-		<div
-			style={{ ...styles.subContainer, width: '-webkit-fill-available' }}>
-			<ul style={styles.list}>{clientsAlias}</ul>
-			<ul style={styles.list}>{clientsScore}</ul>
-		</div>
+		<div style={{ ...styles.subContainer, width: '30%', padding: 0 }}>{indicator}</div>
 	);
 }

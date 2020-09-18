@@ -38,7 +38,7 @@ const styles = {
 	list: { margin: 0, padding: 0 },
 };
 
-export default function LobbyPannel({ gameState }) {
+export default function GameTurnPanel({ gameState }) {
 	//--redux hooks--
 
 	//--state hooks--
@@ -51,9 +51,15 @@ export default function LobbyPannel({ gameState }) {
 
 	const turnOrder = () => {
 		let turnOrderAlias = [
-			<li style={{ ...styles.listItem, fontWeight: 600 }} key={'title'}>
+			<th
+				style={{
+					...styles.listItem,
+					fontWeight: 600,
+					textAlign: 'left',
+				}}
+				key={'title'}>
 				Turn Order
-			</li>,
+			</th>,
 		];
 
 		turnOrderAlias = [
@@ -62,7 +68,7 @@ export default function LobbyPannel({ gameState }) {
 				gameState.clients.some(
 					(client) => client.socketId === socketId,
 				) ? (
-					<li
+					<td
 						style={{
 							...styles.listItem,
 							color: 'hsl(' + 360 * Math.random() + ',100%, 65%)',
@@ -73,7 +79,7 @@ export default function LobbyPannel({ gameState }) {
 								(client) => client.socketId === socketId,
 							).alias
 						}
-					</li>
+					</td>
 				) : null,
 			),
 		];
@@ -81,12 +87,20 @@ export default function LobbyPannel({ gameState }) {
 		return turnOrderAlias;
 	};
 
-	const spacer = (uniqueVal) => (
-		<li
+	const headSpacer = (uniqueVal) => (
+		<th
 			style={{ ...styles.listItem, textAlign: 'right' }}
 			key={`spacer-${uniqueVal}`}>
 			{'\t'}
-		</li>
+		</th>
+	);
+
+	const spacer = (uniqueVal) => (
+		<td
+			style={{ ...styles.listItem, textAlign: 'right' }}
+			key={`spacer-${uniqueVal}`}>
+			{'\t'}
+		</td>
 	);
 
 	const getSpacers = () => {
@@ -99,37 +113,48 @@ export default function LobbyPannel({ gameState }) {
 	};
 
 	const turnDescriptors = [
-		spacer(0),
-		<li style={{ ...styles.listItem, textAlign: 'right' }} key='singing'>
+		headSpacer(0),
+		<td style={{ ...styles.listItem, textAlign: 'right' }} key='singing'>
 			Singing
-		</li>,
-		<li style={{ ...styles.listItem, textAlign: 'right' }} key='onDeck'>
+		</td>,
+		<td style={{ ...styles.listItem, textAlign: 'right' }} key='onDeck'>
 			On Deck
-		</li>,
+		</td>,
 		...getSpacers(),
 	];
 
+	const combineList = (left, right) => {
+		let newList = [];
+		for (let i = 0; i < left.length; i++) {
+			newList.push(
+				<tr>
+					{left[i]}
+					{right[i]}
+				</tr>,
+			);
+		}
+		return newList;
+	};
+
 	return (
-		<div style={{ ...styles.subContainer, width: '30%', display: 'block' }}>
+		<div
+			style={{
+				...styles.subContainer,
+				width: '30%',
+				display: 'block',
+				padding: 0,
+			}}>
 			<style jsx global>{`
 				@import url('https://fonts.googleapis.com/css?family=Teko&display=swap');
 			`}</style>
-			<ul
+			<table
 				style={{
 					...styles.list,
 					display: 'inline-block',
 					margin: '0px 10px',
 				}}>
-				{turnDescriptors}
-			</ul>
-			<ul
-				style={{
-					...styles.list,
-					display: 'inline-block',
-					margin: '0px 10px',
-				}}>
-				{turnOrder()}
-			</ul>
+				{combineList(turnDescriptors, turnOrder())}
+			</table>
 		</div>
 	);
 }
