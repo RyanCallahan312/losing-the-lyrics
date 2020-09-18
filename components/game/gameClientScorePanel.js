@@ -33,7 +33,7 @@ const styles = {
 	listItem: {
 		listStyleType: 'none',
 		fontFamily: 'Teko',
-		fontSize: 'calc(20px + 1vh)',
+		fontSize: 'calc(20px + 1.4vh)',
 	},
 	list: { margin: 0, padding: 0 },
 };
@@ -97,6 +97,9 @@ export default function LobbyPannel({ gameState }) {
 
 	return (
 		<div style={{ ...styles.subContainer, width: '30%' }}>
+			<style jsx global>{`
+				@import url('https://fonts.googleapis.com/css?family=Teko&display=swap');
+			`}</style>
 			<ul style={styles.list}>{clientsAlias()}</ul>
 			<ul style={styles.list}>{clientsScore()}</ul>
 		</div>
