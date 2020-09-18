@@ -81,7 +81,10 @@ function createListeners(socket, io) {
 	socket.on(EMISSIONS.JOIN_ROOM, ({ roomCode, alias }) => {
 		console.log(`${socket.id} ${EMISSIONS.JOIN_ROOM}`);
 
-		if (io.sockets.adapter.rooms[roomCode]) {
+		if (
+			io.sockets.adapter.rooms[roomCode] &&
+			io.sockets.adapter.rooms[roomCode].roundNumber === 0
+		) {
 			socket.join(roomCode);
 
 			socket.isHost = false;
@@ -109,9 +112,38 @@ function createListeners(socket, io) {
 		}
 	});
 
+	socket.on(EMISSIONS.LEAVE_ROOM, (roomCode) => {
+		console.log(`${socket.id} ${EMISSIONS.LEAVE_ROOM}`);
+
+		let room = io.sockets.adapter.rooms[roomCode];
+		let client = room.clients.find(
+			(client) => client.socketId === socket.id,
+		);
+
+		if (client) {
+			socket.leave(roomCode);
+
+			room.clients.splice(
+				room.clients.findIndex(
+					(client) => client.socketId === socket.id,
+				),
+				1,
+			);
+
+			io.to(roomCode).emit(EMISSIONS.ROOM_INFO, {
+				roomCode: roomCode,
+				clients: room.clients,
+				turnOrder: room.turnOrder,
+				currentTurn: room.currentTurn,
+				roundNumber: room.roundNumber,
+			});
+		}
+	});
+
 	socket.on(EMISSIONS.GAME_START, ({ roomCode, isHost }) => {
 		console.log(`${socket.id} ${EMISSIONS.GAME_START}`);
 		if (isHost && io.sockets.adapter.rooms[roomCode]) {
+			io.sockets.adapter.rooms[roomCode].roundNumber += 1;
 			io.to(roomCode).emit(EMISSIONS.GAME_START);
 		}
 	});

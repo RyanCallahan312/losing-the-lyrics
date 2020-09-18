@@ -4,7 +4,8 @@ import { wrapper } from '../store/store';
 import { useDispatch, connect, useSelector } from 'react-redux';
 import * as userActions from '../store/game/actions';
 import { useCallback, useEffect } from 'react';
-import RoomInfoPanel from '../components/game/roomInfoPanel';
+import GameClientScorePanel from '../components/game/gameClientScorePanel';
+import GameTurnPanel from '../components/game/gameTurnPanel';
 
 const styles = {
 	container: {
@@ -25,20 +26,29 @@ const styles = {
 const Index = (props) => {
 	const gameState = useSelector((state) => state.game);
 
+	const dispatch = useDispatch();
+
 	const router = useRouter();
 
 	useEffect(() => {
 		if (!gameState.isInLobby) {
 			router.push('/lobby');
 		}
+		return handleCloseGame;
 	}, []);
+
+	const handleCloseGame = () => {
+		// dispatch(userActions.closeGame());
+	};
 
 	if (gameState.isInLobby) {
 		return (
 			<div style={styles.container}>
-				<RoomInfoPanel gameState={gameState} />
-				<h1>Game start!</h1>
-				<RoomInfoPanel gameState={gameState} />
+				<GameClientScorePanel gameState={gameState} />
+				<h1 style={{ width: '30%', textAlign: 'center' }}>
+					Game start!
+				</h1>
+				<GameTurnPanel gameState={gameState} />
 			</div>
 		);
 	} else {

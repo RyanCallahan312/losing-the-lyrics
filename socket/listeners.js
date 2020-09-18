@@ -18,5 +18,6 @@ export default function bindListeners(socket, dispatch, getState) {
 
 	socket.on(EMISSIONS.GAME_START, () => {
 		dispatch(gameActions.setIsGameStarted(true));
+		dispatch(gameActions.setCurrentTurn(getState().game.currentTurn));
 	});
 }

@@ -49,34 +49,56 @@ export default function LobbyPannel({ gameState }) {
 
 	//--JSX--
 
-	const clientsAlias = gameState.clients.map(
-		(client) =>
-			gameState.turnOrder.includes(client.socketId) && (
-				<li
-					style={{
-						...styles.listItem,
-						color: 'hsl(' + 360 * Math.random() + ',100%, 65%)',
-					}}
-					key={client.socketId}>
-					{client.alias}
-				</li>
+	const clientsAlias = () => {
+		let clientAlias = (
+			<li style={{ ...styles.listItem, fontWeight: 600 }} key={'title'}>
+				Name
+			</li>
+		);
+		clientAlias = [
+			clientAlias,
+			...gameState.clients.map((client) =>
+				gameState.turnOrder.includes(client.socketId) ? (
+					<li
+						style={{
+							...styles.listItem,
+							color: 'hsl(' + 360 * Math.random() + ',100%, 65%)',
+						}}
+						key={client.socketId}>
+						{client.alias}
+					</li>
+				) : null,
 			),
-	);
+		];
 
-	const clientsScore = gameState.clients.map(
-		(client) =>
-			gameState.turnOrder.includes(client.socketId) && (
-				<li style={styles.listItem} key={client.socketId}>
-					{client.score}
-				</li>
+		return clientAlias;
+	};
+
+	const clientsScore = () => {
+		let clientScore = [
+			<li style={{ ...styles.listItem, fontWeight: 600 }} key={'title'}>
+				Score
+			</li>,
+		];
+
+		clientScore = [
+			clientScore,
+			...gameState.clients.map((client) =>
+				gameState.turnOrder.includes(client.socketId) ? (
+					<li style={styles.listItem} key={client.socketId}>
+						{client.score}
+					</li>
+				) : null,
 			),
-	);
+		];
+
+		return clientScore;
+	};
 
 	return (
-		<div
-			style={{ ...styles.subContainer, width: '-webkit-fill-available' }}>
-			<ul style={styles.list}>{clientsAlias}</ul>
-			<ul style={styles.list}>{clientsScore}</ul>
+		<div style={{ ...styles.subContainer, width: '30%' }}>
+			<ul style={styles.list}>{clientsAlias()}</ul>
+			<ul style={styles.list}>{clientsScore()}</ul>
 		</div>
 	);
 }

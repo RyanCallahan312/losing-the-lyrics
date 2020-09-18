@@ -15,7 +15,6 @@ const styles = {
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'center',
-		flexWrap: 'wrap',
 	},
 	button: {
 		width: '100%',
@@ -63,14 +62,15 @@ const Lobby = (props) => {
 
 	const lobbyPanel = (
 		<div>
-			<LobbyPannel gameState={gameState} />
-			<Button
-				style={{ ...styles.button, margin: 'auto' }}
-				onClick={() =>
-					dispatch(gameActions.leaveLobby(gameState.isHost))
-				}>
-				Leave Lobby
-			</Button>
+			<LobbyPannel gameState={gameState}>
+				<Button
+					style={{ ...styles.button, margin: '10px' }}
+					onClick={() =>
+						dispatch(gameActions.leaveLobby(gameState.isHost))
+					}>
+					Exit Lobby
+				</Button>
+			</LobbyPannel>
 		</div>
 	);
 

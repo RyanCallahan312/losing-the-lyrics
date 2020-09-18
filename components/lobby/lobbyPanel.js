@@ -15,7 +15,6 @@ const styles = {
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'space-around',
-		flexWrap: 'wrap',
 		flexDirection: 'column',
 	},
 	subContainer: {
@@ -24,8 +23,7 @@ const styles = {
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'space-around',
-		flexWrap: 'wrap',
-		flexDirection: 'column',
+		flexDirection: 'row',
 	},
 	button: {
 		width: '100%',
@@ -44,7 +42,7 @@ const styles = {
 	},
 };
 
-export default function LobbyPannel({ gameState }) {
+export default function LobbyPannel({ gameState, children }) {
 	//--redux hooks--
 	const dispatch = useDispatch();
 
@@ -82,24 +80,27 @@ export default function LobbyPannel({ gameState }) {
 	};
 
 	//--JSX--
-	const roomCodeDisplay = gameState.roomCode ? (
+	const roomCodeDisplay = (
 		<p style={styles.roomCodeText}>
 			Room Code: <span style={styles.roomCode}>{gameState.roomCode}</span>
 		</p>
-	) : (
-		<p>pretend there is a spinner here</p>
 	);
 
 	const startGameButton = (
 		<Button
-			style={{ ...styles.button, margin: 'auto' }}
+			style={{ ...styles.button, margin: '10px' }}
 			onClick={onGameStart}>
 			Start Game
 		</Button>
 	);
 
 	const roomJoinFields = !gameState.roomCode && (
-		<div style={styles.subContainer}>
+		<div
+			style={{
+				...styles.subContainer,
+				flexWrap: 'wrap',
+				flexFlow: 'column',
+			}}>
 			<TextInput
 				onChange={(e) => onRoomCodeBufferChange(e.target.value)}
 				value={roomCodeBuffer ?? ''}
@@ -110,25 +111,46 @@ export default function LobbyPannel({ gameState }) {
 				value={aliasBuffer ?? ''}
 				placeholder={'Alias'}
 			/>
-			<Button
-				style={styles.button}
-				onClick={() =>
-					dispatch(
-						gameActions.joinRoomAction(roomCodeBuffer, aliasBuffer),
-					)
-				}>
-				Submit
-			</Button>
 		</div>
 	);
 
+	const joinRoomButton = (
+		<Button
+			style={styles.button}
+			onClick={() =>
+				dispatch(
+					gameActions.joinRoomAction(roomCodeBuffer, aliasBuffer),
+				)
+			}>
+			Submit
+		</Button>
+	);
+
+	const navButtons = () => {
+		let buttons = [];
+		buttons.push(children);
+		if (gameState.isHost && gameState.turnOrder.length > 1)
+			buttons.push(startGameButton);
+
+		if (!gameState.roomCode && !gameState.isHost) {
+			buttons.push(joinRoomButton);
+		}
+
+		return buttons;
+	};
+
 	return (
 		<div style={styles.container}>
-			{gameState.isHost ? roomCodeDisplay : roomJoinFields}
+			{gameState.roomCode && roomCodeDisplay}
+			{!gameState.isHost && roomJoinFields}
 			{gameState.roomCode && <RoomInfoPanel gameState={gameState} />}
-			{gameState.isHost &&
-				gameState.turnOrder.length > 1 &&
-				startGameButton}
+			<div
+				style={{
+					...styles.subContainer,
+					width: '-webkit-fill-available',
+				}}>
+				{navButtons()}
+			</div>
 			<style jsx global>{`
 				@import url('https://fonts.googleapis.com/css?family=Teko&display=swap');
 				.button {

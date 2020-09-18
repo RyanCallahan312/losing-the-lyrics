@@ -6,6 +6,7 @@ export const SET_ROOM_CODE = 'SET_ROOM_CODE';
 export const SET_IS_SINGING = 'SET_IS_SINGING';
 export const SET_USER_LIST = 'SET_USER_LIST';
 export const SET_LYRICS = 'SET_LYRICS';
+export const SET_CURRENT_TURN = 'SET_CURRENT_TURN'
 
 export const CREATE_SOCKET = 'CREATE_SOCKET';
 export const REMOVE_SOCKET = 'REMOVE_SOCKET';

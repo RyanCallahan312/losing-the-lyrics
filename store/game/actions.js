@@ -5,6 +5,7 @@ import {
 	closeRoom,
 	joinRoom,
 	startGame,
+	leaveRoom,
 } from '../../socket/emissions';
 
 export const createSocket = (socket) => ({
@@ -31,11 +32,18 @@ export const setIsGameStarted = (isGameStarted) => ({
 	payload: isGameStarted,
 });
 
+export const setCurrentTurn = (clientId) => ({
+	type: ACTIONS.SET_CURRENT_TURN,
+	payload: clientId,
+});
+
 export const leaveLobby = (isHost) => {
 	return (dispatch, getState) => {
+		let { socket, roomCode } = getState().game;
 		if (isHost) {
-			let { socket, roomCode } = getState().game;
 			closeRoom(socket, roomCode);
+		} else {
+			leaveRoom(socket, roomCode);
 		}
 		dispatch({
 			type: ACTIONS.LEAVE_lOBBY,
@@ -72,11 +80,13 @@ export const connectToServer = (io) => {
 export const lobbyDisconnectFromServer = () => {
 	return async (dispatch, getState) => {
 		let { isInLobby, isHost, socket, isGameStarted } = getState().game;
-		if (isInLobby && !isGameStarted) {
-			await dispatch(leaveLobby(isHost));
+		if (!isGameStarted) {
+			if (isInLobby) {
+				await dispatch(leaveLobby(isHost));
+			}
+			socket.disconnect();
+			dispatch(removeSocket());
 		}
-		socket.disconnect();
-		dispatch(removeSocket());
 	};
 };
 
@@ -92,4 +102,15 @@ export const hostStartGame = (socket, isHost, roomCode) => {
 	if (isHost) {
 		startGame(socket, { roomCode: roomCode, isHost: isHost });
 	}
+};
+
+export const closeGame = () => {
+	// return async (dispatch, getState) => {
+	// 	let { isHost, socket, isGameStarted } = getState().game;
+	// 	if (isGameStarted && isHost) {
+	// 		await dispatch(leaveLobby(isHost));
+	// 		socket.disconnect();
+	// 		dispatch(removeSocket());
+	// 	}
+	// };
 };

@@ -26,6 +26,9 @@ export default function gameReducer(state = initialState, { type, payload }) {
 				roomCode: null,
 				userList: [],
 				lyrics: null,
+				turnOrder: [],
+				currentTurn: null,
+				roundNumber: 0,
 			};
 
 		case ACTIONS.CREATE_SOCKET:
@@ -50,6 +53,12 @@ export default function gameReducer(state = initialState, { type, payload }) {
 			return {
 				...state,
 				isGameStarted: payload,
+			};
+
+		case ACTIONS.SET_CURRENT_TURN:
+			return {
+				...state,
+				currentTurn: payload,
 			};
 
 		default:

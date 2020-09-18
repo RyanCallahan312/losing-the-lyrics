@@ -8,5 +8,7 @@ export default {
 	userList: [],
 	lyrics: null,
 	socket: null,
-	turnOrder: []
+	turnOrder: [],
+	currentTurn: null,
+	roundNumber: 0,
 };

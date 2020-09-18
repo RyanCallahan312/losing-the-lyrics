@@ -15,6 +15,11 @@ export function joinRoom(socket, data) {
 	socket.emit(EMISSIONS.JOIN_ROOM, data);
 }
 
+export function leaveRoom(socket, data) {
+	console.log(`leaving room ${data.roomCode}`);
+	socket.emit(EMISSIONS.LEAVE_ROOM, data);
+}
+
 export function startGame(socket, data) {
 	console.log(`starting game`);
 	socket.emit(EMISSIONS.GAME_START, data);
