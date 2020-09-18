@@ -89,7 +89,8 @@ export default function LobbyPannel({ gameState, children }) {
 	const startGameButton = (
 		<Button
 			style={{ ...styles.button, margin: '10px' }}
-			onClick={onGameStart}>
+			onClick={onGameStart}
+			key='start-game'>
 			Start Game
 		</Button>
 	);
@@ -121,7 +122,8 @@ export default function LobbyPannel({ gameState, children }) {
 				dispatch(
 					gameActions.joinRoomAction(roomCodeBuffer, aliasBuffer),
 				)
-			}>
+			}
+			key='join-room'>
 			Submit
 		</Button>
 	);

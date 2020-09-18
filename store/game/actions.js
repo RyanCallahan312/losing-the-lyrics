@@ -37,17 +37,19 @@ export const setCurrentTurn = (clientId) => ({
 	payload: clientId,
 });
 
+export const resetLobby = () => ({
+	type: ACTIONS.LEAVE_lOBBY,
+});
+
 export const leaveLobby = (isHost) => {
 	return (dispatch, getState) => {
-		let { socket, roomCode } = getState().game;
+		let { socket, roomCode, isGameStarted } = getState().game;
 		if (isHost) {
 			closeRoom(socket, roomCode);
 		} else {
 			leaveRoom(socket, roomCode);
 		}
-		dispatch({
-			type: ACTIONS.LEAVE_lOBBY,
-		});
+		dispatch(resetLobby());
 	};
 };
 
@@ -105,12 +107,12 @@ export const hostStartGame = (socket, isHost, roomCode) => {
 };
 
 export const closeGame = () => {
-	// return async (dispatch, getState) => {
-	// 	let { isHost, socket, isGameStarted } = getState().game;
-	// 	if (isGameStarted && isHost) {
-	// 		await dispatch(leaveLobby(isHost));
-	// 		socket.disconnect();
-	// 		dispatch(removeSocket());
-	// 	}
-	// };
+	return async (dispatch, getState) => {
+		let { isHost, socket, isGameStarted } = getState().game;
+		if (isGameStarted && isHost) {
+			await dispatch(leaveLobby(isHost));
+			socket.disconnect();
+			dispatch(removeSocket());
+		}
+	};
 };

@@ -67,7 +67,8 @@ const Lobby = (props) => {
 					style={{ ...styles.button, margin: '10px' }}
 					onClick={() =>
 						dispatch(gameActions.leaveLobby(gameState.isHost))
-					}>
+					}
+					key='exit-lobby'>
 					Exit Lobby
 				</Button>
 			</LobbyPannel>

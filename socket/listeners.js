@@ -13,7 +13,7 @@ export default function bindListeners(socket, dispatch, getState) {
 	});
 
 	socket.on(EMISSIONS.CLOSE_ROOM, () => {
-		dispatch(gameActions.leaveLobby(getState().game.isHost));
+		dispatch(gameActions.resetLobby());
 	});
 
 	socket.on(EMISSIONS.GAME_START, () => {

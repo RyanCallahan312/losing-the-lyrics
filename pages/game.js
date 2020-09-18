@@ -31,14 +31,19 @@ const Index = (props) => {
 	const router = useRouter();
 
 	useEffect(() => {
+		if (gameState.isInLobby) {
+			return handleCloseGame;
+		}
+	}, []);
+
+	useEffect(() => {
 		if (!gameState.isInLobby) {
 			router.push('/lobby');
 		}
-		return handleCloseGame;
-	}, []);
-
+	}, [gameState.isInLobby]);
+	
 	const handleCloseGame = () => {
-		// dispatch(userActions.closeGame());
+		dispatch(userActions.closeGame());
 	};
 
 	if (gameState.isInLobby) {

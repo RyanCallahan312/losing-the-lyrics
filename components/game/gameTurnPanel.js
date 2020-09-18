@@ -81,8 +81,10 @@ export default function LobbyPannel({ gameState }) {
 		return turnOrderAlias;
 	};
 
-	const spacer = (
-		<li style={{ ...styles.listItem, textAlign: 'right' }} key='spacer'>
+	const spacer = (uniqueVal) => (
+		<li
+			style={{ ...styles.listItem, textAlign: 'right' }}
+			key={`spacer-${uniqueVal}`}>
 			{'\t'}
 		</li>
 	);
@@ -91,20 +93,20 @@ export default function LobbyPannel({ gameState }) {
 		var i;
 		var spacers = [];
 		for (i = 2; i < gameState.turnOrder.length; i++) {
-			spacers.push(spacer);
+			spacers.push(spacer(i));
 		}
 		return spacers;
-	}
+	};
 
 	const turnDescriptors = [
-		spacer,
+		spacer(0),
 		<li style={{ ...styles.listItem, textAlign: 'right' }} key='singing'>
 			Singing
 		</li>,
 		<li style={{ ...styles.listItem, textAlign: 'right' }} key='onDeck'>
 			On Deck
 		</li>,
-		...(getSpacers()),
+		...getSpacers(),
 	];
 
 	return (
