@@ -1,9 +1,8 @@
 import { useRouter } from 'next/router';
-import Button from '../components/shared/button';
 import { wrapper } from '../store/store';
-import { useDispatch, connect, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as userActions from '../store/game/actions';
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import GameClientScorePanel from '../components/game/gameClientScorePanel';
 import GameTurnPanel from '../components/game/gameTurnPanel';
 import GameHostPanel from '../components/game/gameHostPanel';

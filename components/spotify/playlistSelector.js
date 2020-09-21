@@ -30,7 +30,7 @@ const styles = {
 	list: { margin: 0, padding: 0 },
 };
 
-export default function GameHostPanel({ gameState }) {
+export default function PlaylistSelector({ gameState }) {
 	//--redux hooks--
 
 	//--state hooks--
@@ -43,7 +43,7 @@ export default function GameHostPanel({ gameState }) {
 
 	return (
 		<div style={{ ...styles.subContainer, width: '30%', padding: 0 }}>
-			something something
+			DEFAULT PLAYLIST
 		</div>
 	);
 }

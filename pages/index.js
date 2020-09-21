@@ -1,9 +1,6 @@
 import Link from 'next/link';
 import Button from '../components/shared/button';
 import { wrapper } from '../store/store';
-import { useDispatch, connect, useSelector } from 'react-redux';
-import * as userActions from '../store/game/actions';
-import { useCallback } from 'react';
 
 const styles = {
 	container: {
@@ -21,10 +18,8 @@ const styles = {
 };
 
 const Index = (props) => {
-
 	return (
 		<div style={styles.container}>
-
 			<Link href='/how-to-play'>
 				<Button style={styles.button}>How to play</Button>
 			</Link>

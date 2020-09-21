@@ -1,10 +1,9 @@
 import { useRouter } from 'next/router';
 import Button from '../components/shared/button';
-import { useDispatch, connect, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as gameActions from '../store/game/actions';
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import LobbyPannel from '../components/lobby/lobbyPanel';
-import RoomInfoPanel from '../components/lobby/roomInfoPanel';
 import io from 'socket.io-client';
 import { wrapper } from '../store/store';
 

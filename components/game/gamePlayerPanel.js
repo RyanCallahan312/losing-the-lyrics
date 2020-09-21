@@ -56,6 +56,8 @@ export default function GamePlayerPanel({ isSinging }) {
 	);
 
 	return (
-		<div style={{ ...styles.subContainer, width: '30%', padding: 0 }}>{indicator}</div>
+		<div style={{ ...styles.subContainer, width: '30%', padding: 0 }}>
+			{indicator}
+		</div>
 	);
 }

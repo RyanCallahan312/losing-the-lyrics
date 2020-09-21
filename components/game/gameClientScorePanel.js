@@ -1,11 +1,3 @@
-import Link from 'next/link';
-import { useDispatch, connect, useSelector } from 'react-redux';
-import { useCallback, useState, useEffect } from 'react';
-import Button from '../shared/button';
-import TextInput from '../shared/textInput';
-import * as gameActions from '../../store/game/actions';
-import { createRoom } from '../../socket/emissions';
-
 const styles = {
 	container: {
 		height: '50vh',

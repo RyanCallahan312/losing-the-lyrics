@@ -143,6 +143,7 @@ export default function GameTurnPanel({ gameState }) {
 				width: '30%',
 				display: 'block',
 				padding: 0,
+				textAlign: 'center',
 			}}>
 			<style jsx global>{`
 				@import url('https://fonts.googleapis.com/css?family=Teko&display=swap');
