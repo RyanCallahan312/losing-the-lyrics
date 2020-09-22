@@ -1,3 +1,6 @@
+import playlists from '../../constants/playlists';
+import PLAYLISTS from '../../constants/playlists';
+
 const styles = {
 	container: {
 		height: '50vh',
@@ -11,12 +14,11 @@ const styles = {
 	subContainer: {
 		height: 'auto',
 		flex: '0 1 auto',
-		display: 'flex',
+		display: 'block',
 		alignItems: 'center',
 		justifyContent: 'space-around',
-		flexWrap: 'wrap',
-		flexDirection: 'row',
 		padding: 20,
+		width: 'fit-content',
 	},
 	button: {
 		width: '100%',
@@ -28,9 +30,16 @@ const styles = {
 		fontSize: 'calc(20px + 1.4vh)',
 	},
 	list: { margin: 0, padding: 0 },
+	clickableDiv: {
+		background: 'none',
+		color: 'inherit',
+		border: 'none',
+		padding: 0,
+		outline: 'none',
+	},
 };
 
-export default function PlaylistSelector({ gameState }) {
+export default function PlaylistSelector({ handleSelectPlaylist }) {
 	//--redux hooks--
 
 	//--state hooks--
@@ -41,9 +50,26 @@ export default function PlaylistSelector({ gameState }) {
 
 	//--JSX--
 
-	return (
-		<div style={{ ...styles.subContainer, width: '30%', padding: 0 }}>
-			DEFAULT PLAYLIST
-		</div>
-	);
+	const song = (songData) => {
+		return (
+			<li
+				key={`${songData.songTitle} - ${songData.artist}`}>{`${songData.songTitle} - ${songData.artist}`}</li>
+		);
+	};
+
+	const playlist = (playlist) => {
+		return (
+			<div style={styles.subContainer} key={playlist.NAME}>
+				<button
+					style={styles.clickableDiv}
+					onClick={() => handleSelectPlaylist(playlist)}>
+					<h1>{playlist.NAME}</h1>
+					<h2>Songs</h2>
+					<ul>{playlist.SONGS.map((songData) => song(songData))}</ul>
+				</button>
+			</div>
+		);
+	};
+
+	return <div>{PLAYLISTS.map((playlists) => playlist(playlists))}</div>;
 }

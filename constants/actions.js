@@ -12,3 +12,5 @@ export const CREATE_SOCKET = 'CREATE_SOCKET';
 export const REMOVE_SOCKET = 'REMOVE_SOCKET';
 export const LEAVE_lOBBY = 'LEAVE_LOBBY';
 export const UPDATE_ROOM_INFO = 'UPDATE_ROOM_INFO';
+
+export const SET_PLAYLIST = 'SET_PLAYLIST';

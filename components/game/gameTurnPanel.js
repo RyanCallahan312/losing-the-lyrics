@@ -127,7 +127,7 @@ export default function GameTurnPanel({ gameState }) {
 		let newList = [];
 		for (let i = 0; i < left.length; i++) {
 			newList.push(
-				<tr>
+				<tr key={left[i] + right[i] + i}>
 					{left[i]}
 					{right[i]}
 				</tr>,
@@ -154,7 +154,7 @@ export default function GameTurnPanel({ gameState }) {
 					display: 'inline-block',
 					margin: '0px 10px',
 				}}>
-				{combineList(turnDescriptors, turnOrder())}
+				<tbody>{combineList(turnDescriptors, turnOrder())}</tbody>
 			</table>
 		</div>
 	);

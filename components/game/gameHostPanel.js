@@ -1,3 +1,7 @@
+import PlaylistSelector from '../spotify/playlistSelector';
+import * as spotifyActions from '../../store/spotify/actions';
+import { useDispatch, useSelector } from 'react-redux';
+
 const styles = {
 	container: {
 		height: '50vh',
@@ -16,7 +20,6 @@ const styles = {
 		justifyContent: 'space-around',
 		flexWrap: 'wrap',
 		flexDirection: 'row',
-		padding: 20,
 	},
 	button: {
 		width: '100%',
@@ -30,8 +33,11 @@ const styles = {
 	list: { margin: 0, padding: 0 },
 };
 
-export default function GameHostPanel({ gameState }) {
+export default function GameHostPanel() {
 	//--redux hooks--
+	const spotifyState = useSelector((state) => state.spotify);
+
+	const dispatch = useDispatch();
 
 	//--state hooks--
 
@@ -39,11 +45,19 @@ export default function GameHostPanel({ gameState }) {
 
 	//--handlers--
 
+	const handleSelectPlaylist = (playlist) => {
+		dispatch(spotifyActions.setPlaylist(playlist));
+	};
+
 	//--JSX--
 
 	return (
-		<div style={{ ...styles.subContainer, width: '30%', padding: 0 }}>
-			something something
+		<div style={styles.subContainer}>
+			{spotifyState.playlist ? (
+				<pre>{JSON.stringify(spotifyState.playlist, null, 4)}</pre>
+			) : (
+				<PlaylistSelector handleSelectPlaylist={handleSelectPlaylist} />
+			)}
 		</div>
 	);
 }
