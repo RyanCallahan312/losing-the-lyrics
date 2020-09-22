@@ -12,6 +12,12 @@ export default function spotifyReducer(
 				playlist: payload,
 			};
 
+		case ACTIONS.SET_ACCESS_TOKEN:
+			return {
+				...state,
+				accessToken: payload,
+			};
+
 		default:
 			return state;
 	}

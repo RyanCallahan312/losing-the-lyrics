@@ -2,7 +2,8 @@ import { useRouter } from 'next/router';
 import Button from '../components/shared/button';
 import { useDispatch, useSelector } from 'react-redux';
 import * as gameActions from '../store/game/actions';
-import { useEffect } from 'react';
+import * as spotifyActions from '../store/spotify/actions';
+import { useEffect, useState } from 'react';
 import LobbyPannel from '../components/lobby/lobbyPanel';
 import io from 'socket.io-client';
 import { wrapper } from '../store/store';
@@ -21,19 +22,66 @@ const styles = {
 	},
 };
 
+const spotifyAuthEndpoint = 'https://accounts.spotify.com/authorize';
+const spotifyClientId = 'aeb75c365a594462a967bcb106a55be9';
+const spotifyResponseType = 'token';
+// const redirectUri = encodeURIComponent(
+// 	'https://losing-the-lyrics.herokuapp.com/game?host=true'
+// );
+const redirectUri = encodeURIComponent(
+	'https://localhost:3000/lobby?host=true',
+);
+const scopes = encodeURIComponent('streaming');
+
 const Lobby = (props) => {
 	//--state hooks--
 	const gameState = useSelector((state) => state.game);
+	const accessToken = useSelector((state) => state.spotify.accessToken);
 
 	const dispatch = useDispatch();
 
 	const router = useRouter();
+
+	const [hosting, setHosting] = useState(null);
 
 	//--handlers--
 
 	//--effect hooks--
 	useEffect(() => {
 		dispatch(gameActions.connectToServer(io));
+
+		const queryString =
+			window.location.search
+				.substring(1)
+				.split('&')
+				.map((v) => v.split('='))
+				.reduce(
+					(pre, [key, value]) => ({ ...pre, [key]: value }),
+					{},
+				) || null;
+
+		console.log(router);
+		console.log(queryString);
+
+		if (queryString && queryString.host === 'true') {
+			const hash =
+				window.location.hash
+					.substring(1)
+					.split('&')
+					.map((v) => v.split('='))
+					.reduce(
+						(pre, [key, value]) => ({ ...pre, [key]: value }),
+						{},
+					) || null;
+			console.log(!accessToken && (!hash || !hash.access_token));
+			if (!accessToken && (!hash || !hash.access_token)) {
+				window.location.href = `${spotifyAuthEndpoint}?client_id=${spotifyClientId}&redirect_uri=${redirectUri}&response_type=${spotifyResponseType}&scope=${scopes}`;
+			} else {
+				dispatch(spotifyActions.setAccessToken(hash.access_token));
+				dispatch(gameActions.enterLobby(true));
+			}
+		}
+
 		return () => dispatch(gameActions.lobbyDisconnectFromServer());
 	}, []);
 
@@ -43,12 +91,22 @@ const Lobby = (props) => {
 		}
 	}, [gameState.isGameStarted]);
 
+	useEffect(() => {
+		if (hosting) {
+			if (!accessToken) {
+				window.location.href = `${spotifyAuthEndpoint}?client_id=${spotifyClientId}&redirect_uri=${redirectUri}&response_type=${spotifyResponseType}&scope=${scopes}`;
+			} else {
+				dispatch(gameActions.enterLobby(true));
+			}
+		}
+	}, [hosting]);
+
 	//--JSX--
 	const hostJoinButtons = [
 		<Button
 			style={styles.button}
 			key='host-game'
-			onClick={() => dispatch(gameActions.enterLobby(true))}>
+			onClick={() => setHosting(true)}>
 			Host Game
 		</Button>,
 		<Button

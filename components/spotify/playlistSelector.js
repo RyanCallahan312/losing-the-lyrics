@@ -1,4 +1,3 @@
-import playlists from '../../constants/playlists';
 import PLAYLISTS from '../../constants/playlists';
 
 const styles = {

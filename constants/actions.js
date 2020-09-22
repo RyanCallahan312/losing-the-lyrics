@@ -14,3 +14,4 @@ export const LEAVE_lOBBY = 'LEAVE_LOBBY';
 export const UPDATE_ROOM_INFO = 'UPDATE_ROOM_INFO';
 
 export const SET_PLAYLIST = 'SET_PLAYLIST';
+export const SET_ACCESS_TOKEN = 'SET_ACCESS_TOKEN';

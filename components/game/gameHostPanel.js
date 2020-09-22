@@ -52,7 +52,7 @@ export default function GameHostPanel() {
 	//--JSX--
 
 	return (
-		<div style={styles.subContainer}>
+		<div style={{ ...styles.subContainer, width: '30%' }}>
 			{spotifyState.playlist ? (
 				<pre>{JSON.stringify(spotifyState.playlist, null, 4)}</pre>
 			) : (
