@@ -1,11 +1,3 @@
-import Link from 'next/link';
-import { useDispatch, connect, useSelector } from 'react-redux';
-import { useCallback, useState, useEffect } from 'react';
-import Button from '../shared/button';
-import TextInput from '../shared/textInput';
-import * as gameActions from '../../store/game/actions';
-import { createRoom } from '../../socket/emissions';
-
 const styles = {
 	container: {
 		height: '50vh',
@@ -15,6 +7,7 @@ const styles = {
 		justifyContent: 'space-around',
 		flexWrap: 'wrap',
 		flexDirection: 'column',
+		minWidth: '300px',
 	},
 	subContainer: {
 		height: 'auto',
@@ -25,6 +18,7 @@ const styles = {
 		flexWrap: 'wrap',
 		flexDirection: 'row',
 		padding: 20,
+		minWidth: '300px',
 	},
 	button: {
 		width: '100%',
@@ -114,10 +108,10 @@ export default function GameTurnPanel({ gameState }) {
 
 	const turnDescriptors = [
 		headSpacer(0),
-		<td style={{ ...styles.listItem, textAlign: 'right' }} key='singing'>
+		<td style={styles.listItem} key='singing'>
 			Singing
 		</td>,
-		<td style={{ ...styles.listItem, textAlign: 'right' }} key='onDeck'>
+		<td style={styles.listItem} key='onDeck'>
 			On Deck
 		</td>,
 		...getSpacers(),
@@ -127,7 +121,7 @@ export default function GameTurnPanel({ gameState }) {
 		let newList = [];
 		for (let i = 0; i < left.length; i++) {
 			newList.push(
-				<tr key={left[i] + right[i] + i}>
+				<tr key={left[i] + right[i] + i} style={{ textAlign: 'left' }}>
 					{left[i]}
 					{right[i]}
 				</tr>,
@@ -141,7 +135,6 @@ export default function GameTurnPanel({ gameState }) {
 			style={{
 				...styles.subContainer,
 				width: '30%',
-				display: 'block',
 				padding: 0,
 				textAlign: 'center',
 			}}>

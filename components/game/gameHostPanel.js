@@ -1,6 +1,7 @@
 import PlaylistSelector from '../spotify/playlistSelector';
 import * as spotifyActions from '../../store/spotify/actions';
 import { useDispatch, useSelector } from 'react-redux';
+import HiddenPlayer from '../spotify/hiddenPlayer';
 
 const styles = {
 	container: {
@@ -11,6 +12,7 @@ const styles = {
 		justifyContent: 'space-around',
 		flexWrap: 'wrap',
 		flexDirection: 'column',
+		minWidth: '300px',
 	},
 	subContainer: {
 		height: 'auto',
@@ -20,6 +22,7 @@ const styles = {
 		justifyContent: 'space-around',
 		flexWrap: 'wrap',
 		flexDirection: 'row',
+		minWidth: '300px',
 	},
 	button: {
 		width: '100%',
@@ -54,7 +57,13 @@ export default function GameHostPanel() {
 	return (
 		<div style={{ ...styles.subContainer, width: '30%' }}>
 			{spotifyState.playlist ? (
-				<pre>{JSON.stringify(spotifyState.playlist, null, 4)}</pre>
+				<>
+					<pre>{JSON.stringify(spotifyState.playlist, null, 4)}</pre>
+					<HiddenPlayer
+						accessToken={spotifyState.accessToken}
+						songData={spotifyState.currentSong}
+					/>
+				</>
 			) : (
 				<PlaylistSelector handleSelectPlaylist={handleSelectPlaylist} />
 			)}

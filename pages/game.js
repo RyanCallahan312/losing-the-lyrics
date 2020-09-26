@@ -24,7 +24,7 @@ const styles = {
 	},
 };
 
-const Index = (props) => {
+const Game = (props) => {
 	const gameState = useSelector((state) => state.game);
 
 	const dispatch = useDispatch();
@@ -54,7 +54,7 @@ const Index = (props) => {
 				{gameState.isHost ? (
 					<GameHostPanel gameState={gameState} />
 				) : (
-					<GamePlayerPanel isSinging={gameState.isSining} />
+					<GamePlayerPanel isSinging={gameState.isSinging} />
 				)}
 				<GameTurnPanel gameState={gameState} />
 			</div>
@@ -64,4 +64,4 @@ const Index = (props) => {
 	}
 };
 
-export default wrapper.withRedux(Index);
+export default wrapper.withRedux(Game);

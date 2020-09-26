@@ -7,6 +7,7 @@ const styles = {
 		justifyContent: 'space-around',
 		flexWrap: 'wrap',
 		flexDirection: 'column',
+		minWidth: '300px',
 	},
 	subContainer: {
 		height: 'auto',
@@ -17,6 +18,7 @@ const styles = {
 		flexWrap: 'wrap',
 		flexDirection: 'row',
 		padding: 20,
+		minWidth: '300px',
 	},
 	button: {
 		width: '100%',
@@ -26,6 +28,7 @@ const styles = {
 		listStyleType: 'none',
 		fontFamily: 'Teko',
 		fontSize: 'calc(20px + 1.4vh)',
+		padding: '0px 10px',
 	},
 	list: { margin: 0, padding: 0 },
 };
@@ -43,22 +46,22 @@ export default function GameClientScorePanel({ gameState }) {
 
 	const clientsAlias = () => {
 		let clientAlias = (
-			<li style={{ ...styles.listItem, fontWeight: 600 }} key={'title'}>
+			<th style={{ ...styles.listItem, fontWeight: 600 }} key={'title'}>
 				Name
-			</li>
+			</th>
 		);
 		clientAlias = [
 			clientAlias,
 			...gameState.clients.map((client) =>
 				gameState.turnOrder.includes(client.socketId) ? (
-					<li
+					<td
 						style={{
 							...styles.listItem,
 							color: 'hsl(' + 360 * Math.random() + ',100%, 65%)',
 						}}
 						key={client.socketId}>
 						{client.alias}
-					</li>
+					</td>
 				) : null,
 			),
 		];
@@ -68,18 +71,18 @@ export default function GameClientScorePanel({ gameState }) {
 
 	const clientsScore = () => {
 		let clientScore = [
-			<li style={{ ...styles.listItem, fontWeight: 600 }} key={'title'}>
+			<th style={{ ...styles.listItem, fontWeight: 600 }} key={'title'}>
 				Score
-			</li>,
+			</th>,
 		];
 
 		clientScore = [
 			clientScore,
 			...gameState.clients.map((client) =>
 				gameState.turnOrder.includes(client.socketId) ? (
-					<li style={styles.listItem} key={client.socketId}>
+					<td style={styles.listItem} key={client.socketId}>
 						{client.score}
-					</li>
+					</td>
 				) : null,
 			),
 		];
@@ -87,13 +90,38 @@ export default function GameClientScorePanel({ gameState }) {
 		return clientScore;
 	};
 
+	const combineList = (left, right) => {
+		let newList = [];
+		for (let i = 0; i < left.length; i++) {
+			newList.push(
+				<tr key={left[i] + right[i] + i} style={{ textAlign: 'left' }}>
+					{left[i]}
+					{right[i]}
+				</tr>,
+			);
+		}
+		return newList;
+	};
+
 	return (
-		<div style={{ ...styles.subContainer, width: '30%', padding: 0 }}>
+		<div
+			style={{
+				...styles.subContainer,
+				width: '30%',
+				padding: 0,
+				textAlign: 'center',
+			}}>
 			<style jsx global>{`
 				@import url('https://fonts.googleapis.com/css?family=Teko&display=swap');
 			`}</style>
-			<ul style={styles.list}>{clientsAlias()}</ul>
-			<ul style={styles.list}>{clientsScore()}</ul>
+			<table
+				style={{
+					...styles.list,
+					display: 'inline-block',
+					margin: '0px 10px',
+				}}>
+				<tbody>{combineList(clientsScore(), clientsAlias())}</tbody>
+			</table>
 		</div>
 	);
 }

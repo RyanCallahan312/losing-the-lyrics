@@ -1,10 +1,4 @@
-import Link from 'next/link';
-import { useDispatch, connect, useSelector } from 'react-redux';
-import { useCallback, useState, useEffect } from 'react';
-import Button from '../shared/button';
-import TextInput from '../shared/textInput';
-import * as gameActions from '../../store/game/actions';
-import { createRoom } from '../../socket/emissions';
+import Microphone from '../icons/microphone';
 
 const styles = {
 	container: {
@@ -15,9 +9,10 @@ const styles = {
 		justifyContent: 'space-around',
 		flexWrap: 'wrap',
 		flexDirection: 'column',
+		minWidth: '300px',
 	},
 	subContainer: {
-		height: 'auto',
+		height: '100%',
 		flex: '0 1 auto',
 		display: 'flex',
 		alignItems: 'center',
@@ -25,6 +20,7 @@ const styles = {
 		flexWrap: 'wrap',
 		flexDirection: 'row',
 		padding: 20,
+		minWidth: '300px',
 	},
 	button: {
 		width: '100%',
@@ -49,15 +45,9 @@ export default function GamePlayerPanel({ isSinging }) {
 
 	//--JSX--
 
-	const indicator = isSinging ? (
-		<h1 style={styles.listItem}>active microphone svg goes here</h1>
-	) : (
-		<h3 style={styles.listItem}>disabled microphone svg goes here</h3>
-	);
-
 	return (
 		<div style={{ ...styles.subContainer, width: '30%', padding: 0 }}>
-			{indicator}
+			<Microphone disabled={!isSinging} height='100%' />
 		</div>
 	);
 }

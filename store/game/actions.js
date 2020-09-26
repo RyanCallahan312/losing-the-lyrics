@@ -44,10 +44,12 @@ export const resetLobby = () => ({
 export const leaveLobby = (isHost) => {
 	return (dispatch, getState) => {
 		let { socket, roomCode, isGameStarted } = getState().game;
-		if (isHost) {
-			closeRoom(socket, roomCode);
-		} else {
-			leaveRoom(socket, roomCode);
+		if (roomCode) {
+			if (isHost) {
+				closeRoom(socket, roomCode);
+			} else {
+				leaveRoom(socket, roomCode);
+			}
 		}
 		dispatch(resetLobby());
 	};
@@ -81,9 +83,15 @@ export const connectToServer = (io) => {
 
 export const lobbyDisconnectFromServer = () => {
 	return async (dispatch, getState) => {
-		let { isInLobby, isHost, socket, isGameStarted } = getState().game;
+		let {
+			isInLobby,
+			isHost,
+			socket,
+			isGameStarted,
+			roomCode,
+		} = getState().game;
 		if (!isGameStarted) {
-			if (isInLobby) {
+			if ((isInLobby && roomCode, roomCode)) {
 				await dispatch(leaveLobby(isHost));
 			}
 			socket.disconnect();
