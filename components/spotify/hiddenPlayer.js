@@ -31,7 +31,7 @@ export default function HiddenPlayer(props) {
 				playerInstance: window.SpotifyPlayerProvider,
 				spotify_uri: props.songData.spotify_uri,
 			},
-			props.songData.startTime,
+			props.songData.startTime, 
 		);
 
 		window.SpotifyPlayerProvider.setVolume(0.2);
