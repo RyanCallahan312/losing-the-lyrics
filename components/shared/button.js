@@ -47,7 +47,6 @@ const Button = React.forwardRef((props, ref) => (
 		className='button'>
 		{props.children}
 		<style jsx global>{`
-			@import url('https://fonts.googleapis.com/css?family=Teko&display=swap');
 			.button {
 				box-shadow: 0px 0px 0px rgba(0, 113, 255, 0);
 				transform: scale(1);

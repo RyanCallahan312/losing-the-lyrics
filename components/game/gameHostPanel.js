@@ -39,6 +39,7 @@ const styles = {
 export default function GameHostPanel() {
 	//--redux hooks--
 	const spotifyState = useSelector((state) => state.spotify);
+	//const { clients } = useSelector((state) => state.game);
 
 	const dispatch = useDispatch();
 
@@ -49,7 +50,9 @@ export default function GameHostPanel() {
 	//--handlers--
 
 	const handleSelectPlaylist = (playlist) => {
+		//TODO: trim playlist to make it an even number for the amount of clients and randomize the order
 		dispatch(spotifyActions.setPlaylist(playlist));
+		dispatch(spotifyActions.setCurrentSong(playlist[0]));
 	};
 
 	//--JSX--

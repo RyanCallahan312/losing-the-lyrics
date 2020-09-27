@@ -111,9 +111,6 @@ export default function GameClientScorePanel({ gameState }) {
 				padding: 0,
 				textAlign: 'center',
 			}}>
-			<style jsx global>{`
-				@import url('https://fonts.googleapis.com/css?family=Teko&display=swap');
-			`}</style>
 			<table
 				style={{
 					...styles.list,

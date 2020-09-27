@@ -38,8 +38,6 @@ const Headline = React.forwardRef((props, ref) => (
 			className='headline'>
 			{props.children}
 			<style jsx global>{`
-				@import url('https://fonts.googleapis.com/css?family=Cute+Font&display=swap');
-
 				.headline {
 					animation: glow 1.15s ease-in-out 0s infinite alternate,
 						rotate-and-scale 1.15s ease-in-out 0s infinite alternate;
