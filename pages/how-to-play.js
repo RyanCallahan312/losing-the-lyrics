@@ -12,7 +12,13 @@ const styles = {
 		margin: '0 auto',
 	},
 	header: {
+		fontFamily: 'Teko',
 		textAlign: 'center',
+		fontSize: '260%',
+	},
+	body: {
+		fontFamily: 'Roboto',
+		fontSize: '120%',
 	},
 };
 
@@ -23,24 +29,19 @@ const HowToPlay = () => {
 				<h1 id='losing-the-lyrics' style={styles.header}>
 					Losing The Lyrics
 				</h1>
-				<p>
-					<a href='https://losing-the-lyrics.herokuapp.com/'>
-						https://losing-the-lyrics.herokuapp.com/
-					</a>
-				</p>
-				<p>
+				<p style={styles.body}>
 					Losing the lyrics is a game based on the TV show Don&#39;t
 					Forget The Lyrics and you use it like a jackbox style game.
 				</p>
-				<p>
+				<p style={styles.body}>
 					The goal of the game is to finish singing the line in a song
 					karaoke style after the music stops.
 				</p>
-				<p>
+				<p style={styles.body}>
 					The branch being hosted is an outdated version. The
 					currently worked on branch is the front-end refactor.
 				</p>
-				<p>
+				<p style={styles.body}>
 					<strong>
 						<em>
 							Voice Recognition works using the Web Speech Api.
@@ -53,13 +54,13 @@ const HowToPlay = () => {
 				<h2 id='how-to-create-a-game' style={styles.header}>
 					How to create a game
 				</h2>
-				<p>
+				<p style={styles.body}>
 					To create a game press the host game button and authenticate
 					with your spotify premium account. The game will then link
 					with your spotify account to play audio through the host
 					device.
 				</p>
-				<p>
+				<p style={styles.body}>
 					<strong>
 						<em>
 							THE LYRICS AND AUDIO IS ONLY PLAYED THROUGH THE HOST
@@ -67,16 +68,16 @@ const HowToPlay = () => {
 						</em>
 					</strong>
 				</p>
-				<p>
+				<p style={styles.body}>
 					After authenticating you will see a room code that players
 					can use to join.
 				</p>
-				<p>
+				<p style={styles.body}>
 					When everyone is in the game you can start the game then
 					select a playlist of pre-selected songs then the game will
 					start playing.
 				</p>
-				<p>
+				<p style={styles.body}>
 					<em>
 						I&#39;m currently looking for a solution to be able to
 						use a spotify playlist from the host account but its
@@ -87,16 +88,16 @@ const HowToPlay = () => {
 				<h2 id='how-to-play' style={styles.header}>
 					How to play
 				</h2>
-				<p>
+				<p style={styles.body}>
 					Once the game start the game will start showing lyrics on
 					the host device along with music. Players will have a set
 					amount of time to complete the phrase.
 				</p>
-				<p>
+				<p style={styles.body}>
 					One point is awarded for partial correctness and three if
 					you get it perfectly correct.
 				</p>
-				<p>
+				<p style={styles.body}>
 					At the end of how ever many rounds the scores will be
 					displayed and the winner will be declared as the karaoke
 					overlord and better than everyone else.
@@ -104,7 +105,7 @@ const HowToPlay = () => {
 				<h3 id='contact' style={styles.header}>
 					contact
 				</h3>
-				<p>
+				<p style={styles.body}>
 					If you have any questions open an issue or email me at{' '}
 					<a href='mailto:Ryan@DevRyan.io'>Ryan@DevRyan.io</a>
 				</p>

@@ -18,6 +18,12 @@ export default function spotifyReducer(
 				accessToken: payload,
 			};
 
+		case ACTIONS.SET_CURRENT_SONG:
+			return {
+				...state,
+				currentSong: payload,
+			};
+
 		default:
 			return state;
 	}

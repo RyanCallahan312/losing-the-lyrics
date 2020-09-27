@@ -36,10 +36,9 @@ const styles = {
 	list: { margin: 0, padding: 0 },
 };
 
-export default function GameHostPanel() {
+export default function GameHostPanel({gameState}) {
 	//--redux hooks--
 	const spotifyState = useSelector((state) => state.spotify);
-	//const { clients } = useSelector((state) => state.game);
 
 	const dispatch = useDispatch();
 
@@ -52,7 +51,7 @@ export default function GameHostPanel() {
 	const handleSelectPlaylist = (playlist) => {
 		//TODO: trim playlist to make it an even number for the amount of clients and randomize the order
 		dispatch(spotifyActions.setPlaylist(playlist));
-		dispatch(spotifyActions.setCurrentSong(playlist[0]));
+		dispatch(spotifyActions.setCurrentSong(playlist.SONGS[0]));
 	};
 
 	//--JSX--
@@ -62,13 +61,14 @@ export default function GameHostPanel() {
 			{spotifyState.playlist ? (
 				<>
 					<pre>{JSON.stringify(spotifyState.playlist, null, 4)}</pre>
-					<HiddenPlayer
-						accessToken={spotifyState.accessToken}
-						songData={spotifyState.currentSong}
-					/>
 				</>
 			) : (
 				<PlaylistSelector handleSelectPlaylist={handleSelectPlaylist} />
+			)}
+			{spotifyState.currentSong && (
+				<HiddenPlayer
+					songData={spotifyState.currentSong}
+				/>
 			)}
 		</div>
 	);

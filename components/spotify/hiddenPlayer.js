@@ -21,30 +21,29 @@ const play = (
 	});
 };
 
-export default function HiddenPlayer(props) {
-	console.log(props);
+export default function HiddenPlayer({ songData }) {
 	React.useEffect(() => {
 		console.log(window.SpotifyPlayerProvider);
 
 		play(
 			{
 				playerInstance: window.SpotifyPlayerProvider,
-				spotify_uri: props.songData.spotify_uri,
+				spotify_uri: songData.spotify_uri,
 			},
-			props.songData.startTime, 
+			songData.startTime,
 		);
 
 		window.SpotifyPlayerProvider.setVolume(0.2);
 
 		console.log(
-			`playing ${props.songData.songTitle} by ${props.songData.artist} from uri ${props.songData.spotifyUri} starting at ${props.songData.startTime}`,
+			`playing ${songData.songTitle} by ${songData.artist} from uri ${songData.spotifyUri} starting at ${songData.startTime}`,
 		);
 
 		setTimeout(() => {
 			window.SpotifyPlayerProvider.pause().then(() => {
 				console.log('paused');
 			});
-		}, props.songData.cutOffTime - props.songData.startTime);
+		}, songData.cutOffTime - songData.startTime);
 	}, []);
 	return null;
 }

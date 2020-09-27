@@ -20,12 +20,12 @@ export const nextSong = () => {
 		let { playlist, currentSong } = getState().spotify;
 
 		if (currentSong && playlist) {
-			let index = playlist.findIndex(currentSong);
+			let index = playlist.SONGS.findIndex(currentSong);
 			let nextSong;
 			if (index + 1 < playlist.length) {
-				nextSong = playlist[index + 1];
+				nextSong = playlist.SONGS[index + 1];
 			} else {
-				nextSong = playlist[0];
+				nextSong = playlist.SONGS[0];
 			}
 
 			dispatch(setCurrentSong(nextSong));
