@@ -29,6 +29,7 @@ function createListeners(socket, io) {
 			room.turnOrder = [];
 			room.currentTurn = null;
 			room.roundNumber = 0;
+			room.isRoundStarted = false;
 
 			//room info
 			io.to(roomCode).emit(EMISSIONS.ROOM_INFO, {
@@ -37,6 +38,7 @@ function createListeners(socket, io) {
 				turnOrder: room.turnOrder,
 				currentTurn: room.currentTurn,
 				roundNumber: room.roundNumber,
+				isRoundStarted: room.isRoundStarted,
 			});
 		} else {
 			//error res if not host
@@ -108,6 +110,7 @@ function createListeners(socket, io) {
 				turnOrder: room.turnOrder,
 				currentTurn: room.currentTurn,
 				roundNumber: room.roundNumber,
+				isRoundStarted: room.isRoundStarted,
 			});
 		}
 	});
@@ -136,6 +139,7 @@ function createListeners(socket, io) {
 				turnOrder: room.turnOrder,
 				currentTurn: room.currentTurn,
 				roundNumber: room.roundNumber,
+				isRoundStarted: room.isRoundStarted,
 			});
 		}
 	});
@@ -145,6 +149,47 @@ function createListeners(socket, io) {
 		if (isHost && io.sockets.adapter.rooms[roomCode]) {
 			io.sockets.adapter.rooms[roomCode].roundNumber += 1;
 			io.to(roomCode).emit(EMISSIONS.GAME_START);
+		} else {
+			io.to(socket.id).emit(
+				EMISSIONS.ERROR_RESPONSE,
+				'SOCKET_PERMISSIONS_ERROR: players may not start games',
+			);
+		}
+	});
+
+	socket.on(EMISSIONS.START_ROUND, ({ roomCode, isHost }) => {
+		console.log(`${socket.id} ${EMISSIONS.START_ROUND}`);
+		if (isHost) {
+			let room = io.sockets.adapter.rooms[roomCode];
+			room.isRoundStarted = true;
+			room.roundNumber += 1;
+			room.currentTurn = room.turnOrder[0];
+			io.to(roomCode).emit(EMISSIONS.ROOM_INFO, {
+				roomCode: roomCode,
+				clients: room.clients,
+				turnOrder: room.turnOrder,
+				currentTurn: room.currentTurn,
+				roundNumber: room.roundNumber,
+				isRoundStarted: room.isRoundStarted,
+			});
+		} else {
+			io.to(socket.id).emit(
+				EMISSIONS.ERROR_RESPONSE,
+				'SOCKET_PERMISSIONS_ERROR: players may not start rounds',
+			);
+		}
+	});
+
+	socket.on(EMISSIONS.STOP_SONG, (isHost) => {
+		console.log(`${socket.id} ${EMISSIONS.STOP_SONG}`);
+		if (isHost) {
+			let room = io.sockets.adapter.rooms[roomCode];
+			io.to(room.currentTurn).emit(EMISSIONS.STOP_SONG);
+		} else {
+			io.to(socket.id).emit(
+				EMISSIONS.ERROR_RESPONSE,
+				'SOCKET_PERMISSIONS_ERROR: players may not announce the song has stopped',
+			);
 		}
 	});
 

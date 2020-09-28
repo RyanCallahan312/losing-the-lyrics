@@ -1,4 +1,5 @@
 import React from 'react';
+import * as EMMISIONS from '../../socket/emissions';
 
 const play = (
 	{
@@ -21,29 +22,31 @@ const play = (
 	});
 };
 
-export default function HiddenPlayer({ songData }) {
+export default function HiddenPlayer({ songData, playSong, socket, isHost }) {
 	React.useEffect(() => {
-		console.log(window.SpotifyPlayerProvider);
+		console.log(playSong);
+		if (playSong) {
+			play(
+				{
+					playerInstance: window.SpotifyPlayerProvider,
+					spotify_uri: songData.spotify_uri,
+				},
+				songData.startTime,
+			);
 
-		play(
-			{
-				playerInstance: window.SpotifyPlayerProvider,
-				spotify_uri: songData.spotify_uri,
-			},
-			songData.startTime,
-		);
+			window.SpotifyPlayerProvider.setVolume(0.2);
 
-		window.SpotifyPlayerProvider.setVolume(0.2);
+			console.log(
+				`playing ${songData.songTitle} by ${songData.artist} from uri ${songData.spotifyUri} starting at ${songData.startTime}`,
+			);
 
-		console.log(
-			`playing ${songData.songTitle} by ${songData.artist} from uri ${songData.spotifyUri} starting at ${songData.startTime}`,
-		);
-
-		setTimeout(() => {
-			window.SpotifyPlayerProvider.pause().then(() => {
-				console.log('paused');
-			});
-		}, songData.cutOffTime - songData.startTime);
-	}, []);
+			setTimeout(() => {
+				EMMISIONS.stopSong(socket, isHost);
+				window.SpotifyPlayerProvider.pause().then(() => {
+					console.log('paused');
+				});
+			}, songData.cutOffTime - songData.startTime);
+		}
+	}, [playSong]);
 	return null;
 }

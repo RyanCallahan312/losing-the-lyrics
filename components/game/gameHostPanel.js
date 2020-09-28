@@ -2,6 +2,7 @@ import PlaylistSelector from '../spotify/playlistSelector';
 import * as spotifyActions from '../../store/spotify/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import HiddenPlayer from '../spotify/hiddenPlayer';
+import * as EMMISIONS from '../../socket/emissions';
 
 const styles = {
 	container: {
@@ -36,7 +37,7 @@ const styles = {
 	list: { margin: 0, padding: 0 },
 };
 
-export default function GameHostPanel({gameState}) {
+export default function GameHostPanel({ gameState }) {
 	//--redux hooks--
 	const spotifyState = useSelector((state) => state.spotify);
 
@@ -52,6 +53,10 @@ export default function GameHostPanel({gameState}) {
 		//TODO: trim playlist to make it an even number for the amount of clients and randomize the order
 		dispatch(spotifyActions.setPlaylist(playlist));
 		dispatch(spotifyActions.setCurrentSong(playlist.SONGS[0]));
+		EMMISIONS.startRound(gameState.socket, {
+			roomCode: gameState.roomCode,
+			isHost: gameState.isHost,
+		});
 	};
 
 	//--JSX--
@@ -68,6 +73,9 @@ export default function GameHostPanel({gameState}) {
 			{spotifyState.currentSong && (
 				<HiddenPlayer
 					songData={spotifyState.currentSong}
+					playSong={spotifyState.playingSong}
+					socket={gameState.socket}
+					isHost={gameState.isHost}
 				/>
 			)}
 		</div>

@@ -48,7 +48,7 @@ const _app = ({ Component, pageProps }) => {
                   
                     // Playback status updates
                     player.addListener('player_state_changed', state => { console.log(state); });
-                  
+                    //TODO: remove the logging above this when releasing
                     // Ready
                     player.addListener('ready', ({ device_id }) => {
                       console.log('Ready with Device ID', device_id);

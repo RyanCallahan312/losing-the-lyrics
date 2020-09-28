@@ -24,6 +24,12 @@ export default function spotifyReducer(
 				currentSong: payload,
 			};
 
+		case ACTIONS.SET_PLAYING_SONG:
+			return {
+				...state,
+				playingSong: payload,
+			};
+
 		default:
 			return state;
 	}

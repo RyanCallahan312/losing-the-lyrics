@@ -23,6 +23,7 @@ export default function gameReducer(state = initialState, { type, payload }) {
 				isInLobby: false,
 				isGameStarted: false,
 				isSinging: false,
+				isRoundStarted: false,
 				roomCode: null,
 				userList: [],
 				lyrics: null,
@@ -59,6 +60,12 @@ export default function gameReducer(state = initialState, { type, payload }) {
 			return {
 				...state,
 				currentTurn: payload,
+			};
+
+		case ACTIONS.SET_IS_ROUND_STARTED:
+			return {
+				...state,
+				isRoundStarted: payload,
 			};
 
 		default:

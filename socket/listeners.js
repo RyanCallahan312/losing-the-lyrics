@@ -1,3 +1,4 @@
+import * as spotifyActions from '../store/spotify/actions';
 import * as gameActions from '../store/game/actions';
 import * as EMISSIONS from '../constants/emissions';
 
@@ -18,6 +19,13 @@ export default function bindListeners(socket, dispatch, getState) {
 
 	socket.on(EMISSIONS.GAME_START, () => {
 		dispatch(gameActions.setIsGameStarted(true));
-		dispatch(gameActions.setCurrentTurn(getState().game.currentTurn));
+	});
+
+	socket.on(EMISSIONS.PLAY_SONG, () => {
+		dispatch(spotifyActions.setPlayingSong(true));
+	});
+
+	socket.on(EMISSIONS.STOP_SONG, () => {
+		dispatch(spotifyActions.setPlayingSong(false));
 	});
 }

@@ -6,3 +6,7 @@ export const CLOSE_ROOM = 'CLOSE_ROOM';
 export const JOIN_ROOM = 'JOIN_ROOM';
 export const GAME_START = 'GAME_START';
 export const LEAVE_ROOM = 'LEAVE_ROOM';
+export const NEXT_TURN = 'NEXT_TURN';
+export const PLAY_SONG = 'PLAY_SONG';
+export const STOP_SONG = 'STOP_SONG';
+export const START_ROUND = 'START_ROUND';

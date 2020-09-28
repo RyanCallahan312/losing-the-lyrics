@@ -24,3 +24,13 @@ export function startGame(socket, data) {
 	console.log(`starting game`);
 	socket.emit(EMISSIONS.GAME_START, data);
 }
+
+export function startRound(socket, data) {
+	console.log(`starting round`);
+	socket.emit(EMISSIONS.GAME_START, data);
+}
+
+export function stopSong(socket, isHost) {
+	console.log(`announcing Stop Song`);
+	socket.emit(EMISSIONS.STOP_SONG, isHost);
+}

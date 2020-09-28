@@ -60,9 +60,6 @@ const Lobby = (props) => {
 					{},
 				) || null;
 
-		console.log(router);
-		console.log(queryString);
-
 		if (queryString && queryString.host === 'true') {
 			const hash =
 				window.location.hash
@@ -73,7 +70,6 @@ const Lobby = (props) => {
 						(pre, [key, value]) => ({ ...pre, [key]: value }),
 						{},
 					) || null;
-			console.log(!accessToken && (!hash || !hash.access_token));
 			if (!accessToken && (!hash || !hash.access_token)) {
 				window.location.href = `${spotifyAuthEndpoint}?client_id=${spotifyClientId}&redirect_uri=${redirectUri}&response_type=${spotifyResponseType}&scope=${scopes}`;
 			} else {

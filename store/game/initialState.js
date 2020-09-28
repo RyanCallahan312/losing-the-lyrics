@@ -4,6 +4,7 @@ export default {
 	isInLobby: false,
 	isGameStarted: false,
 	isSinging: false,
+	isRoundStarted: false,
 	roomCode: null,
 	userList: [],
 	lyrics: null,

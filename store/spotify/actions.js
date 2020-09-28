@@ -1,5 +1,10 @@
 import * as ACTIONS from '../../constants/actions';
 
+export const setPlayingSong = (playingSong) => ({
+	type: ACTIONS.SET_PLAYING_SONG,
+	payload: playingSong,
+});
+
 export const setCurrentSong = (song) => ({
 	type: ACTIONS.SET_CURRENT_SONG,
 	payload: song,

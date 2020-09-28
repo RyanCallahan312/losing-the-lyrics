@@ -7,6 +7,7 @@ export const SET_IS_SINGING = 'SET_IS_SINGING';
 export const SET_USER_LIST = 'SET_USER_LIST';
 export const SET_LYRICS = 'SET_LYRICS';
 export const SET_CURRENT_TURN = 'SET_CURRENT_TURN';
+export const SET_IS_ROUND_STARTED = 'SET_IS_ROUND_STARTED';
 
 export const CREATE_SOCKET = 'CREATE_SOCKET';
 export const REMOVE_SOCKET = 'REMOVE_SOCKET';
@@ -16,3 +17,4 @@ export const UPDATE_ROOM_INFO = 'UPDATE_ROOM_INFO';
 export const SET_PLAYLIST = 'SET_PLAYLIST';
 export const SET_ACCESS_TOKEN = 'SET_ACCESS_TOKEN';
 export const SET_CURRENT_SONG = 'SET_CURRENT_SONG';
+export const SET_PLAYING_SONG = 'SET_PLAYING_SONG';

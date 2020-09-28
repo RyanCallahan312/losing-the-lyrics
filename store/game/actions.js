@@ -37,6 +37,11 @@ export const setCurrentTurn = (clientId) => ({
 	payload: clientId,
 });
 
+export const setIsRoundStarted = (isRoundStarted) => ({
+	type: ACTIONS.SET_IS_ROUND_STARTED,
+	payload: isRoundStarted
+})
+
 export const resetLobby = () => ({
 	type: ACTIONS.LEAVE_lOBBY,
 });
