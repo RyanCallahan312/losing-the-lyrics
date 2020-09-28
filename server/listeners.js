@@ -1,4 +1,5 @@
 const EMISSIONS = require('./emissions');
+const utils = require('./utils');
 
 function createListeners(socket, io) {
 	socket.on(EMISSIONS.CREATE_ROOM, (isHost) => {
@@ -10,13 +11,13 @@ function createListeners(socket, io) {
 			socket.score = null;
 
 			//create new room
-			roomCode = getNewRoom(io.existingRoomCodes);
+			roomCode = utils.getNewRoom(io.existingRoomCodes);
 
 			//join socket room
 			socket.join(roomCode);
 
 			//init room fields
-			let room = io.sockets.adapter.rooms[roomCode];
+			let room = utils.getRoomByCode(io, roomCode);
 			room.host = socket;
 			room.clients = [
 				{
@@ -53,7 +54,7 @@ function createListeners(socket, io) {
 		console.log(`${socket.id} ${EMISSIONS.CLOSE_ROOM}`);
 		if (roomCode) {
 			if (socket.isHost) {
-				let room = io.sockets.adapter.rooms[roomCode];
+				let room = utils.getRoomByCode(io, roomCode);
 				let hostClient = room.clients.find(
 					(client) => client.socketId === socket.id,
 				);
@@ -64,7 +65,7 @@ function createListeners(socket, io) {
 						io.sockets.connected[socketId].leave(room.roomCode);
 					});
 				}
-				delete io.sockets.adapter.rooms[roomCode];
+				delete utils.getRoomByCode(io, roomCode);
 			} else {
 				//error res if not host
 				io.to(socket.id).emit(
@@ -93,7 +94,7 @@ function createListeners(socket, io) {
 			socket.alias = alias;
 			socket.score = 0;
 
-			let room = io.sockets.adapter.rooms[roomCode];
+			let room = utils.getRoomByCode(io, roomCode);
 
 			room.clients.push({
 				socketId: socket.id,
@@ -118,7 +119,7 @@ function createListeners(socket, io) {
 	socket.on(EMISSIONS.LEAVE_ROOM, (roomCode) => {
 		console.log(`${socket.id} ${EMISSIONS.LEAVE_ROOM}`);
 
-		let room = io.sockets.adapter.rooms[roomCode];
+		let room = utils.getRoomByCode(io, roomCode);
 		let client = room.clients.find(
 			(client) => client.socketId === socket.id,
 		);
@@ -160,7 +161,7 @@ function createListeners(socket, io) {
 	socket.on(EMISSIONS.START_ROUND, ({ roomCode, isHost }) => {
 		console.log(`${socket.id} ${EMISSIONS.START_ROUND}`);
 		if (isHost) {
-			let room = io.sockets.adapter.rooms[roomCode];
+			let room = utils.getRoomByCode(io, roomCode);
 			room.isRoundStarted = true;
 			room.roundNumber += 1;
 			room.currentTurn = room.turnOrder[0];
@@ -172,6 +173,7 @@ function createListeners(socket, io) {
 				roundNumber: room.roundNumber,
 				isRoundStarted: room.isRoundStarted,
 			});
+			io.to(room.host.socketId).emit(EMISSIONS.PLAY_SONG);
 		} else {
 			io.to(socket.id).emit(
 				EMISSIONS.ERROR_RESPONSE,
@@ -183,7 +185,7 @@ function createListeners(socket, io) {
 	socket.on(EMISSIONS.STOP_SONG, (isHost) => {
 		console.log(`${socket.id} ${EMISSIONS.STOP_SONG}`);
 		if (isHost) {
-			let room = io.sockets.adapter.rooms[roomCode];
+			let room = utils.getRoomByCode(io, roomCode);
 			io.to(room.currentTurn).emit(EMISSIONS.STOP_SONG);
 		} else {
 			io.to(socket.id).emit(
@@ -193,26 +195,13 @@ function createListeners(socket, io) {
 		}
 	});
 
+	socket.on(EMISSIONS.NEXT_TURN, () => {});
+
+	socket.on(EMISSIONS.END_TURN, (turnData) => {});
+
 	socket.on(EMISSIONS.DISCONNECT, (reason) => {
 		console.log(`${socket.id} ${reason}`);
 	});
-}
-
-function getRoomByCode(rooms, newRoomCode) {
-	var room = rooms.find(
-		(existingRoomCode) => existingRoomCode === newRoomCode,
-	);
-	return room ? room : null;
-}
-
-function getNewRoom(existingRoomCodes) {
-	do {
-		newRoomCode = Math.random().toString(36).substr(2, 4);
-	} while (getRoomByCode(existingRoomCodes, newRoomCode));
-
-	existingRoomCodes.push(newRoomCode);
-
-	return newRoomCode;
 }
 
 module.exports = createListeners;

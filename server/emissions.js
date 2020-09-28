@@ -10,3 +10,5 @@ module.exports.PLAY_SONG = 'PLAY_SONG';
 module.exports.STOP_SONG = 'STOP_SONG';
 module.exports.START_SINGING = 'START_SINGING';
 module.exports.START_ROUND = 'START_ROUND';
+module.exports.END_TURN = 'END_TURN';
+module.exports.NEXT_TURN = 'NEXT_TURN';

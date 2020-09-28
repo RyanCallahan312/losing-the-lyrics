@@ -21,10 +21,6 @@ export default function bindListeners(socket, dispatch, getState) {
 		dispatch(gameActions.setIsGameStarted(true));
 	});
 
-	socket.on(EMISSIONS.PLAY_SONG, () => {
-		dispatch(spotifyActions.setPlayingSong(true));
-	});
-
 	socket.on(EMISSIONS.STOP_SONG, () => {
 		dispatch(spotifyActions.setPlayingSong(false));
 	});
