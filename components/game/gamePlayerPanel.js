@@ -1,4 +1,5 @@
 import Microphone from '../icons/microphone';
+import HiddenVoiceRecorder from '../spotify/hiddenVoiceRecorder';
 
 const styles = {
 	container: {
@@ -43,11 +44,19 @@ export default function GamePlayerPanel({ isSinging }) {
 
 	//--handlers--
 
+	const handleDidSing = (transcript) => {
+		console.log(transcript);
+	};
+
 	//--JSX--
 
 	return (
 		<div style={{ ...styles.subContainer, width: '30%', padding: 0 }}>
 			<Microphone disabled={!isSinging} height='100%' />
+			<HiddenVoiceRecorder
+				handleDidSing={handleDidSing}
+				isSinging={isSinging}
+			/>
 		</div>
 	);
 }

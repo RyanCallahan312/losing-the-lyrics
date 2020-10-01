@@ -1,5 +1,5 @@
 import React from 'react';
-import * as EMMISIONS from '../../socket/emissions';
+import * as EMMISIONS from '../../client/emissions';
 
 const play = (
 	{
@@ -24,7 +24,6 @@ const play = (
 
 export default function HiddenPlayer({ songData, playSong, socket, isHost }) {
 	React.useEffect(() => {
-		console.log(playSong);
 		if (playSong) {
 			play(
 				{

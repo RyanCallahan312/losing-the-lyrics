@@ -1,7 +1,7 @@
 const EMISSIONS = require('./emissions');
 const utils = require('./utils');
 
-function createListeners(socket, io) {
+module.exports = function createListeners(socket, io) {
 	socket.on(EMISSIONS.CREATE_ROOM, (isHost) => {
 		console.log(`${socket.id} ${EMISSIONS.CREATE_ROOM}`);
 		if (isHost) {
@@ -173,7 +173,7 @@ function createListeners(socket, io) {
 				roundNumber: room.roundNumber,
 				isRoundStarted: room.isRoundStarted,
 			});
-			io.to(room.host.socketId).emit(EMISSIONS.PLAY_SONG);
+			io.to(room.host.id).emit(EMISSIONS.PLAY_SONG);
 		} else {
 			io.to(socket.id).emit(
 				EMISSIONS.ERROR_RESPONSE,
@@ -195,13 +195,24 @@ function createListeners(socket, io) {
 		}
 	});
 
-	socket.on(EMISSIONS.NEXT_TURN, () => {});
+	socket.on(EMISSIONS.NEXT_TURN, ({ isHost, roomInfo, roomCode }) => {
+		console.log(`${socket.id} ${EMISSIONS.END_TURN}`);
+	});
 
-	socket.on(EMISSIONS.END_TURN, (turnData) => {});
+	socket.on(EMISSIONS.END_TURN, ({ roomCode, turnData }) => {
+		console.log(`${socket.id} ${EMISSIONS.END_TURN}`);
+		let room = utils.getRoomByCode(io, roomCode);
+		if (socket.id == room.currentTurn) {
+			io.to(room.host.id).emit(EMISSIONS.END_TURN, turnData);
+		} else {
+			io.to(socket.id).emit(
+				EMISSIONS.ERROR_RESPONSE,
+				'SOCKET_PERMISSIONS_ERROR: players may only end turn on their turn',
+			);
+		}
+	});
 
 	socket.on(EMISSIONS.DISCONNECT, (reason) => {
 		console.log(`${socket.id} ${reason}`);
 	});
-}
-
-module.exports = createListeners;
+};

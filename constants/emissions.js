@@ -10,3 +10,4 @@ export const NEXT_TURN = 'NEXT_TURN';
 export const PLAY_SONG = 'PLAY_SONG';
 export const STOP_SONG = 'STOP_SONG';
 export const START_ROUND = 'START_ROUND';
+export const START_SING = 'START_SING';

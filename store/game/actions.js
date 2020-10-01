@@ -1,12 +1,12 @@
 import * as ACTIONS from '../../constants/actions';
-import bindListeners from '../../socket/listeners';
+import bindListeners from '../../client/listeners';
 import {
 	createRoom,
 	closeRoom,
 	joinRoom,
 	startGame,
 	leaveRoom,
-} from '../../socket/emissions';
+} from '../../client/emissions';
 
 export const createSocket = (socket) => ({
 	type: ACTIONS.CREATE_SOCKET,
@@ -39,11 +39,16 @@ export const setCurrentTurn = (clientId) => ({
 
 export const setIsRoundStarted = (isRoundStarted) => ({
 	type: ACTIONS.SET_IS_ROUND_STARTED,
-	payload: isRoundStarted
-})
+	payload: isRoundStarted,
+});
 
 export const resetLobby = () => ({
 	type: ACTIONS.LEAVE_lOBBY,
+});
+
+export const setIsSinging = (isSinging) => ({
+	type: ACTIONS.SET_IS_SINGING,
+	payload: isSinging,
 });
 
 export const leaveLobby = (isHost) => {

@@ -59,7 +59,7 @@ export default function GameClientScorePanel({ gameState }) {
 							...styles.listItem,
 							color: 'hsl(' + 360 * Math.random() + ',100%, 65%)',
 						}}
-						key={client.socketId}>
+						key={`alias-${client.socketId}`}>
 						{client.alias}
 					</td>
 				) : null,
@@ -80,7 +80,9 @@ export default function GameClientScorePanel({ gameState }) {
 			clientScore,
 			...gameState.clients.map((client) =>
 				gameState.turnOrder.includes(client.socketId) ? (
-					<td style={styles.listItem} key={client.socketId}>
+					<td
+						style={styles.listItem}
+						key={`score-${client.socketId}`}>
 						{client.score}
 					</td>
 				) : null,
@@ -117,7 +119,7 @@ export default function GameClientScorePanel({ gameState }) {
 					display: 'inline-block',
 					margin: '0px 10px',
 				}}>
-				<tbody>{combineList(clientsScore(), clientsAlias())}</tbody>
+				<tbody>{combineList(clientsAlias(), clientsScore())}</tbody>
 			</table>
 		</div>
 	);

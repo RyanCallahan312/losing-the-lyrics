@@ -27,7 +27,7 @@ export function startGame(socket, data) {
 
 export function startRound(socket, data) {
 	console.log(`starting round`);
-	socket.emit(EMISSIONS.GAME_START, data);
+	socket.emit(EMISSIONS.START_ROUND, data);
 }
 
 export function stopSong(socket, isHost) {

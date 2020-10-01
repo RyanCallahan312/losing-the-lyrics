@@ -67,7 +67,7 @@ export default function GameTurnPanel({ gameState }) {
 							...styles.listItem,
 							color: 'hsl(' + 360 * Math.random() + ',100%, 65%)',
 						}}
-						key={socketId}>
+						key={`alias-${socketId}`}>
 						{
 							gameState.clients.find(
 								(client) => client.socketId === socketId,

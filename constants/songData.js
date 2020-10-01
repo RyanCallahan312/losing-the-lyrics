@@ -8,5 +8,6 @@ export default {
 		cutOffTime: 51000,
 		endTime: 56000,
 		spotify_uri: 'spotify:track:6naxalmIoLFWR0siv8dnQQ',
+		lyrics: 'Lost all my senses, That is just so typically me. Oh baby, oh ...'
 	},
 };
