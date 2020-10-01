@@ -44,7 +44,7 @@ export default function GameTurnPanel({ gameState }) {
 	//--JSX--
 
 	const turnOrder = () => {
-		let turnOrderAlias = [
+		let turnOrderHeader = [
 			<th
 				style={{
 					...styles.listItem,
@@ -56,34 +56,22 @@ export default function GameTurnPanel({ gameState }) {
 			</th>,
 		];
 
-		turnOrderAlias = [
-			turnOrderAlias,
-			...gameState.turnOrder.map((socketId) =>
-				gameState.clients.some(
-					(client) => client.socketId === socketId,
-				) ? (
-					<td
-						style={{
-							...styles.listItem,
-							color:
-								'hsl(' +
-								gameState.clients.find(
-									(client) => client.socketId === socketId,
-								).color +
-								',100%, 65%)',
-						}}
-						key={`alias-${socketId}`}>
-						{
-							gameState.clients.find(
-								(client) => client.socketId === socketId,
-							).alias
-						}
-					</td>
-				) : null,
-			),
-		];
+		let turnOrderAlias = gameState.turnOrder.map((socketId) =>
+			gameState.clients.find((client) => client.socketId === socketId),
+		);
 
-		return turnOrderAlias;
+		turnOrderAlias.map((client) => (
+			<td
+				style={{
+					...styles.listItem,
+					color: 'hsl(' + client.color + ',100%, 65%)',
+				}}
+				key={`alias-${client.socketId}`}>
+				{client.alias}
+			</td>
+		));
+
+		return [turnOrderHeader, ...turnOrderAlias];
 	};
 
 	const headSpacer = (uniqueVal) => (
