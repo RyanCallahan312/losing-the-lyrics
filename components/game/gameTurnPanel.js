@@ -65,7 +65,12 @@ export default function GameTurnPanel({ gameState }) {
 					<td
 						style={{
 							...styles.listItem,
-							color: 'hsl(' + 360 * Math.random() + ',100%, 65%)',
+							color:
+								'hsl(' +
+								gameState.clients.find(
+									(client) => client.socketId === socketId,
+								).color +
+								',100%, 65%)',
 						}}
 						key={`alias-${socketId}`}>
 						{

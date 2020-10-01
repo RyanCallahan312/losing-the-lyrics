@@ -47,7 +47,7 @@ export default function RoomInfoPanel({ gameState }) {
 				<li
 					style={{
 						...styles.listItem,
-						color: 'hsl(' + 360 * Math.random() + ',100%, 65%)',
+						color: 'hsl(' + client.color + ',100%, 65%)',
 					}}
 					key={client.socketId}>
 					{client.alias}

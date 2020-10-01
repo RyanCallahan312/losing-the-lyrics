@@ -8,10 +8,11 @@ module.exports = function createListeners(socket, io) {
 			//init host socket fields
 			socket.isHost = true;
 			socket.alias = 'HOST 😎';
+			socket.color = null;
 			socket.score = null;
 
 			//create new room
-			roomCode = utils.getNewRoom(io.existingRoomCodes);
+			let roomCode = utils.getNewRoom(io.existingRoomCodes);
 
 			//join socket room
 			socket.join(roomCode);
@@ -24,6 +25,7 @@ module.exports = function createListeners(socket, io) {
 					socketId: socket.id,
 					isHost: socket.isHost,
 					alias: socket.alias,
+					color: socket.color,
 					score: socket.score,
 				},
 			];
@@ -65,7 +67,7 @@ module.exports = function createListeners(socket, io) {
 						io.sockets.connected[socketId].leave(room.roomCode);
 					});
 				}
-				delete utils.getRoomByCode(io, roomCode);
+				delete io.sockets.adapter.rooms[roomCode];
 			} else {
 				//error res if not host
 				io.to(socket.id).emit(
@@ -92,6 +94,7 @@ module.exports = function createListeners(socket, io) {
 
 			socket.isHost = false;
 			socket.alias = alias;
+			socket.color = 360 * Math.random()
 			socket.score = 0;
 
 			let room = utils.getRoomByCode(io, roomCode);
@@ -100,6 +103,7 @@ module.exports = function createListeners(socket, io) {
 				socketId: socket.id,
 				isHost: socket.isHost,
 				alias: socket.alias,
+				color: socket.color,
 				score: socket.score,
 			});
 
@@ -121,7 +125,7 @@ module.exports = function createListeners(socket, io) {
 
 		let room = utils.getRoomByCode(io, roomCode);
 		let client = room.clients.find(
-			(client) => client.socketId === socket.id,
+			(c) => c.socketId === socket.id,
 		);
 
 		if (client) {
@@ -129,7 +133,7 @@ module.exports = function createListeners(socket, io) {
 
 			room.clients.splice(
 				room.clients.findIndex(
-					(client) => client.socketId === socket.id,
+					(c) => c.socketId === socket.id,
 				),
 				1,
 			);
@@ -186,7 +190,7 @@ module.exports = function createListeners(socket, io) {
 		console.log(`${socket.id} ${EMISSIONS.STOP_SONG}`);
 		if (isHost) {
 			let room = utils.getRoomByCode(io, roomCode);
-			io.to(room.currentTurn).emit(EMISSIONS.STOP_SONG);
+			io.to(room.currentTurn).emit(EMISSIONS.START_SING);
 		} else {
 			io.to(socket.id).emit(
 				EMISSIONS.ERROR_RESPONSE,

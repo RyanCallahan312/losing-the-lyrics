@@ -57,7 +57,7 @@ export default function GameClientScorePanel({ gameState }) {
 					<td
 						style={{
 							...styles.listItem,
-							color: 'hsl(' + 360 * Math.random() + ',100%, 65%)',
+							color: 'hsl(' + client.color + ',100%, 65%)',
 						}}
 						key={`alias-${client.socketId}`}>
 						{client.alias}

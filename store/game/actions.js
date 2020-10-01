@@ -53,7 +53,7 @@ export const setIsSinging = (isSinging) => ({
 
 export const leaveLobby = (isHost) => {
 	return (dispatch, getState) => {
-		let { socket, roomCode, isGameStarted } = getState().game;
+		let { socket, roomCode } = getState().game;
 		if (roomCode) {
 			if (isHost) {
 				closeRoom(socket, roomCode);
