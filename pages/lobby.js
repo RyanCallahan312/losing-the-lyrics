@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import LobbyPannel from '../components/lobby/lobbyPanel';
 import io from 'socket.io-client';
 import { wrapper } from '../store/store';
+import * as SPOTIFY_API from '../constants/spotifyApi';
 
 const styles = {
 	container: {
@@ -21,17 +22,6 @@ const styles = {
 		minWidth: '200px',
 	},
 };
-
-const spotifyAuthEndpoint = 'https://accounts.spotify.com/authorize';
-const spotifyClientId = 'aeb75c365a594462a967bcb106a55be9';
-const spotifyResponseType = 'token';
-// const redirectUri = encodeURIComponent(
-// 	'https://losing-the-lyrics.herokuapp.com/game?host=true'
-// );
-const redirectUri = encodeURIComponent(
-	'https://localhost:3000/lobby?host=true',
-);
-const scopes = encodeURIComponent('streaming');
 
 const Lobby = (props) => {
 	//--state hooks--
@@ -71,10 +61,12 @@ const Lobby = (props) => {
 						{},
 					) || null;
 			if (!accessToken && (!hash || !hash.access_token)) {
-				window.location.href = `${spotifyAuthEndpoint}?client_id=${spotifyClientId}&redirect_uri=${redirectUri}&response_type=${spotifyResponseType}&scope=${scopes}`;
+				window.location.href = `${SPOTIFY_API.AUTH_ENDPOINT}?client_id=${SPOTIFY_API.CLIENT_ID}&redirect_uri=${SPOTIFY_API.REDIRECT_URI}&response_type=${SPOTIFY_API.RESPONSE_TYPE}&scope=${SPOTIFY_API.SCOPE}`;
 			} else {
-				dispatch(spotifyActions.setAccessToken(hash.access_token));
-				dispatch(gameActions.enterLobby(true));
+				if (hash) {
+					dispatch(spotifyActions.setAccessToken(hash.access_token));
+					dispatch(gameActions.enterLobby(true));
+				}
 			}
 		}
 
@@ -90,7 +82,7 @@ const Lobby = (props) => {
 	useEffect(() => {
 		if (hosting) {
 			if (!accessToken) {
-				window.location.href = `${spotifyAuthEndpoint}?client_id=${spotifyClientId}&redirect_uri=${redirectUri}&response_type=${spotifyResponseType}&scope=${scopes}`;
+				window.location.href = `${SPOTIFY_API.AUTH_ENDPOINT}?client_id=${SPOTIFY_API.CLIENT_ID}&redirect_uri=${SPOTIFY_API.REDIRECT_URI}&response_type=${SPOTIFY_API.RESPONSE_TYPE}&scope=${SPOTIFY_API.SCOPE}`;
 			} else {
 				dispatch(gameActions.enterLobby(true));
 			}

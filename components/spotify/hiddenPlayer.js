@@ -1,5 +1,4 @@
 import React from 'react';
-import * as EMMISIONS from '../../client/emissions';
 
 const play = (
 	{
