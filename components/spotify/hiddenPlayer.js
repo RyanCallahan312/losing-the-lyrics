@@ -22,7 +22,7 @@ const play = (
 	});
 };
 
-export default function HiddenPlayer({ songData, playSong, socket, isHost }) {
+export default function HiddenPlayer({ songData, playSong, stopSong }) {
 	React.useEffect(() => {
 		if (playSong) {
 			play(
@@ -40,7 +40,7 @@ export default function HiddenPlayer({ songData, playSong, socket, isHost }) {
 			);
 
 			setTimeout(() => {
-				EMMISIONS.stopSong(socket, isHost);
+				stopSong();
 				window.SpotifyPlayerProvider.pause().then(() => {
 					console.log('paused');
 				});

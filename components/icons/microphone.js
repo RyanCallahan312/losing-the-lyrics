@@ -3,8 +3,8 @@ import Active from '../../images/microphone-enabled.svg';
 import Disabled from '../../images/microphone-disabled.svg';
 
 export default function Microphone({ disabled, height, width }) {
-	if (!width) {
-		width = 'auto';
+	if (!height) {
+		height = 'auto';
 	}
 	return (
 		<div style={{ height: height, width: width }}>

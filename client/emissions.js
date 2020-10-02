@@ -30,7 +30,17 @@ export function startRound(socket, data) {
 	socket.emit(EMISSIONS.START_ROUND, data);
 }
 
-export function stopSong(socket, isHost) {
+export function stopSong(socket, data) {
 	console.log(`announcing Stop Song`);
-	socket.emit(EMISSIONS.STOP_SONG, isHost);
+	socket.emit(EMISSIONS.STOP_SONG, data);
+}
+
+export function endTurn(socket, data) {
+	console.log(`End Turn`);
+	socket.emit(EMISSIONS.END_TURN, data);
+}
+
+export function selectSong(socket, data){
+	console.log(`selecting song ${data.songData}`)
+	socket.emit(EMISSIONS.SELECT_SONG, data)
 }

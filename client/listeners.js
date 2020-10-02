@@ -26,12 +26,14 @@ export default function bindListeners(socket, dispatch, getState) {
 	});
 
 	socket.on(EMISSIONS.PLAY_SONG, () => {
-		dispatch(spotifyActions.setPlayingSong(true))
-	})
+		dispatch(spotifyActions.setPlayingSong(true));
+	});
 
 	socket.on(EMISSIONS.START_SING, () => {
-		dispatch(gameActions.setIsSinging(true))
-	})
+		dispatch(gameActions.setIsSinging(true));
+	});
 
-	
+	socket.on(EMISSIONS.END_TURN, (data) => {
+		console.log(data);
+	});
 }

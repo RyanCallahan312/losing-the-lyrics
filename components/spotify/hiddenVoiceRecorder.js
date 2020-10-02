@@ -6,30 +6,24 @@ export default function HiddenVoiceRecorder({ isSinging, handleDidSing }) {
 	const [recognition, setRecognition] = useState(null);
 
 	const voiceCommands = () => {
-		// On start
-		recognition.onstart = () => {
-			console.log('Voice is actived');
-		};
-
 		// Do something when we get a result
 		recognition.onresult = (e) => {
-			console.log('result! ', e.results[0][0].transcript);
 			setTranscript(e.results[0][0].transcript);
 		};
 
 		recognition.onspeechend = () => {
 			recognition.stop();
 			setGotInput(true);
-			console.log('voice end');
 		};
 	};
 
 	useEffect(() => {
 		const SpeechRecognition =
 			window.SpeechRecognition || window.webkitSpeechRecognition;
-
+		SpeechRecognition.maxAlternatives = 10;
 		setRecognition(new SpeechRecognition());
 		if (transcript !== '' || gotInput) {
+			console.log(transcript);
 			handleDidSing(transcript);
 			setGotInput(false);
 		}

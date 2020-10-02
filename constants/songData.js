@@ -4,10 +4,14 @@ export default {
 	[SONGS.OOPS_I_DID_IT_AGAIN]: {
 		songTitle: 'Oops I did it again',
 		artist: 'Britney Spears',
-		startTime: 43000,
-		cutOffTime: 51000,
+		startTime: 41000,
+		cutOffTime: 51500,
 		endTime: 56000,
 		spotify_uri: 'spotify:track:6naxalmIoLFWR0siv8dnQQ',
-		lyrics: 'Lost all my senses, That is just so typically me. Oh baby, oh ...'
+		partialLyrics:
+			'Lost all my senses, That is just so typically me. Oh baby, baby ...',
+		fullLyrics:
+			'Lost all my senses, That is just so typically me. Oh baby, baby. Oops I did it again',
+		answer: 'Oops I did it again',
 	},
 };

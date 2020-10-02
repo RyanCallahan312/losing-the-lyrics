@@ -13,3 +13,4 @@ module.exports.START_ROUND = 'START_ROUND';
 module.exports.END_TURN = 'END_TURN';
 module.exports.NEXT_TURN = 'NEXT_TURN';
 module.exports.START_SING = 'START_SING';
+module.exports.SELECT_SONG = 'SELECT_SONG';

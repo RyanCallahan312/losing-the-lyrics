@@ -6,6 +6,7 @@ import {
 	joinRoom,
 	startGame,
 	leaveRoom,
+	endTurn,
 } from '../../client/emissions';
 
 export const createSocket = (socket) => ({
@@ -132,5 +133,13 @@ export const closeGame = () => {
 			socket.disconnect();
 			dispatch(removeSocket());
 		}
+	};
+};
+
+export const gotTranscript = (transcript) => {
+	return (dispatch, getState) => {
+		let { socket, roomCode } = getState().game;
+		endTurn(socket, { roomCode, transcript });
+		dispatch(setIsSinging(false));
 	};
 };

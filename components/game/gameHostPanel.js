@@ -60,14 +60,20 @@ export default function GameHostPanel({ gameState }) {
 		});
 	};
 
+	const stopSong = () =>
+		EMMISIONS.stopSong(gameState.socket, {
+			isHost: gameState.isHost,
+			roomCode: gameState.roomCode,
+		});
+
 	//--JSX--
 
 	return (
 		<div style={{ ...styles.subContainer, width: '30%' }}>
 			{spotifyState.playlist ? (
-				<>
-					<LyricsDisplay lyrics={spotifyState.currentSong.lyrics} />
-				</>
+				<LyricsDisplay
+					lyrics={spotifyState.currentSong.partialLyrics}
+				/>
 			) : (
 				<PlaylistSelector handleSelectPlaylist={handleSelectPlaylist} />
 			)}
@@ -75,8 +81,7 @@ export default function GameHostPanel({ gameState }) {
 				<HiddenPlayer
 					songData={spotifyState.currentSong}
 					playSong={spotifyState.playingSong}
-					socket={gameState.socket}
-					isHost={gameState.isHost}
+					stopSong={stopSong}
 				/>
 			)}
 		</div>

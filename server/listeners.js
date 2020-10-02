@@ -33,6 +33,7 @@ module.exports = function createListeners(socket, io) {
 			room.currentTurn = null;
 			room.roundNumber = 0;
 			room.isRoundStarted = false;
+			room.songData = null;
 
 			//room info
 			io.to(roomCode).emit(EMISSIONS.ROOM_INFO, {
@@ -94,7 +95,7 @@ module.exports = function createListeners(socket, io) {
 
 			socket.isHost = false;
 			socket.alias = alias;
-			socket.color = 360 * Math.random()
+			socket.color = 360 * Math.random();
 			socket.score = 0;
 
 			let room = utils.getRoomByCode(io, roomCode);
@@ -124,17 +125,13 @@ module.exports = function createListeners(socket, io) {
 		console.log(`${socket.id} ${EMISSIONS.LEAVE_ROOM}`);
 
 		let room = utils.getRoomByCode(io, roomCode);
-		let client = room.clients.find(
-			(c) => c.socketId === socket.id,
-		);
+		let client = room.clients.find((c) => c.socketId === socket.id);
 
 		if (client) {
 			socket.leave(roomCode);
 
 			room.clients.splice(
-				room.clients.findIndex(
-					(c) => c.socketId === socket.id,
-				),
+				room.clients.findIndex((c) => c.socketId === socket.id),
 				1,
 			);
 
@@ -186,7 +183,16 @@ module.exports = function createListeners(socket, io) {
 		}
 	});
 
-	socket.on(EMISSIONS.STOP_SONG, (isHost) => {
+	socket.on(EMISSIONS.SELECT_SONG, ({ isHost, roomCode, songData }) => {
+		console.log(`${socket.id} ${EMISSIONS.SELECT_SONG}`);
+		if (isHost) {
+
+			let room = utils.getRoomByCode(io, roomCode);
+			room.songData = songData;
+		}
+	});
+
+	socket.on(EMISSIONS.STOP_SONG, ({ isHost, roomCode }) => {
 		console.log(`${socket.id} ${EMISSIONS.STOP_SONG}`);
 		if (isHost) {
 			let room = utils.getRoomByCode(io, roomCode);
@@ -201,12 +207,23 @@ module.exports = function createListeners(socket, io) {
 
 	socket.on(EMISSIONS.NEXT_TURN, ({ isHost, roomInfo, roomCode }) => {
 		console.log(`${socket.id} ${EMISSIONS.END_TURN}`);
+		console.log(`transcript: ${transcript}`);
 	});
 
-	socket.on(EMISSIONS.END_TURN, ({ roomCode, turnData }) => {
+	socket.on(EMISSIONS.END_TURN, ({ roomCode, transcript }) => {
 		console.log(`${socket.id} ${EMISSIONS.END_TURN}`);
 		let room = utils.getRoomByCode(io, roomCode);
+
 		if (socket.id == room.currentTurn) {
+
+			let turnData = {};
+
+			turnData.score = utils.getScore(
+				transcript,
+				room.songData.answer,
+			);
+			turnData.transcript = transcript;
+
 			io.to(room.host.id).emit(EMISSIONS.END_TURN, turnData);
 		} else {
 			io.to(socket.id).emit(

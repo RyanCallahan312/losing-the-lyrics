@@ -1,13 +1,9 @@
 import * as ACTIONS from '../../constants/actions';
+import { selectSong } from '../../client/emissions';
 
 export const setPlayingSong = (playingSong) => ({
 	type: ACTIONS.SET_PLAYING_SONG,
 	payload: playingSong,
-});
-
-export const setCurrentSong = (song) => ({
-	type: ACTIONS.SET_CURRENT_SONG,
-	payload: song,
 });
 
 export const setPlaylist = (playlist) => ({
@@ -26,14 +22,25 @@ export const nextSong = () => {
 
 		if (currentSong && playlist) {
 			let index = playlist.SONGS.findIndex(currentSong);
-			let nextSong;
+			let next;
 			if (index + 1 < playlist.length) {
-				nextSong = playlist.SONGS[index + 1];
+				next = playlist.SONGS[index + 1];
 			} else {
-				nextSong = playlist.SONGS[0];
+				next = playlist.SONGS[0];
 			}
 
-			dispatch(setCurrentSong(nextSong));
+			dispatch(setCurrentSong(next));
 		}
+	};
+};
+
+export const setCurrentSong = (song) => {
+	return (dispatch, getState) => {
+		let { isHost, socket, roomCode } = getState().game;
+		selectSong(socket, { isHost, roomCode, songData: song });
+		dispatch({
+			type: ACTIONS.SET_CURRENT_SONG,
+			payload: song,
+		});
 	};
 };

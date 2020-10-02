@@ -1,5 +1,7 @@
 import Microphone from '../icons/microphone';
 import HiddenVoiceRecorder from '../spotify/hiddenVoiceRecorder';
+import * as gameActions from '../../store/game/actions';
+import { useDispatch } from 'react-redux';
 
 const styles = {
 	container: {
@@ -38,6 +40,8 @@ const styles = {
 export default function GamePlayerPanel({ isSinging }) {
 	//--redux hooks--
 
+	const dispatch = useDispatch();
+
 	//--state hooks--
 
 	//--effect hooks--
@@ -46,13 +50,14 @@ export default function GamePlayerPanel({ isSinging }) {
 
 	const handleDidSing = (transcript) => {
 		console.log(transcript);
+		dispatch(gameActions.gotTranscript(transcript));
 	};
 
 	//--JSX--
 
 	return (
 		<div style={{ ...styles.subContainer, width: '30%', padding: 0 }}>
-			<Microphone disabled={!isSinging} height='100%' />
+			<Microphone disabled={!isSinging} width='100%' />
 			<HiddenVoiceRecorder
 				handleDidSing={handleDidSing}
 				isSinging={isSinging}
