@@ -44,7 +44,7 @@ export default function GameTurnPanel({ gameState }) {
 	//--JSX--
 
 	const turnOrder = () => {
-		let turnOrderHeader = [
+		let turnOrderHeader = (
 			<th
 				style={{
 					...styles.listItem,
@@ -53,14 +53,14 @@ export default function GameTurnPanel({ gameState }) {
 				}}
 				key={'title'}>
 				Turn Order
-			</th>,
-		];
+			</th>
+		);
 
 		let turnOrderAlias = gameState.turnOrder.map((socketId) =>
 			gameState.clients.find((client) => client.socketId === socketId),
 		);
 
-		turnOrderAlias.map((client) => (
+		turnOrderAlias = turnOrderAlias.map((client) => (
 			<td
 				style={{
 					...styles.listItem,
