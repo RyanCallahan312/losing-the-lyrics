@@ -27,8 +27,10 @@ export default function HiddenVoiceRecorder({ isSinging, handleDidSing }) {
 	useEffect(() => {
 		const SpeechRecognition =
 			window.SpeechRecognition || window.webkitSpeechRecognition;
-		SpeechRecognition.maxAlternatives = 10;
 		setRecognition(new SpeechRecognition());
+	}, []);
+
+	useEffect(() => {
 		if (transcript !== '' || gotInput) {
 			console.log(transcript);
 			handleDidSing(transcript);
@@ -44,7 +46,15 @@ export default function HiddenVoiceRecorder({ isSinging, handleDidSing }) {
 
 	useEffect(() => {
 		if (isSinging) {
+			setTranscript('');
 			recognition.start();
+			setTimeout(() => {
+				if (!transcript) {
+					recognition.stop();
+					setGotInput(true);
+					console.log('voice end');
+				}
+			}, 10000);
 		}
 	}, [isSinging]);
 	return null;

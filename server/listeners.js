@@ -206,7 +206,7 @@ module.exports = function createListeners(socket, io) {
 	});
 
 	socket.on(EMISSIONS.NEXT_TURN, ({ isHost, roomInfo, roomCode }) => {
-		console.log(`${socket.id} ${EMISSIONS.END_TURN}`);
+		console.log(`${socket.id} ${EMISSIONS.NEXT_TURN}`);
 		console.log(`transcript: ${transcript}`);
 	});
 
