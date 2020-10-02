@@ -22,11 +22,11 @@ export default function bindListeners(socket, dispatch, getState) {
 	});
 
 	socket.on(EMISSIONS.STOP_SONG, () => {
-		dispatch(spotifyActions.setPlayingSong(false));
+		dispatch(spotifyActions.setPlayingPartialSong(false));
 	});
 
-	socket.on(EMISSIONS.PLAY_SONG, () => {
-		dispatch(spotifyActions.setPlayingSong(true));
+	socket.on(EMISSIONS.PLAY_PARTIAL_SONG, () => {
+		dispatch(spotifyActions.setPlayingPartialSong(true));
 	});
 
 	socket.on(EMISSIONS.START_SING, () => {
@@ -34,6 +34,7 @@ export default function bindListeners(socket, dispatch, getState) {
 	});
 
 	socket.on(EMISSIONS.END_TURN, (data) => {
-		console.log(data);
+		dispatch(gameActions.setTurnResults(data));
+		dispatch(spotifyActions.setPlayingFullSong(true));
 	});
 }

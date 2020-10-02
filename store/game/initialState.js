@@ -5,6 +5,7 @@ export default {
 	isGameStarted: false,
 	isSinging: false,
 	isRoundStarted: false,
+	turnResults: null,
 	roomCode: null,
 	userList: [],
 	lyrics: null,

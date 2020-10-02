@@ -1,9 +1,14 @@
 import * as ACTIONS from '../../constants/actions';
 import { selectSong } from '../../client/emissions';
 
-export const setPlayingSong = (playingSong) => ({
-	type: ACTIONS.SET_PLAYING_SONG,
-	payload: playingSong,
+export const setPlayingPartialSong = (playingPartialSong) => ({
+	type: ACTIONS.SET_PLAYING_PARTIAL_SONG,
+	payload: playingPartialSong,
+});
+
+export const setPlayingFullSong = (playingFullSong) => ({
+	type: ACTIONS.SET_PLAYING_FULL_SONG,
+	payload: playingFullSong,
 });
 
 export const setPlaylist = (playlist) => ({

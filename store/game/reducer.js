@@ -74,6 +74,12 @@ export default function gameReducer(state = initialState, { type, payload }) {
 				isSinging: payload,
 			};
 
+		case ACTIONS.SET_TURN_RESULTS:
+			return {
+				...state,
+				turnResults: payload,
+			};
+
 		default:
 			return state;
 	}

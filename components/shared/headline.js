@@ -1,3 +1,5 @@
+import { forwardRef } from 'react';
+
 const styles = {
 	extras: {
 		borderRadius: '100px',
@@ -21,7 +23,7 @@ const styles = {
 		overflow: 'hidden',
 	},
 };
-const Headline = React.forwardRef((props, ref) => (
+const Headline = forwardRef((props, ref) => (
 	<button
 		onClick={props.onClick}
 		href={props.href}

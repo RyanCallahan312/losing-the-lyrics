@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from 'react';
 
 const play = (
 	{
@@ -21,9 +21,14 @@ const play = (
 	});
 };
 
-export default function HiddenPlayer({ songData, playSong, stopSong }) {
-	React.useEffect(() => {
-		if (playSong) {
+export default function HiddenPlayer({
+	songData,
+	playPartialSong,
+	playFullSong,
+	stopSong,
+}) {
+	useEffect(() => {
+		if (playPartialSong) {
 			play(
 				{
 					playerInstance: window.SpotifyPlayerProvider,
@@ -39,12 +44,36 @@ export default function HiddenPlayer({ songData, playSong, stopSong }) {
 			);
 
 			setTimeout(() => {
-				stopSong();
+				stopSong(true);
 				window.SpotifyPlayerProvider.pause().then(() => {
 					console.log('paused');
 				});
 			}, songData.cutOffTime - songData.startTime);
 		}
-	}, [playSong]);
+	}, [playPartialSong]);
+	useEffect(() => {
+		if (playFullSong) {
+			play(
+				{
+					playerInstance: window.SpotifyPlayerProvider,
+					spotify_uri: songData.spotify_uri,
+				},
+				songData.startTime,
+			);
+
+			window.SpotifyPlayerProvider.setVolume(0.2);
+
+			console.log(
+				`playing ${songData.songTitle} by ${songData.artist} from uri ${songData.spotifyUri} starting at ${songData.startTime}`,
+			);
+
+			setTimeout(() => {
+				stopSong(false);
+				window.SpotifyPlayerProvider.pause().then(() => {
+					console.log('paused');
+				});
+			}, songData.endTime - songData.startTime);
+		}
+	}, [playFullSong]);
 	return null;
 }

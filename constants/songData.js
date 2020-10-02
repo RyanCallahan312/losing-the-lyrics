@@ -6,12 +6,12 @@ export default {
 		artist: 'Britney Spears',
 		startTime: 41000,
 		cutOffTime: 51500,
-		endTime: 56000,
+		endTime: 53800,
 		spotify_uri: 'spotify:track:6naxalmIoLFWR0siv8dnQQ',
 		partialLyrics:
 			'Lost all my senses, That is just so typically me. Oh baby, baby ...',
 		fullLyrics:
-			'Lost all my senses, That is just so typically me. Oh baby, baby. Oops I did it again',
+			'Lost all my senses, That is just so typically me. Oh baby, baby. Oops I did it again...',
 		answer: 'Oops I did it again',
 	},
 };

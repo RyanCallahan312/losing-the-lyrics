@@ -24,10 +24,16 @@ export default function spotifyReducer(
 				currentSong: payload,
 			};
 
-		case ACTIONS.SET_PLAYING_SONG:
+		case ACTIONS.SET_PLAYING_PARTIAL_SONG:
 			return {
 				...state,
-				playingSong: payload,
+				playingPartialSong: payload,
+			};
+
+		case ACTIONS.SET_PLAYING_FULL_SONG:
+			return {
+				...state,
+				playingFullSong: payload,
 			};
 
 		default:

@@ -52,6 +52,11 @@ export const setIsSinging = (isSinging) => ({
 	payload: isSinging,
 });
 
+export const setTurnResults = (turnResults) => ({
+	type: ACTIONS.SET_TURN_RESULTS,
+	payload: turnResults,
+});
+
 export const leaveLobby = (isHost) => {
 	return (dispatch, getState) => {
 		let { socket, roomCode } = getState().game;
@@ -143,3 +148,10 @@ export const gotTranscript = (transcript) => {
 		dispatch(setIsSinging(false));
 	};
 };
+
+export const nextTurn = () => {
+	return (dispatch, getState) => {
+		
+		let { socket, roomCode } = getState().game;
+	}
+}

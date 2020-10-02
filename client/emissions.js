@@ -40,7 +40,12 @@ export function endTurn(socket, data) {
 	socket.emit(EMISSIONS.END_TURN, data);
 }
 
-export function selectSong(socket, data){
-	console.log(`selecting song ${data.songData}`)
-	socket.emit(EMISSIONS.SELECT_SONG, data)
+export function selectSong(socket, data) {
+	console.log(`selecting song ${data.songData}`);
+	socket.emit(EMISSIONS.SELECT_SONG, data);
+}
+
+export function nextTurn(socket, data) {
+	console.log(`Next Turn`);
+	socket.emit(EMISSIONS.NEXT_TURN, data);
 }

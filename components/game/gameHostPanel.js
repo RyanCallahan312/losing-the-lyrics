@@ -1,9 +1,11 @@
 import PlaylistSelector from '../spotify/playlistSelector';
+import * as gameActions from '../../store/game/actions';
 import * as spotifyActions from '../../store/spotify/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import HiddenPlayer from '../spotify/hiddenPlayer';
 import * as EMMISIONS from '../../client/emissions';
 import LyricsDisplay from '../spotify/lyrcisDisplay';
+import TurnResultsDisplay from './turnResultsDisplay';
 
 const styles = {
 	container: {
@@ -60,27 +62,47 @@ export default function GameHostPanel({ gameState }) {
 		});
 	};
 
-	const stopSong = () =>
-		EMMISIONS.stopSong(gameState.socket, {
-			isHost: gameState.isHost,
-			roomCode: gameState.roomCode,
-		});
+	const stopSong = (shouldEmitStopSong) => {
+		if (shouldEmitStopSong) {
+			EMMISIONS.stopSong(gameState.socket, {
+				isHost: gameState.isHost,
+				roomCode: gameState.roomCode,
+			});
+		} else {
+			gameActions.nextTurn();
+		}
+		//TODO: do something for time out
+	};
 
 	//--JSX--
 
 	return (
 		<div style={{ ...styles.subContainer, width: '30%' }}>
 			{spotifyState.playlist ? (
-				<LyricsDisplay
-					lyrics={spotifyState.currentSong.partialLyrics}
-				/>
+				<div>
+					<LyricsDisplay
+						partialLyrics={spotifyState.currentSong.partialLyrics}
+						fullLyrics={spotifyState.currentSong.fullLyrics}
+						turnResults={gameState.turnResults}
+					/>
+					{gameState.turnResults && (
+						<TurnResultsDisplay
+							turnResults={gameState.turnResults}
+							currentTurnClient={gameState.clients.find(
+								(client) =>
+									client.socketId === gameState.currentTurn,
+							)}
+						/>
+					)}
+				</div>
 			) : (
 				<PlaylistSelector handleSelectPlaylist={handleSelectPlaylist} />
 			)}
 			{spotifyState.currentSong && (
 				<HiddenPlayer
 					songData={spotifyState.currentSong}
-					playSong={spotifyState.playingSong}
+					playPartialSong={spotifyState.playingPartialSong}
+					playFullSong={spotifyState.playingFullSong}
 					stopSong={stopSong}
 				/>
 			)}

@@ -1,3 +1,5 @@
+import { forwardRef } from 'react';
+
 const styles = {
 	extras: {
 		display: 'block',
@@ -27,7 +29,7 @@ const styles = {
 	},
 };
 
-const Button = React.forwardRef((props, ref) => (
+const Button = forwardRef((props, ref) => (
 	<button
 		onClick={props.onClick}
 		href={props.href}

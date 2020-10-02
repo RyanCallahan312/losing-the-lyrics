@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 
 const styles = {
 	container: {
@@ -19,9 +19,9 @@ const styles = {
 };
 
 export default function GamePanel(props) {
-	const [transcript, setTranscript] = React.useState('');
-	const [gotInput, setGotInput] = React.useState(false);
-	const [recognition, setRecognition] = React.useState(null);
+	const [transcript, setTranscript] = useState('');
+	const [gotInput, setGotInput] = useState(false);
+	const [recognition, setRecognition] = useState(null);
 
 	const voiceCommands = () => {
 		// On start
@@ -31,7 +31,6 @@ export default function GamePanel(props) {
 
 		// Do something when we get a result
 		recognition.onresult = (e) => {
-			let current = e.resultIndex;
 			console.log('result! ', e.results[0][0].transcript);
 			setTranscript(e.results[0][0].transcript);
 		};
@@ -43,7 +42,7 @@ export default function GamePanel(props) {
 		};
 	};
 
-	React.useEffect(() => {
+	useEffect(() => {
 		const SpeechRecognition =
 			window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -54,13 +53,13 @@ export default function GamePanel(props) {
 		}
 	}, [transcript, gotInput]);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (recognition) {
 			voiceCommands();
 		}
 	}, [recognition]);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (props.isSinging) {
 			recognition.start();
 		}

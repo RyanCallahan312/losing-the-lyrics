@@ -1,3 +1,5 @@
+import { forwardRef } from 'react';
+
 const styles = {
 	extras: {
 		display: 'block',
@@ -27,7 +29,7 @@ const styles = {
 	},
 };
 
-const TextInput = React.forwardRef((props, ref) => (
+const TextInput = forwardRef((props, ref) => (
 	<input
 		onClick={props.onClick}
 		href={props.href}
