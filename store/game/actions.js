@@ -1,13 +1,6 @@
 import * as ACTIONS from '../../constants/actions';
 import bindListeners from '../../client/listeners';
-import {
-	createRoom,
-	closeRoom,
-	joinRoom,
-	startGame,
-	leaveRoom,
-	endTurn,
-} from '../../client/emissions';
+import * as emit from '../../client/emissions';
 
 export const createSocket = (socket) => ({
 	type: ACTIONS.CREATE_SOCKET,
@@ -151,7 +144,19 @@ export const gotTranscript = (transcript) => {
 
 export const nextTurn = () => {
 	return (dispatch, getState) => {
-		
-		let { socket, roomCode } = getState().game;
-	}
-}
+		let {
+			socket,
+			roomCode,
+			clients,
+			currentTurn,
+			turnResults,
+		} = getState().game;
+
+		clients[currentTurn] = turnResults.score;
+
+		emit.nextTurn(socket, { clients, roomCode, isHost });
+
+		dispatch(setTurnResults(null));
+		dispatch()
+	};
+};

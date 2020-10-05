@@ -89,7 +89,8 @@ module.exports = function createListeners(socket, io) {
 
 		if (
 			io.sockets.adapter.rooms[roomCode] &&
-			io.sockets.adapter.rooms[roomCode].roundNumber === 0
+			io.sockets.adapter.rooms[roomCode].roundNumber === 0 &&
+			io.sockets.adapter.rooms[roomCode].clients.length < 5
 		) {
 			socket.join(roomCode);
 
@@ -204,7 +205,7 @@ module.exports = function createListeners(socket, io) {
 		}
 	});
 
-	socket.on(EMISSIONS.NEXT_TURN, ({ isHost, roomInfo, roomCode }) => {
+	socket.on(EMISSIONS.NEXT_TURN, ({ isHost, clients, roomCode }) => {
 		console.log(`${socket.id} ${EMISSIONS.NEXT_TURN}`);
 		console.log(`transcript: ${transcript}`);
 	});

@@ -64,14 +64,25 @@ export default function GameHostPanel({ gameState }) {
 
 	const stopSong = (shouldEmitStopSong) => {
 		if (shouldEmitStopSong) {
+			spotifyActions.setPlayingPartialSong(false);
 			EMMISIONS.stopSong(gameState.socket, {
 				isHost: gameState.isHost,
 				roomCode: gameState.roomCode,
 			});
+			//TODO: do something for time out
 		} else {
-			gameActions.nextTurn();
+			spotifyActions.setPlayingFullSong(false);
+			if (
+				gameState.turnOrder[gameState.turnOrder.length - 1] ===
+				gameState.currentTurn
+			) {
+				//TODO: goto next round
+				console.log('round Complete');
+			} else {
+				gameActions.nextTurn();
+				spotifyActions.nextSong();
+			}
 		}
-		//TODO: do something for time out
 	};
 
 	//--JSX--
