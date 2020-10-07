@@ -73,7 +73,7 @@ export const enterLobby = (isHost) => {
 	return (dispatch, getState) => {
 		if (isHost) {
 			let { socket } = getState().game;
-			createRoom(socket, isHost);
+			emit.createRoom(socket, isHost);
 		}
 		dispatch(setIsInLobby(true));
 		dispatch(setIsHost(isHost));
@@ -157,6 +157,6 @@ export const nextTurn = () => {
 		emit.nextTurn(socket, { clients, roomCode, isHost });
 
 		dispatch(setTurnResults(null));
-		dispatch()
+		dispatch();
 	};
 };
