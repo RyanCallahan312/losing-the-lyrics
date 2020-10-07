@@ -101,7 +101,7 @@ export const lobbyDisconnectFromServer = () => {
 		} = getState().game;
 		if (!isGameStarted) {
 			if ((isInLobby && roomCode, roomCode)) {
-				await dispatch(emit.leaveLobby(isHost));
+				await dispatch(leaveLobby(isHost));
 			}
 			socket.disconnect();
 			dispatch(removeSocket());
