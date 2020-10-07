@@ -55,9 +55,9 @@ export const leaveLobby = (isHost) => {
 		let { socket, roomCode } = getState().game;
 		if (roomCode) {
 			if (isHost) {
-				closeRoom(socket, roomCode);
+				emit.closeRoom(socket, roomCode);
 			} else {
-				leaveRoom(socket, roomCode);
+				emit.leaveRoom(socket, roomCode);
 			}
 		}
 		dispatch(resetLobby());
@@ -101,7 +101,7 @@ export const lobbyDisconnectFromServer = () => {
 		} = getState().game;
 		if (!isGameStarted) {
 			if ((isInLobby && roomCode, roomCode)) {
-				await dispatch(leaveLobby(isHost));
+				await dispatch(emit.leaveLobby(isHost));
 			}
 			socket.disconnect();
 			dispatch(removeSocket());
@@ -112,14 +112,14 @@ export const lobbyDisconnectFromServer = () => {
 export const joinRoomAction = (roomCode, alias) => {
 	return (dispatch, getState) => {
 		let { socket } = getState().game;
-		joinRoom(socket, { roomCode, alias });
+		emit.joinRoom(socket, { roomCode, alias });
 		dispatch(setIsInLobby(true));
 	};
 };
 
 export const hostStartGame = (socket, isHost, roomCode) => {
 	if (isHost) {
-		startGame(socket, { roomCode: roomCode, isHost: isHost });
+		emit.startGame(socket, { roomCode: roomCode, isHost: isHost });
 	}
 };
 
@@ -137,7 +137,7 @@ export const closeGame = () => {
 export const gotTranscript = (transcript) => {
 	return (dispatch, getState) => {
 		let { socket, roomCode } = getState().game;
-		endTurn(socket, { roomCode, transcript });
+		emit.endTurn(socket, { roomCode, transcript });
 		dispatch(setIsSinging(false));
 	};
 };
