@@ -1,5 +1,6 @@
 import * as ACTIONS from '../../constants/actions';
 import { selectSong } from '../../client/emissions';
+import _ from 'lodash';
 
 export const setPlayingPartialSong = (playingPartialSong) => ({
 	type: ACTIONS.SET_PLAYING_PARTIAL_SONG,
@@ -26,7 +27,10 @@ export const nextSong = () => {
 		let { playlist, currentSong } = getState().spotify;
 
 		if (currentSong && playlist) {
-			let index = playlist.SONGS.findIndex(currentSong);
+			console.log(playlist.SONGS);
+			let index = playlist.SONGS.findIndex((song) =>
+				s_.isEqual(song, currentSong),
+			);
 			let next;
 			if (index + 1 < playlist.length) {
 				next = playlist.SONGS[index + 1];

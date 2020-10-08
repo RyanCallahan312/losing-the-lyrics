@@ -1,4 +1,5 @@
 import PLAYLISTS from '../../constants/playlists';
+import Button from '../shared/button';
 
 const styles = {
 	container: {
@@ -59,13 +60,10 @@ export default function PlaylistSelector({ handleSelectPlaylist }) {
 	const playlist = (rawPlaylist) => {
 		return (
 			<div style={styles.subContainer} key={rawPlaylist.NAME}>
-				<button
-					style={styles.clickableDiv}
+				<Button
 					onClick={() => handleSelectPlaylist(rawPlaylist)}>
 					<h1>{rawPlaylist.NAME}</h1>
-					<h2>Songs</h2>
-					<ul>{rawPlaylist.SONGS.map((songData) => song(songData))}</ul>
-				</button>
+				</Button>
 			</div>
 		);
 	};

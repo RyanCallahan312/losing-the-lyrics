@@ -150,6 +150,7 @@ export const nextTurn = () => {
 			clients,
 			currentTurn,
 			turnResults,
+			isHost,
 		} = getState().game;
 
 		clients[currentTurn] = turnResults.score;
@@ -157,6 +158,5 @@ export const nextTurn = () => {
 		emit.nextTurn(socket, { clients, roomCode, isHost });
 
 		dispatch(setTurnResults(null));
-		dispatch();
 	};
 };

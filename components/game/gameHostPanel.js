@@ -6,6 +6,7 @@ import HiddenPlayer from '../spotify/hiddenPlayer';
 import * as EMMISIONS from '../../client/emissions';
 import LyricsDisplay from '../spotify/lyrcisDisplay';
 import TurnResultsDisplay from './turnResultsDisplay';
+import { FisherYatesShuffle as arrayShuffle } from '../utils/arrayUtils';
 
 const styles = {
 	container: {
@@ -53,7 +54,8 @@ export default function GameHostPanel({ gameState }) {
 	//--handlers--
 
 	const handleSelectPlaylist = (playlist) => {
-		//TODO: trim playlist to make it an even number for the amount of clients and randomize the order
+		//TODO: trim playlist to make it an even number for the amount of clients
+		playlist = arrayShuffle(playlist);
 		dispatch(spotifyActions.setPlaylist(playlist));
 		dispatch(spotifyActions.setCurrentSong(playlist.SONGS[0]));
 		EMMISIONS.startRound(gameState.socket, {
@@ -64,14 +66,14 @@ export default function GameHostPanel({ gameState }) {
 
 	const stopSong = (shouldEmitStopSong) => {
 		if (shouldEmitStopSong) {
-			spotifyActions.setPlayingPartialSong(false);
+			dispatch(spotifyActions.setPlayingPartialSong(false));
 			EMMISIONS.stopSong(gameState.socket, {
 				isHost: gameState.isHost,
 				roomCode: gameState.roomCode,
 			});
 			//TODO: do something for time out
 		} else {
-			spotifyActions.setPlayingFullSong(false);
+			dispatch(spotifyActions.setPlayingFullSong(false));
 			if (
 				gameState.turnOrder[gameState.turnOrder.length - 1] ===
 				gameState.currentTurn
@@ -79,8 +81,8 @@ export default function GameHostPanel({ gameState }) {
 				//TODO: goto next round
 				console.log('round Complete');
 			} else {
-				gameActions.nextTurn();
-				spotifyActions.nextSong();
+				dispatch(gameActions.nextTurn());
+				dispatch(spotifyActions.nextSong());
 			}
 		}
 	};

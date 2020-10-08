@@ -50,13 +50,15 @@ const Game = (props) => {
 	if (gameState.isInLobby) {
 		return (
 			<div style={styles.container}>
-				<GameClientScorePanel gameState={gameState} />
 				{gameState.isHost ? (
-					<GameHostPanel gameState={gameState} />
+					<>
+						<GameClientScorePanel gameState={gameState} />
+						<GameHostPanel gameState={gameState} />
+						<GameTurnPanel gameState={gameState} />
+					</>
 				) : (
 					<GamePlayerPanel isSinging={gameState.isSinging} />
 				)}
-				<GameTurnPanel gameState={gameState} />
 			</div>
 		);
 	} else {
