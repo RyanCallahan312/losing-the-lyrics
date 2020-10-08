@@ -55,7 +55,7 @@ export default function GameHostPanel({ gameState }) {
 
 	const handleSelectPlaylist = (playlist) => {
 		//TODO: trim playlist to make it an even number for the amount of clients
-		playlist = arrayShuffle(playlist);
+		playlist.SONGS = arrayShuffle(playlist.SONGS);
 		dispatch(spotifyActions.setPlaylist(playlist));
 		dispatch(spotifyActions.setCurrentSong(playlist.SONGS[0]));
 		EMMISIONS.startRound(gameState.socket, {
@@ -81,8 +81,10 @@ export default function GameHostPanel({ gameState }) {
 				//TODO: goto next round
 				console.log('round Complete');
 			} else {
-				dispatch(gameActions.nextTurn());
-				dispatch(spotifyActions.nextSong());
+				setTimeout(() => {
+					dispatch(gameActions.nextTurn());
+					dispatch(spotifyActions.nextSong());
+				}, 1000);
 			}
 		}
 	};

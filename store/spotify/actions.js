@@ -29,16 +29,13 @@ export const nextSong = () => {
 		if (currentSong && playlist) {
 			console.log(playlist.SONGS);
 			let index = playlist.SONGS.findIndex((song) =>
-				s_.isEqual(song, currentSong),
+				_.isEqual(song, currentSong),
 			);
-			let next;
-			if (index + 1 < playlist.length) {
-				next = playlist.SONGS[index + 1];
+			if (index !== playlist.length - 1) {
+				dispatch(setCurrentSong(playlist.SONGS[index + 1]));
 			} else {
-				next = playlist.SONGS[0];
+				dispatch(setCurrentSong(playlist.SONGS[0]));
 			}
-
-			dispatch(setCurrentSong(next));
 		}
 	};
 };

@@ -57,16 +57,15 @@ export default function PlaylistSelector({ handleSelectPlaylist }) {
 		);
 	};
 
-	const playlist = (rawPlaylist) => {
-		return (
+	//TODO: turn playlist into cards rather than buttons
+
+	const playlist = (rawPlaylist) => 
 			<div style={styles.subContainer} key={rawPlaylist.NAME}>
 				<Button
 					onClick={() => handleSelectPlaylist(rawPlaylist)}>
 					<h1>{rawPlaylist.NAME}</h1>
 				</Button>
 			</div>
-		);
-	};
 
 	return <div>{PLAYLISTS.map((rawPlaylist) => playlist(rawPlaylist))}</div>;
 }

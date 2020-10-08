@@ -207,7 +207,29 @@ module.exports = function createListeners(socket, io) {
 
 	socket.on(EMISSIONS.NEXT_TURN, ({ isHost, clients, roomCode }) => {
 		console.log(`${socket.id} ${EMISSIONS.NEXT_TURN}`);
-		console.log(`transcript: ${transcript}`);
+		if (isHost) {
+			let room = utils.getRoomByCode(io, roomCode);
+			room.clients = clients;
+			let currentTurnIndex = room.turnOrder.findIndex(
+				(socketId) => room.currentTurn === socketId,
+			);
+
+			if (currentTurnIndex === room.turnOrder.length - 1) {
+				room.currentTurn = room.turnOrder[0];
+			} else {
+				room.currentTurn = room.turnOrder[currentTurnIndex + 1];
+			}
+
+			io.to(roomCode).emit(EMISSIONS.ROOM_INFO, {
+				roomCode: roomCode,
+				clients: room.clients,
+				turnOrder: room.turnOrder,
+				currentTurn: room.currentTurn,
+				roundNumber: room.roundNumber,
+				isRoundStarted: room.isRoundStarted,
+			});
+			io.to(room.host.id).emit(EMISSIONS.PLAY_PARTIAL_SONG);
+		}
 	});
 
 	socket.on(EMISSIONS.END_TURN, ({ roomCode, transcript }) => {

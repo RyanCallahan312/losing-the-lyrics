@@ -1,6 +1,6 @@
 const styles = {
 	lyricsDisplay: {
-		fontSize: 'calc(16px + 2.4vmax)',
+		fontSize: 'calc(16px + 2.3vmax)',
 		fontFamily: 'Cute Font',
 		color: 'rgba(50,138,250, 1)',
 		fontWeight: '600',

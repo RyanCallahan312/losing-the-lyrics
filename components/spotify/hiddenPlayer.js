@@ -37,18 +37,12 @@ export default function HiddenPlayer({
 				songData.startTime,
 			);
 
-			window.SpotifyPlayerProvider.setVolume(0.1);
-
-			console.log(
-				`playing ${songData.songTitle} by ${songData.artist} from uri ${songData.spotifyUri} starting at ${songData.startTime}`,
-			);
-
 			setTimeout(() => {
 				stopSong(true);
-				window.SpotifyPlayerProvider.pause().then(() => {
-					console.log('paused');
-				});
+				window.SpotifyPlayerProvider.pause();
 			}, songData.cutOffTime - songData.startTime);
+
+			window.SpotifyPlayerProvider.setVolume(0.1);
 		}
 	}, [playPartialSong]);
 	useEffect(() => {
@@ -61,18 +55,12 @@ export default function HiddenPlayer({
 				songData.startTime,
 			);
 
-			window.SpotifyPlayerProvider.setVolume(0.1);
-
-			console.log(
-				`playing ${songData.songTitle} by ${songData.artist} from uri ${songData.spotifyUri} starting at ${songData.startTime}`,
-			);
-
 			setTimeout(() => {
 				stopSong(false);
-				window.SpotifyPlayerProvider.pause().then(() => {
-					console.log('paused');
-				});
+				window.SpotifyPlayerProvider.pause();
 			}, songData.endTime - songData.startTime);
+
+			window.SpotifyPlayerProvider.setVolume(0.1);
 		}
 	}, [playFullSong]);
 	return null;
