@@ -90,25 +90,57 @@ export default function GameTurnPanel({ gameState }) {
 		</td>
 	);
 
-	const getSpacers = () => {
+	const getSpacers = (amount) => {
 		var i;
 		var spacers = [];
-		for (i = 2; i < gameState.turnOrder.length; i++) {
-			spacers.push(spacer(i));
+		for (i = 0; i < amount; i++) {
+			spacers.push(spacer(i * amount));
 		}
 		return spacers;
 	};
 
-	const turnDescriptors = [
-		headSpacer(0),
-		<td style={styles.listItem} key='singing'>
-			Singing
-		</td>,
-		<td style={styles.listItem} key='onDeck'>
-			On Deck
-		</td>,
-		...getSpacers(),
-	];
+	const turnDescriptors = (currentTurn, turnOrderList) => {
+		let currentTurnIndex = turnOrderList.findIndex(
+			(socketId) => socketId === currentTurn,
+		);
+
+		console.log(currentTurnIndex, turnOrderList.length);
+
+		let descriptors = [...getSpacers(currentTurnIndex)];
+		descriptors.push(
+			<td style={styles.listItem} key='singing'>
+				Singing
+			</td>,
+		);
+		if (currentTurnIndex !== turnOrderList.length - 1) {
+			descriptors.push(
+				<td style={styles.listItem} key='onDeck'>
+					On Deck
+				</td>,
+			);
+		}
+		console.log(
+			`currentTurn ${currentTurnIndex}`,
+			`turnOrderList ${turnOrderList.length}`,
+			`descriptors ${descriptors.length}`,
+		);
+		descriptors = [
+			...descriptors,
+			...getSpacers(descriptors.length - turnOrderList.length - 1),
+		];
+
+		return descriptors;
+	};
+	// const turnDescriptors = [
+	// 	headSpacer(0),
+	// 	<td style={styles.listItem} key='singing'>
+	// 		Singing
+	// 	</td>,
+	// 	<td style={styles.listItem} key='onDeck'>
+	// 		On Deck
+	// 	</td>,
+	// 	...getSpacers(),
+	// ];
 
 	const combineList = (left, right) => {
 		let newList = [];
@@ -137,7 +169,15 @@ export default function GameTurnPanel({ gameState }) {
 					display: 'inline-block',
 					margin: '0px 10px',
 				}}>
-				<tbody>{combineList(turnDescriptors, turnOrder())}</tbody>
+				<tbody>
+					{combineList(
+						turnDescriptors(
+							gameState.currentTurn,
+							gameState.turnOrder,
+						),
+						turnOrder(),
+					)}
+				</tbody>
 			</table>
 		</div>
 	);

@@ -150,7 +150,6 @@ module.exports = function createListeners(socket, io) {
 	socket.on(EMISSIONS.GAME_START, ({ roomCode, isHost }) => {
 		console.log(`${socket.id} ${EMISSIONS.GAME_START}`);
 		if (isHost && io.sockets.adapter.rooms[roomCode]) {
-			io.sockets.adapter.rooms[roomCode].roundNumber += 1;
 			io.to(roomCode).emit(EMISSIONS.GAME_START);
 		} else {
 			io.to(socket.id).emit(
@@ -225,8 +224,6 @@ module.exports = function createListeners(socket, io) {
 				clients: room.clients,
 				turnOrder: room.turnOrder,
 				currentTurn: room.currentTurn,
-				roundNumber: room.roundNumber,
-				isRoundStarted: room.isRoundStarted,
 			});
 			io.to(room.host.id).emit(EMISSIONS.PLAY_PARTIAL_SONG);
 		}
@@ -239,7 +236,8 @@ module.exports = function createListeners(socket, io) {
 		if (socket.id === room.currentTurn || socket.id === room.host.id) {
 			let turnData = {};
 
-			turnData.score = utils.getScore(transcript, room.songData.answer);
+			turnData.score = 3;
+			// turnData.score = utils.getScore(transcript, room.songData.answer);
 			turnData.transcript = transcript;
 
 			io.to(room.host.id).emit(EMISSIONS.END_TURN, turnData);

@@ -92,12 +92,7 @@ export const connectToServer = (io) => {
 
 export const lobbyDisconnectFromServer = (socket) => {
 	return async (dispatch, getState) => {
-		let {
-			isInLobby,
-			isHost,
-			isGameStarted,
-			roomCode,
-		} = getState().game;
+		let { isInLobby, isHost, isGameStarted, roomCode } = getState().game;
 		if (!isGameStarted) {
 			if ((isInLobby && roomCode, roomCode)) {
 				await dispatch(leaveLobby(isHost));
@@ -152,7 +147,8 @@ export const nextTurn = () => {
 			isHost,
 		} = getState().game;
 
-		clients[currentTurn] = turnResults.score;
+		clients.find((client) => client.socketId === currentTurn).score +=
+			turnResults.score;
 
 		emit.nextTurn(socket, { clients, roomCode, isHost });
 

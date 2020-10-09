@@ -36,12 +36,11 @@ export default function HiddenVoiceRecorder({ isSinging, handleDidSing }) {
 	useEffect(() => {
 		if (isSinging) {
 			setTranscript('');
+			setGotInput(false);
 			recognition.start();
 			setTimeout(() => {
-				if (!transcript) {
-					recognition.stop();
-					setGotInput(true);
-					console.log('voice end');
+				if (!transcript && !gotInput) {
+					handleDidSing(transcript);
 				}
 			}, 10000);
 		}
