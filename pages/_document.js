@@ -11,6 +11,9 @@ class MyDocument extends Document {
 			<Html>
 				<Head>
 					<link rel='icon' type='image/ico' href='/favicon.ico' />
+					<link
+						href='https://fonts.googleapis.com/css2?family=Cute+Font&family=Roboto&family=Teko&display=swap'
+						rel='stylesheet'/>
 				</Head>
 				<body>
 					<Main />

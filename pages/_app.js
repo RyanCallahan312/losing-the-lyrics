@@ -4,7 +4,6 @@ import Headline from '../components/shared/headline';
 import { wrapper } from '../store/store';
 import { useSelector } from 'react-redux';
 import Head from 'next/head';
-import './_app.css';
 
 const styles = {
 	flexContainer: {
