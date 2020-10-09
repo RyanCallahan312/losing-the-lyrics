@@ -32,7 +32,6 @@ const Game = (props) => {
 	const router = useRouter();
 
 	useEffect(() => {
-		router.replace('/lobby');
 		if (gameState.isInLobby) {
 			return handleCloseGame;
 		}

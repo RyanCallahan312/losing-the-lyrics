@@ -90,12 +90,11 @@ export const connectToServer = (io) => {
 	};
 };
 
-export const lobbyDisconnectFromServer = () => {
+export const lobbyDisconnectFromServer = (socket) => {
 	return async (dispatch, getState) => {
 		let {
 			isInLobby,
 			isHost,
-			socket,
 			isGameStarted,
 			roomCode,
 		} = getState().game;

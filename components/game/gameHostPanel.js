@@ -56,6 +56,10 @@ export default function GameHostPanel({ gameState }) {
 	const handleSelectPlaylist = (playlist) => {
 		//TODO: trim playlist to make it an even number for the amount of clients
 		playlist.SONGS = arrayShuffle(playlist.SONGS);
+		playlist.SONGS.splice(
+			0,
+			playlist.SONGS.length % gameState.clients.length,
+		);
 		dispatch(spotifyActions.setPlaylist(playlist));
 		dispatch(spotifyActions.setCurrentSong(playlist.SONGS[0]));
 		EMMISIONS.startRound(gameState.socket, {

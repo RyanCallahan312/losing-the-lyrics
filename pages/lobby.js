@@ -70,7 +70,8 @@ const Lobby = (props) => {
 			}
 		}
 
-		return () => dispatch(gameActions.lobbyDisconnectFromServer());
+		return () =>
+			dispatch(gameActions.lobbyDisconnectFromServer(gameState.socket));
 	}, []);
 
 	useEffect(() => {

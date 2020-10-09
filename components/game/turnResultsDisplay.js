@@ -16,9 +16,15 @@ const styles = {
 export default function TurnResultsDisplay({ turnResults, currentTurnClient }) {
 	return (
 		<p style={styles.info}>
-			{currentTurnClient.alias} scored{' '}
-			<span style={styles.results}>{turnResults.score} points</span>
-			with <span style={styles.results}>"{turnResults.transcript}"</span>
+			<span
+				style={{
+					color: 'hsl(' + currentTurnClient.color + ',100%, 65%)',
+				}}>
+				{currentTurnClient.alias}
+			</span>{' '}
+			scored{' '}
+			<span style={styles.results}>{turnResults.score} points</span> with{' '}
+			<span style={styles.results}>"{turnResults.transcript}"</span>
 		</p>
 	);
 }
