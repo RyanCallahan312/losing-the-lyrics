@@ -104,9 +104,22 @@ export default function GameTurnPanel({ gameState }) {
 			(socketId) => socketId === currentTurn,
 		);
 
+		if (currentTurnIndex === -1) {
+			return [
+				headSpacer(0),
+				<td style={styles.listItem} key='singing'>
+					Singing
+				</td>,
+				<td style={styles.listItem} key='onDeck'>
+					On Deck
+				</td>,
+				...getSpacers(),
+			];
+		}
+
 		console.log(currentTurnIndex, turnOrderList.length);
 
-		let descriptors = [...getSpacers(currentTurnIndex)];
+		let descriptors = [headSpacer(0), ...getSpacers(currentTurnIndex - 1)];
 		descriptors.push(
 			<td style={styles.listItem} key='singing'>
 				Singing

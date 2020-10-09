@@ -4,7 +4,6 @@ export default function HiddenVoiceRecorder({ isSinging, handleDidSing }) {
 	const [transcript, setTranscript] = useState('');
 	const [gotInput, setGotInput] = useState(false);
 	const [recognition, setRecognition] = useState(null);
-	const [lastTranscript, setLastTranscript] = useState(null);
 
 	const voiceCommands = () => {
 		// Do something when we get a result

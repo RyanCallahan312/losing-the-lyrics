@@ -90,9 +90,9 @@ export const connectToServer = (io) => {
 	};
 };
 
-export const lobbyDisconnectFromServer = (socket) => {
+export const lobbyDisconnectFromServer = () => {
 	return async (dispatch, getState) => {
-		let { isInLobby, isHost, isGameStarted, roomCode } = getState().game;
+		let { isInLobby, isHost, socket, isGameStarted, roomCode } = getState().game;
 		if (!isGameStarted) {
 			if ((isInLobby && roomCode, roomCode)) {
 				await dispatch(leaveLobby(isHost));
