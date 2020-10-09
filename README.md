@@ -31,4 +31,3 @@ At the end of how ever many rounds the scores will be displayed and the winner w
 
 ### contact
 If you have any questions open an issue or email me at [Ryan@DevRyan.io](mailto:Ryan@DevRyan.io)
-
