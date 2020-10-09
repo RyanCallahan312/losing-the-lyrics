@@ -3,19 +3,19 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('/fonts/CuteFont-Regular.ttf');
+  src: url('https://fonts.googleapis.com/css2?family=Cute+Font');
 }
 @font-face {
   font-family: 'Teko';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('/fonts/Teko-Regular.ttf');
+  src: url('https://fonts.googleapis.com/css2?family=Teko');
 }
 @font-face {
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('/fonts/Roboto-Regular.ttf');
+  src: url('https://fonts.googleapis.com/css2?family=Roboto');
 }
