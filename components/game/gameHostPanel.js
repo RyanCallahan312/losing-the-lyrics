@@ -7,6 +7,7 @@ import * as EMMISIONS from '../../client/emissions';
 import LyricsDisplay from '../spotify/lyrcisDisplay';
 import TurnResultsDisplay from './turnResultsDisplay';
 import { FisherYatesShuffle as arrayShuffle } from '../utils/arrayUtils';
+import GameRoundTransitionSplash from './gameRoundTransitionSplash';
 
 const styles = {
 	container: {
@@ -62,10 +63,14 @@ export default function GameHostPanel({ gameState }) {
 		);
 		dispatch(spotifyActions.setPlaylist(playlist));
 		dispatch(spotifyActions.setCurrentSong(playlist.SONGS[0]));
-		EMMISIONS.startRound(gameState.socket, {
-			roomCode: gameState.roomCode,
-			isHost: gameState.isHost,
-		});
+		setTimeout(
+			() =>
+				EMMISIONS.startRound(gameState.socket, {
+					roomCode: gameState.roomCode,
+					isHost: gameState.isHost,
+				}),
+			1000,
+		);
 	};
 
 	const stopSong = (shouldEmitStopSong) => {
@@ -84,6 +89,7 @@ export default function GameHostPanel({ gameState }) {
 			) {
 				//TODO: goto next round
 				console.log('round Complete');
+				dispatch(gameActions.setIsRoundStarted(false));
 			} else {
 				setTimeout(() => {
 					dispatch(gameActions.nextTurn());
@@ -98,22 +104,31 @@ export default function GameHostPanel({ gameState }) {
 	return (
 		<div style={{ ...styles.subContainer, width: '30%' }}>
 			{spotifyState.playlist ? (
-				<div>
-					<LyricsDisplay
-						partialLyrics={spotifyState.currentSong.partialLyrics}
-						fullLyrics={spotifyState.currentSong.fullLyrics}
-						turnResults={gameState.turnResults}
-					/>
-					{gameState.turnResults && (
-						<TurnResultsDisplay
+				gameState.isRoundStarted ? (
+					<div>
+						<LyricsDisplay
+							partialLyrics={
+								spotifyState.currentSong.partialLyrics
+							}
+							fullLyrics={spotifyState.currentSong.fullLyrics}
 							turnResults={gameState.turnResults}
-							currentTurnClient={gameState.clients.find(
-								(client) =>
-									client.socketId === gameState.currentTurn,
-							)}
 						/>
-					)}
-				</div>
+						{gameState.turnResults && (
+							<TurnResultsDisplay
+								turnResults={gameState.turnResults}
+								currentTurnClient={gameState.clients.find(
+									(client) =>
+										client.socketId ===
+										gameState.currentTurn,
+								)}
+							/>
+						)}
+					</div>
+				) : (
+					<GameRoundTransitionSplash
+						roundNumber={gameState.roundNumber + 1}
+					/>
+				)
 			) : (
 				<PlaylistSelector handleSelectPlaylist={handleSelectPlaylist} />
 			)}

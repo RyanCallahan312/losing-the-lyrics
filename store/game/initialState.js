@@ -7,7 +7,7 @@ export default {
 	isRoundStarted: false,
 	turnResults: null,
 	roomCode: null,
-	userList: [],
+	clients: [],
 	lyrics: null,
 	socket: null,
 	turnOrder: [],
