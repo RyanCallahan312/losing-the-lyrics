@@ -8,7 +8,7 @@ try {
 	let cert = fs.readFileSync('./server/certs/cert.pem');
 	server = server.createServer({ key: key, cert: cert }, app);
 } catch (e) {
-	server = server.require('http').Server(app);
+	server = require('http').Server(app);
 }
 const io = require('socket.io')(server);
 

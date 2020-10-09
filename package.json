@@ -9,7 +9,7 @@
     "start": "node server/index.js -p $PORT"
   },
   "engines": {
-    "node": "12.x"
+    "node": "12.19.0"
   },
   "keywords": [],
   "author": "",
