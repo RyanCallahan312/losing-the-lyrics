@@ -4,7 +4,7 @@ import Button from '../shared/button';
 import TextInput from '../shared/textInput';
 import * as gameActions from '../../store/game/actions';
 import RoomInfoPanel from './roomInfoPanel';
-import { useSpring, animated } from 'react-spring';
+import { useSpring, animated, config } from 'react-spring';
 
 const styles = {
 	container: {
@@ -66,7 +66,7 @@ export default function LobbyPannel({ gameState, children }) {
 			? 'scale(1,1) translate(0px,0px)'
 			: 'scale(0,0) translate(-100%,100%)',
 		from: { opacity: 0, transform: 'scale(0,0) translate(-100%,100%)' },
-		config: { duration: 150 },
+		config: config.wobbly,
 	});
 
 	//--handlers--
