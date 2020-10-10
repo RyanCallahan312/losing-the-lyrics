@@ -4,6 +4,7 @@ import Button from '../shared/button';
 import TextInput from '../shared/textInput';
 import * as gameActions from '../../store/game/actions';
 import RoomInfoPanel from './roomInfoPanel';
+import { useSpring, animated } from 'react-spring';
 
 const styles = {
 	container: {
@@ -30,6 +31,7 @@ const styles = {
 	roomCodeText: {
 		fontFamily: 'Teko',
 		fontSize: 'calc(.8vw + 16px)',
+		display: 'inline',
 	},
 	roomCode: {
 		fontFamily: 'Teko',
@@ -37,6 +39,7 @@ const styles = {
 		color: 'rgba(50,138,250, 1)',
 		textShadow:
 			'2px 2px rgba(255, 0, 0, 1), 0 0 6px rgba(0, 113, 255, 0.85)',
+		cursor: 'pointer',
 	},
 };
 
@@ -47,6 +50,7 @@ export default function LobbyPannel({ gameState, children }) {
 	//--state hooks--
 	const [roomCodeBuffer, setRoomCodeBuffer] = useState('');
 	const [aliasBuffer, setAliasBuffer] = useState('');
+	const [copied, setCopied] = useState(false);
 
 	//--effect hooks--
 	useEffect(() => {
@@ -54,6 +58,16 @@ export default function LobbyPannel({ gameState, children }) {
 			gameActions.enterLobby(gameState.socket);
 		}
 	}, []);
+
+	//spring hooks
+	const springAnimation = useSpring({
+		opacity: copied ? 1 : 0,
+		transform: copied
+			? 'scale(1,1) translate(0px,0px)'
+			: 'scale(0,0) translate(-100%,100%)',
+		from: { opacity: 0, transform: 'scale(0,0) translate(-100%,100%)' },
+		config: { duration: 150 },
+	});
 
 	//--handlers--
 
@@ -77,11 +91,28 @@ export default function LobbyPannel({ gameState, children }) {
 		);
 	};
 
+	const onRoomCodeClick = async () => {
+		await window.navigator.clipboard.writeText(gameState.roomCode);
+		setCopied(true);
+		setTimeout(() => setCopied(false), 1000);
+	};
+
 	//--JSX--
 	const roomCodeDisplay = (
-		<p style={styles.roomCodeText}>
-			Room Code: <span style={styles.roomCode}>{gameState.roomCode}</span>
-		</p>
+		<div style={{ position: 'relative' }}>
+			<p style={styles.roomCodeText}>
+				Room Code:{' '}
+				<span
+					id='room-code'
+					style={styles.roomCode}
+					onClick={onRoomCodeClick}>
+					{gameState.roomCode}
+				</span>
+			</p>
+			<animated.div id='speech-bubble' style={springAnimation}>
+				Copied!
+			</animated.div>
+		</div>
 	);
 
 	const startGameButton = (
@@ -152,18 +183,28 @@ export default function LobbyPannel({ gameState, children }) {
 				{navButtons()}
 			</div>
 			<style jsx global>{`
-				.button {
-					box-shadow: 0px 0px 0px rgba(0, 113, 255, 0);
-					transform: scale(1);
-					transition: 150ms transform ease-out,
-						150ms boxshadow ease-out;
+				#speech-bubble {
+					display: inline;
+					position: absolute;
+					font-family: Roboto;
+					color: white;
+					font-size: calc(13px + 0.5vw);
+					text-align: center;
+					width: fit-content;
+					height: fit-content;
+					border: 5px solid rgba(50, 138, 250, 1);
+					border-radius: 13px;
+					background-color: rgba(50, 138, 250, 1);
 				}
-
-				.button:hover {
-					box-shadow: 0px 0px 18px rgba(0, 113, 255, 0.5);
-					transform: scale(1.02);
-					transition: 150ms transform ease-out,
-						150ms boxshadow ease-out;
+				#speech-bubble:after {
+					content: '';
+					position: absolute;
+					bottom: -15px;
+					left: 0;
+					border-right: 25px solid transparent;
+					border-top: 15px solid rgba(50, 138, 250, 1);
+					display: block;
+					margin-top: 2px;
 				}
 			`}</style>
 		</div>
