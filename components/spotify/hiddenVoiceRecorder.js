@@ -8,10 +8,7 @@ export default function HiddenVoiceRecorder({ isSinging, handleDidSing }) {
 	const voiceCommands = () => {
 		// Do something when we get a result
 		recognition.onresult = (e) => {
-			if (gotInput) {
-				handleDidSing(transcript);
-				setGotInput(false);
-			}
+			setTranscript(e.results[0][0].transcript);
 		};
 
 		recognition.onspeechend = () => {
@@ -33,13 +30,21 @@ export default function HiddenVoiceRecorder({ isSinging, handleDidSing }) {
 	}, [recognition]);
 
 	useEffect(() => {
+		if (transcript !== '' || gotInput) {
+			handleDidSing(transcript);
+			setTranscript('');
+			setGotInput(false);
+		}
+	}, [transcript, gotInput]);
+
+	useEffect(() => {
 		if (isSinging) {
 			setTranscript('');
 			setGotInput(false);
 			recognition.start();
 			setTimeout(() => {
-				if (!transcript && !gotInput) {
-					handleDidSing(transcript);
+				if (!gotInput && transcript === '') {
+					setGotInput(true);
 				}
 			}, 10000);
 		}

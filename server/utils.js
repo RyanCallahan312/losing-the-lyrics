@@ -1,5 +1,3 @@
-const e = require('express');
-
 function getRoomByCode(io, roomCode) {
 	if (io.sockets && io.sockets.adapter && io.sockets.adapter.rooms) {
 		return io.sockets.adapter.rooms[roomCode];

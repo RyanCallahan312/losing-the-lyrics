@@ -36,6 +36,15 @@ export default function spotifyReducer(
 				playingFullSong: payload,
 			};
 
+		case ACTIONS.LEAVE_lOBBY:
+			return {
+				...state,
+				playlist: null,
+				currentSong: null,
+				playingPartialSong: false,
+				playingFullSong: false,
+			};
+
 		default:
 			return state;
 	}

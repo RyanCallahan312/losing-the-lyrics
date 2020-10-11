@@ -49,7 +49,6 @@ export default function GamePlayerPanel({ isSinging }) {
 	//--handlers--
 
 	const handleDidSing = (transcript) => {
-		console.log(transcript);
 		dispatch(gameActions.gotTranscript(transcript));
 	};
 
