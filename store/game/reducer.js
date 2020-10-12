@@ -28,7 +28,6 @@ export default function gameReducer(state = initialState, { type, payload }) {
 				roomCode: null,
 				clients: [],
 				lyrics: null,
-				socket: null,
 				turnOrder: [],
 				currentTurn: null,
 				roundNumber: 0,
