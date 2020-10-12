@@ -81,7 +81,9 @@ export const enterLobby = (isHost) => {
 };
 
 export const connectToServer = (io) => {
-	let socket = io();
+	let socket = io({
+		path: '/socket.io',
+	});
 
 	return (dispatch, getState) => {
 		bindListeners(socket, dispatch, getState);
@@ -92,7 +94,13 @@ export const connectToServer = (io) => {
 
 export const lobbyDisconnectFromServer = () => {
 	return async (dispatch, getState) => {
-		let { isInLobby, isHost, socket, isGameStarted, roomCode } = getState().game;
+		let {
+			isInLobby,
+			isHost,
+			socket,
+			isGameStarted,
+			roomCode,
+		} = getState().game;
 		if (!isGameStarted) {
 			if ((isInLobby && roomCode, roomCode)) {
 				await dispatch(leaveLobby(isHost));
