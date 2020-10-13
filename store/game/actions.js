@@ -83,7 +83,7 @@ export const enterLobby = (isHost) => {
 export const connectToServer = (io) => {
 	let socket = io({
 		path: '/socket.io',
-		transports: ['polling'],
+		transports: ['websocket'],
 	});
 
 	return (dispatch, getState) => {
