@@ -44,6 +44,7 @@ export default function HiddenVoiceRecorder({ isSinging, handleDidSing }) {
 			recognition.start();
 			setTimeout(() => {
 				if (!gotInput && transcript === '') {
+					recognition.stop();
 					setGotInput(true);
 				}
 			}, 10000);
