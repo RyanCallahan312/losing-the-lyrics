@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 
 export default function HiddenVoiceRecorder({ isSinging, handleDidSing }) {
-	const [transcript, setTranscript] = useState('');
+	const [transcript, setTranscript] = useState(null);
 	const [gotInput, setGotInput] = useState(false);
 	const [recognition, setRecognition] = useState(null);
+	const [noInputTimeout, setNoInputTimeout] = useState(null);
 
 	const voiceCommands = () => {
 		// Do something when we get a result
@@ -30,24 +31,28 @@ export default function HiddenVoiceRecorder({ isSinging, handleDidSing }) {
 	}, [recognition]);
 
 	useEffect(() => {
-		if (transcript !== '' || gotInput) {
+		if (transcript !== null && gotInput) {
 			handleDidSing(transcript);
-			setTranscript('');
-			setGotInput(false);
+			clearTimeout(noInputTimeout);
+			setNoInputTimeout(null);
 		}
 	}, [transcript, gotInput]);
 
 	useEffect(() => {
 		if (isSinging) {
-			setTranscript('');
+			setTranscript(null);
 			setGotInput(false);
 			recognition.start();
-			setTimeout(() => {
-				if (!gotInput && transcript === '') {
-					recognition.stop();
-					setGotInput(true);
-				}
-			}, 10000);
+			setNoInputTimeout(
+				setTimeout(() => {
+					if (!gotInput && transcript === null) {
+						console.log(gotInput, transcript);
+						recognition.stop();
+						setTranscript('');
+						setGotInput(true);
+					}
+				}, 10000),
+			);
 		}
 	}, [isSinging]);
 	return null;
