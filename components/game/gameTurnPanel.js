@@ -117,9 +117,7 @@ export default function GameTurnPanel({ gameState }) {
 			];
 		}
 
-		console.log(currentTurnIndex, turnOrderList.length);
-
-		let descriptors = [headSpacer(0), ...getSpacers(currentTurnIndex - 1)];
+		let descriptors = [headSpacer(0), ...getSpacers(currentTurnIndex)];
 		descriptors.push(
 			<td style={styles.listItem} key='singing'>
 				Singing
@@ -132,11 +130,6 @@ export default function GameTurnPanel({ gameState }) {
 				</td>,
 			);
 		}
-		console.log(
-			`currentTurn ${currentTurnIndex}`,
-			`turnOrderList ${turnOrderList.length}`,
-			`descriptors ${descriptors.length}`,
-		);
 		descriptors = [
 			...descriptors,
 			...getSpacers(descriptors.length - turnOrderList.length - 1),

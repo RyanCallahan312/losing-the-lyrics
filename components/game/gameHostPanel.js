@@ -88,7 +88,6 @@ export default function GameHostPanel({ gameState }) {
 				gameState.currentTurn
 			) {
 				//TODO: goto next round
-				console.log('round Complete');
 				dispatch(gameActions.setIsRoundStarted(false));
 			} else {
 				setTimeout(() => {

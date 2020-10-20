@@ -27,7 +27,6 @@ export const nextSong = () => {
 		let { playlist, currentSong } = getState().spotify;
 
 		if (currentSong && playlist) {
-			console.log(playlist.SONGS);
 			let index = playlist.SONGS.findIndex((song) =>
 				_.isEqual(song, currentSong),
 			);

@@ -126,24 +126,26 @@ module.exports = function createListeners(socket, io) {
 		console.log(`${socket.id} ${EMISSIONS.LEAVE_ROOM}`);
 
 		let room = utils.getRoomByCode(io, roomCode);
-		let client = room.clients.find((c) => c.socketId === socket.id);
+		if (room) {
+			let client = room.clients.find((c) => c.socketId === socket.id);
 
-		if (client) {
-			socket.leave(roomCode);
+			if (client) {
+				socket.leave(roomCode);
 
-			room.clients.splice(
-				room.clients.findIndex((c) => c.socketId === socket.id),
-				1,
-			);
+				room.clients.splice(
+					room.clients.findIndex((c) => c.socketId === socket.id),
+					1,
+				);
 
-			io.to(roomCode).emit(EMISSIONS.ROOM_INFO, {
-				roomCode: roomCode,
-				clients: room.clients,
-				turnOrder: room.turnOrder,
-				currentTurn: room.currentTurn,
-				roundNumber: room.roundNumber,
-				isRoundStarted: room.isRoundStarted,
-			});
+				io.to(roomCode).emit(EMISSIONS.ROOM_INFO, {
+					roomCode: roomCode,
+					clients: room.clients,
+					turnOrder: room.turnOrder,
+					currentTurn: room.currentTurn,
+					roundNumber: room.roundNumber,
+					isRoundStarted: room.isRoundStarted,
+				});
+			}
 		}
 	});
 
@@ -161,8 +163,8 @@ module.exports = function createListeners(socket, io) {
 
 	socket.on(EMISSIONS.START_ROUND, ({ roomCode, isHost }) => {
 		console.log(`${socket.id} ${EMISSIONS.START_ROUND}`);
-		if (isHost) {
-			let room = utils.getRoomByCode(io, roomCode);
+		let room = utils.getRoomByCode(io, roomCode);
+		if (isHost && room) {
 			room.isRoundStarted = true;
 			room.roundNumber += 1;
 			room.currentTurn = room.turnOrder[0];
@@ -185,16 +187,16 @@ module.exports = function createListeners(socket, io) {
 
 	socket.on(EMISSIONS.SELECT_SONG, ({ isHost, roomCode, songData }) => {
 		console.log(`${socket.id} ${EMISSIONS.SELECT_SONG}`);
-		if (isHost) {
-			let room = utils.getRoomByCode(io, roomCode);
+		let room = utils.getRoomByCode(io, roomCode);
+		if (isHost && room) {
 			room.songData = songData;
 		}
 	});
 
 	socket.on(EMISSIONS.STOP_SONG, ({ isHost, roomCode }) => {
 		console.log(`${socket.id} ${EMISSIONS.STOP_SONG}`);
-		if (isHost) {
-			let room = utils.getRoomByCode(io, roomCode);
+		let room = utils.getRoomByCode(io, roomCode);
+		if (isHost && room) {
 			io.to(room.currentTurn).emit(EMISSIONS.START_SING);
 		} else {
 			io.to(socket.id).emit(
@@ -206,8 +208,8 @@ module.exports = function createListeners(socket, io) {
 
 	socket.on(EMISSIONS.NEXT_TURN, ({ isHost, clients, roomCode }) => {
 		console.log(`${socket.id} ${EMISSIONS.NEXT_TURN}`);
-		if (isHost) {
-			let room = utils.getRoomByCode(io, roomCode);
+		let room = utils.getRoomByCode(io, roomCode);
+		if (isHost && room) {
 			room.clients = clients;
 			let currentTurnIndex = room.turnOrder.findIndex(
 				(socketId) => room.currentTurn === socketId,
@@ -233,7 +235,10 @@ module.exports = function createListeners(socket, io) {
 		console.log(`${socket.id} ${EMISSIONS.END_TURN}`);
 		let room = utils.getRoomByCode(io, roomCode);
 
-		if (socket.id === room.currentTurn || socket.id === room.host.id) {
+		if (
+			room &&
+			(socket.id === room.currentTurn || socket.id === room.host.id)
+		) {
 			let turnData = {};
 
 			turnData.score = 3;

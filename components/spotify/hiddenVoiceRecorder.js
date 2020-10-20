@@ -46,7 +46,6 @@ export default function HiddenVoiceRecorder({ isSinging, handleDidSing }) {
 			setNoInputTimeout(
 				setTimeout(() => {
 					if (!gotInput && transcript === null) {
-						console.log(gotInput, transcript);
 						recognition.stop();
 						setTranscript('');
 						setGotInput(true);
