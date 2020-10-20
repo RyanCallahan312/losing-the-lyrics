@@ -1,4 +1,9 @@
 const styles = {
+	staticContainer: {
+		position: 'absolute',
+		left: '50%',
+		transform: 'translate(-50%, 0)',
+	},
 	results: {
 		fontFamily: 'Cute Font',
 		color: 'rgba(50,138,250, 1)',
@@ -15,16 +20,19 @@ const styles = {
 
 export default function TurnResultsDisplay({ turnResults, currentTurnClient }) {
 	return (
-		<p style={styles.info}>
-			<span
-				style={{
-					color: 'hsl(' + currentTurnClient.color + ',100%, 65%)',
-				}}>
-				{currentTurnClient.alias}
-			</span>{' '}
-			scored{' '}
-			<span style={styles.results}>{turnResults.score} points</span> with{' '}
-			<span style={styles.results}>"{turnResults.transcript}"</span>
-		</p>
+		<div style={styles.staticContainer}>
+			<p style={styles.info}>
+				<span
+					style={{
+						color: 'hsl(' + currentTurnClient.color + ',100%, 65%)',
+					}}>
+					{currentTurnClient.alias}
+				</span>{' '}
+				scored{' '}
+				<span style={styles.results}>{turnResults.score} points</span>{' '}
+				with{' '}
+				<span style={styles.results}>"{turnResults.transcript}"</span>
+			</p>
+		</div>
 	);
 }

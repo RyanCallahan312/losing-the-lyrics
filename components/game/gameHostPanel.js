@@ -102,7 +102,7 @@ export default function GameHostPanel({ gameState }) {
 	//--JSX--
 
 	return (
-		<div style={{ ...styles.subContainer, width: '30%' }}>
+		<div style={{ ...styles.subContainer, width: '33%' }}>
 			{spotifyState.playlist ? (
 				gameState.isRoundStarted ? (
 					<div>

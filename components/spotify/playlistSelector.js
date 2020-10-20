@@ -1,5 +1,5 @@
 import PLAYLISTS from '../../constants/playlists';
-import Button from '../shared/button';
+import Card from '../shared/card';
 
 const styles = {
 	container: {
@@ -17,7 +17,7 @@ const styles = {
 		display: 'block',
 		alignItems: 'center',
 		justifyContent: 'space-around',
-		padding: 20,
+		padding: 5,
 		width: 'fit-content',
 	},
 	button: {
@@ -59,13 +59,14 @@ export default function PlaylistSelector({ handleSelectPlaylist }) {
 
 	//TODO: turn playlist into cards rather than buttons
 
-	const playlist = (rawPlaylist) => 
-			<div style={styles.subContainer} key={rawPlaylist.NAME}>
-				<Button
-					onClick={() => handleSelectPlaylist(rawPlaylist)}>
-					<h1>{rawPlaylist.NAME}</h1>
-				</Button>
-			</div>
+	const playlist = (rawPlaylist) => (
+		<Card
+			key={rawPlaylist.NAME}
+			onClick={() => handleSelectPlaylist(rawPlaylist)}
+			title={rawPlaylist.NAME}
+			description={rawPlaylist.DESCRIPTION}
+		/>
+	);
 
-	return <div>{PLAYLISTS.map((rawPlaylist) => playlist(rawPlaylist))}</div>;
+	return PLAYLISTS.map((rawPlaylist) => playlist(rawPlaylist));
 }

@@ -4,6 +4,26 @@ import SONG_DATA from './songData';
 export default [
 	{
 		NAME: 'Easy',
+		DESCRIPTION: 'This is an easy playlist that everyone should enjoy 😃',
+		SONGS: [
+			SONG_DATA[SONGS.OOPS_I_DID_IT_AGAIN],
+			SONG_DATA[SONGS.REAL_SLIM_SHADY],
+			SONG_DATA[SONGS.OLD_TOWN_ROAD],
+		],
+	},
+	{
+		NAME: 'Hard',
+		DESCRIPTION:
+			'Thar be pirates! These are some more uncommon songs but you still might stand a chance to make it out 🤔',
+		SONGS: [
+			SONG_DATA[SONGS.OOPS_I_DID_IT_AGAIN],
+			SONG_DATA[SONGS.REAL_SLIM_SHADY],
+			SONG_DATA[SONGS.OLD_TOWN_ROAD],
+		],
+	},
+	{
+		NAME: 'Karaoke Master',
+		DESCRIPTION: 'Good luck on this one 😅',
 		SONGS: [
 			SONG_DATA[SONGS.OOPS_I_DID_IT_AGAIN],
 			SONG_DATA[SONGS.REAL_SLIM_SHADY],
