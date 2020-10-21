@@ -89,6 +89,8 @@ export default function Sandbox() {
 				{selector(SONGS.OOPS_I_DID_IT_AGAIN)}
 				{selector(SONGS.REAL_SLIM_SHADY)}
 				{selector(SONGS.OLD_TOWN_ROAD)}
+				{selector(SONGS.SOMEBODY_THAT_I_USED_TO_KNOW)}
+				{selector(SONGS.TIK_TOK)}
 			</div>
 			<div style={{ width: '40%', textAlign: 'center' }}>
 				<label htmlFor='spotify uri'>spotify uri:</label>
@@ -135,10 +137,14 @@ export default function Sandbox() {
 				/>
 			</div>
 			<div>
-				<button onClick={() => setPlayPartialSong(true)}>
+				<button
+					disabled={playPartialSong || playFullSong}
+					onClick={() => setPlayPartialSong(true)}>
 					Play partial song
 				</button>
-				<button onClick={() => setPlayFullSong(true)}>
+				<button
+					disabled={playPartialSong || playFullSong}
+					onClick={() => setPlayFullSong(true)}>
 					Play full song
 				</button>
 				<button onClick={replaceSongData}>replace song data</button>

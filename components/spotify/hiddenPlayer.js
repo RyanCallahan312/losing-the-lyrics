@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-const play = (
+const play = async (
 	{
 		playerInstance: {
 			_options: { getOAuthToken, id },
@@ -9,7 +9,7 @@ const play = (
 	},
 	pos,
 ) => {
-	getOAuthToken((access_token) => {
+	await getOAuthToken((access_token) => {
 		fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
 			method: 'PUT',
 			body: JSON.stringify({ uris: [spotify_uri], position_ms: pos }),
@@ -37,10 +37,17 @@ export default function HiddenPlayer({
 				songData.startTime,
 			);
 
-			setTimeout(() => {
-				stopSong(true);
-				window.SpotifyPlayerProvider.pause();
-			}, songData.cutOffTime - songData.startTime);
+			var checkStopPlayback = setInterval(async () => {
+				let state = await window.SpotifyPlayerProvider.getCurrentState();
+				if (state && state.position >= songData.cutOffTime) {
+					console.log(
+						`position ${state.position}, cut off ${songData.cutOffTime}`,
+					);
+					stopSong(true);
+					window.SpotifyPlayerProvider.pause();
+					clearInterval(checkStopPlayback);
+				}
+			}, 100);
 
 			window.SpotifyPlayerProvider.setVolume(0.1);
 		}
@@ -55,10 +62,14 @@ export default function HiddenPlayer({
 				songData.startTime,
 			);
 
-			setTimeout(() => {
-				stopSong(false);
-				window.SpotifyPlayerProvider.pause();
-			}, songData.endTime - songData.startTime);
+			var checkStopPlayback = setInterval(async () => {
+				let state = await window.SpotifyPlayerProvider.getCurrentState();
+				if (state && state.position >= songData.cutOffTime) {
+					stopSong(true);
+					window.SpotifyPlayerProvider.pause();
+					clearInterval(checkStopPlayback);
+				}
+			}, 100);
 
 			window.SpotifyPlayerProvider.setVolume(0.1);
 		}
