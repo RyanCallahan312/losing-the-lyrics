@@ -8,7 +8,8 @@ The goal of the game is to finish singing the line in a song karaoke style after
 
 The branch being hosted is on a ci/cd pipeline via ~~heroku~~ ~~Vercel~~ heroku. The currently worked on branch is the front-end refactor which has become a lot more than just refactoring the front end 😋.
 
-***Voice Recognition works using the Web Speech Api. This api is not available in safari and must be enabled on spotify. This app will not work without this!***
+***Voice Recognition works using the Web Speech Api. This api is not available in safari and must be enabled on firefox. This app will not work without this!***
+***Spotify Playback works using the Web Player SDK. This sdk is not available in safari and ios. This app will not work without this!***
 
 ## How to create a game
 
