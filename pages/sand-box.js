@@ -37,8 +37,9 @@ export default function Sandbox() {
 	const [cutOffTime, setCutOffTime] = useState(0);
 	const [endTime, setEndTime] = useState(0);
 
-	const stopSong = (isPartialSong) =>
+	const stopSong = (isPartialSong) => {
 		isPartialSong ? setPlayPartialSong(false) : setPlayFullSong(false);
+	};
 
 	const replaceSongData = () => {
 		setSongData({

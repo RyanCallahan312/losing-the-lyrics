@@ -36,18 +36,16 @@ export default function HiddenPlayer({
 				},
 				songData.startTime,
 			);
-
-			var checkStopPlayback = setInterval(async () => {
-				let state = await window.SpotifyPlayerProvider.getCurrentState();
-				if (state && state.position >= songData.cutOffTime) {
-					console.log(
-						`position ${state.position}, cut off ${songData.cutOffTime}`,
-					);
-					stopSong(true);
-					window.SpotifyPlayerProvider.pause();
-					clearInterval(checkStopPlayback);
-				}
-			}, 100);
+			setTimeout(() => {
+				var checkStopPlayback = setInterval(async () => {
+					let state = await window.SpotifyPlayerProvider.getCurrentState();
+					if (state && state.position >= songData.cutOffTime) {
+						stopSong(true);
+						window.SpotifyPlayerProvider.pause();
+						clearInterval(checkStopPlayback);
+					}
+				}, 100);
+			}, (songData.cutOffTime - songData.startTime) * 0.75);
 
 			window.SpotifyPlayerProvider.setVolume(0.1);
 		}
@@ -62,14 +60,16 @@ export default function HiddenPlayer({
 				songData.startTime,
 			);
 
-			var checkStopPlayback = setInterval(async () => {
-				let state = await window.SpotifyPlayerProvider.getCurrentState();
-				if (state && state.position >= songData.cutOffTime) {
-					stopSong(true);
-					window.SpotifyPlayerProvider.pause();
-					clearInterval(checkStopPlayback);
-				}
-			}, 100);
+			setTimeout(() => {
+				var checkStopPlayback = setInterval(async () => {
+					let state = await window.SpotifyPlayerProvider.getCurrentState();
+					if (state && state.position >= songData.endTime) {
+						stopSong(false);
+						window.SpotifyPlayerProvider.pause();
+						clearInterval(checkStopPlayback);
+					}
+				}, 100);
+			}, (songData.endTime - songData.startTime) * 0.75);
 
 			window.SpotifyPlayerProvider.setVolume(0.1);
 		}
