@@ -56,4 +56,15 @@ export default {
 		fullLyrics: `Tonight, I'ma fight, 'Til we see the sunlight, Tick-tock on the clock But the party don't stop`,
 		answer: `Tick tock on the clock but the party don't stop`,
 	},
+	[SONGS.RADIOACTIVE]: {
+		songTitle: 'Radioactive',
+		artist: 'Imagine Dragons',
+		startTime: 0,
+		cutOffTime: 0,
+		endTime: 0,
+		spotify_uri: 'spotify:track:4G8gkOterJn0Ywt6uhqbhp',
+		partialLyrics: `Tonight, I'ma fight, 'Til we see the sunlight...`,
+		fullLyrics: `Tonight, I'ma fight, 'Til we see the sunlight, Tick-tock on the clock But the party don't stop`,
+		answer: `Tick tock on the clock but the party don't stop`,
+	},
 };
