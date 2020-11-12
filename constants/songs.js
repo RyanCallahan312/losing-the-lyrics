@@ -5,3 +5,4 @@ export const SOMEBODY_THAT_I_USED_TO_KNOW =
 	'Somebody That I Used to Know - Gotye';
 export const TIK_TOK = 'TiK ToK - Kesha';
 export const RADIOACTIVE = 'Radioactive - Imagine Dragons';
+export const FIREWORK = 'Firework - Katy Perry';

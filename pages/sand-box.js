@@ -3,6 +3,7 @@ import SONG_DATA from '../constants/songData';
 import * as SONGS from '../constants/songs';
 import * as SPOTIFY_API from '../constants/spotifyApi';
 import * as spotifyActions from '../store/spotify/actions';
+import Playlists from '../constants/playlists';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -50,8 +51,7 @@ export default function Sandbox() {
 		});
 	};
 
-	const selectSong = (songTitle) => {
-		let song = SONG_DATA[songTitle];
+	const selectSong = (song) => {
 		setSongData(song);
 		setSpotifyURI(song.spotify_uri);
 		setStartTime(song.startTime);
@@ -59,9 +59,11 @@ export default function Sandbox() {
 		setEndTime(song.endTime);
 	};
 
-	const selector = (songTitle) => {
+	const selector = (song) => {
 		return (
-			<button onClick={() => selectSong(songTitle)}>{songTitle}</button>
+			<button key={song.songTitle} onClick={() => selectSong(song)}>
+				{song.songTitle}
+			</button>
 		);
 	};
 
@@ -87,11 +89,9 @@ export default function Sandbox() {
 	return (
 		<div style={{ ...styles.container, width: '100%' }}>
 			<div>
-				{selector(SONGS.OOPS_I_DID_IT_AGAIN)}
-				{selector(SONGS.REAL_SLIM_SHADY)}
-				{selector(SONGS.OLD_TOWN_ROAD)}
-				{selector(SONGS.SOMEBODY_THAT_I_USED_TO_KNOW)}
-				{selector(SONGS.TIK_TOK)}
+				{Playlists.find(
+					(playlist) => playlist.NAME == 'Easy',
+				).SONGS.map((song) => selector(song))}
 			</div>
 			<div style={{ width: '40%', textAlign: 'center' }}>
 				<label htmlFor='spotify uri'>spotify uri:</label>
