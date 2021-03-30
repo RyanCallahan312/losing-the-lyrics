@@ -241,8 +241,7 @@ module.exports = function createListeners(socket, io) {
 		) {
 			let turnData = {};
 
-			turnData.score = 3;
-			// turnData.score = utils.getScore(transcript, room.songData.answer);
+			turnData.score = utils.getScore(transcript, room.songData.answer);
 			turnData.transcript = transcript;
 
 			io.to(room.host.id).emit(EMISSIONS.END_TURN, turnData);
