@@ -5,8 +5,8 @@ const play = async (
 		playerInstance: {
 			_options: { getOAuthToken, id },
 		},
-		spotify_uri,
 	},
+	spotify_uri,
 	pos,
 ) => {
 	await getOAuthToken((access_token) => {
@@ -32,8 +32,8 @@ export default function HiddenPlayer({
 			play(
 				{
 					playerInstance: window.SpotifyPlayerProvider,
-					spotify_uri: songData.spotify_uri,
 				},
+				songData.spotify_uri,
 				songData.startTime,
 			);
 			setTimeout(() => {
@@ -55,8 +55,8 @@ export default function HiddenPlayer({
 			play(
 				{
 					playerInstance: window.SpotifyPlayerProvider,
-					spotify_uri: songData.spotify_uri,
 				},
+				songData.spotify_uri,
 				songData.startTime,
 			);
 
